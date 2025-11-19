@@ -4,7 +4,8 @@ using Regravacao.Helpers;
 using Regravacao.Models;
 using Regravacao.Services.Auth;
 using Regravacao.Services.DetalhesDeErros;
-using Regravacao.Services.Funcionario;
+using Regravacao.Services.Finalizador;
+using Regravacao.Services.Conferente;
 using Regravacao.Services.Regravacao;
 using Regravacao.Views;
 using Supabase;
@@ -24,15 +25,17 @@ namespace Regravacao
         private readonly Client _supabase;
         private System.Windows.Forms.Timer? sessaoTimer;
         private readonly IMaterialService _materialService;
-        private readonly IFuncionarioService _funcionarioService;
+        private readonly IFinalizadorService _finalizadorService;
+        private readonly IConferenteService _conferenteService;
 
         private List<DetalhesDeErrosDto> _errosSelecionados = [];
 
         public FrmMain(
           IRegravacaoService regravacaoService,
-          IDetalhesDeErrosService detalhesDeErrosService,
-          IFuncionarioService funcionarioService,
+          IDetalhesDeErrosService detalhesDeErrosService,         
           IMaterialService materialService,
+          IFinalizadorService finalizadorService,
+          IConferenteService conferenteService,
 
           Client supabase)
         {
@@ -40,8 +43,10 @@ namespace Regravacao
 
             _regravacaoService = regravacaoService;
             _detalhesDeErrosService = detalhesDeErrosService;
-            _funcionarioService = funcionarioService;
             _materialService = materialService;
+            _finalizadorService = finalizadorService;
+            _conferenteService = conferenteService;
+            
             _supabase = supabase;
 
             // TAMANHO FIXO DO LOGIN
@@ -108,9 +113,9 @@ namespace Regravacao
         {
             try
             {
-                List<FuncionariosDto> finalizadores = await _funcionarioService.ListarFinalizadoresAsync();
+                List<FuncionariosDto> funcionario = await _finalizadorService.ListarFinalizadoresAsync();
 
-                if (finalizadores.Count != 0)
+                if (funcionario.Count != 0)
                 {
                     // 1. Cria o DTO "placeholder" (Item Em Branco)
                     // Ele deve ter um ID inválido (como 0) para indicar que não é uma seleção real
@@ -122,14 +127,14 @@ namespace Regravacao
                     };
 
                     // 2. Insere o item em branco no início da lista
-                    finalizadores.Insert(0, itemEmBranco);
+                    funcionario.Insert(0, itemEmBranco);
 
-                    // 3. Lógica de Data Binding
+                    // 3. Lógica de Data Binding finalizador
                     CBxFinalizadoPor.DataSource = null;
                     CBxFinalizadoPor.DisplayMember = "";
                     CBxFinalizadoPor.ValueMember = "";
 
-                    CBxFinalizadoPor.DataSource = finalizadores;
+                    CBxFinalizadoPor.DataSource = funcionario;
                     CBxFinalizadoPor.DisplayMember = "Nome";
                     CBxFinalizadoPor.ValueMember = "IdFuncionario";
 
@@ -139,6 +144,44 @@ namespace Regravacao
             catch (Exception ex)
             {
                 MessageBox.Show($"Erro ao buscar funcionários finalizadores: {ex.Message}", "Erro de Serviço", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async Task CarregarConferentes()
+        {
+            try
+            {
+                // 1. Chama o serviço. O serviço já sabe que deve buscar cargos 5 E 7.
+                List<FuncionariosDto> funcionario = await _conferenteService.ListarConferentesAsync();
+
+                if (funcionario.Count != 0)
+                {
+                    // Cria o DTO "placeholder" (Item Em Branco)
+                    var itemEmBranco = new FuncionariosDto
+                    {
+                        IdFuncionario = 0, // Um valor que não existe no DB
+                        Nome = ""
+                    };
+
+                    // Insere o item em branco no início da lista
+                    funcionario.Insert(0, itemEmBranco);
+
+                    // 3. Lógica de Data Binding conferente
+                    CBxConferidoPor.DataSource = null;
+                    CBxConferidoPor.DisplayMember = "";
+                    CBxConferidoPor.ValueMember = "";
+
+                    CBxConferidoPor.DataSource = funcionario;
+                    CBxConferidoPor.DisplayMember = "Nome";
+                    CBxConferidoPor.ValueMember = "IdFuncionario";
+
+                    // O ComboBox selecionará automaticamente o índice 0 (o item em branco)
+                }
+            }
+            catch (Exception ex)
+            {
+                // ⚠️ CORREÇÃO DE TEXTO: Mudar "finalizadores" para "conferentes"
+                MessageBox.Show($"Erro ao buscar funcionários conferentes: {ex.Message}", "Erro de Serviço", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         #endregion
@@ -655,6 +698,7 @@ namespace Regravacao
         {
             await CarregarMateriais();
             await CarregarFinalizadores();
+            await CarregarConferentes();
         }
     }
 }

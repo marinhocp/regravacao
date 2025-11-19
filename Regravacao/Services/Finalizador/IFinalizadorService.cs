@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Regravacao.Services.Funcionario
+namespace Regravacao.Services.Finalizador
 {
-    public interface IFuncionarioService
+    public interface IFinalizadorService
     {
         Task<List<FuncionariosDto>> ListarFinalizadoresAsync();
     }

@@ -6,11 +6,11 @@ using System;
 
 namespace Regravacao.Repositories.Funcionario.Impl
 {
-    public class FuncionarioRepository : IFuncionarioRepository
+    public class FinalizadorRepository : IFinalizadorRepository
     {
         private readonly Client _supabase;
 
-        public FuncionarioRepository(Client supabase)
+        public FinalizadorRepository(Client supabase)
         {
             _supabase = supabase;
         }

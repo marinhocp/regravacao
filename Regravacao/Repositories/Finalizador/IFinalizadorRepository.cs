@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Regravacao.Repositories.Funcionario
 {
-    public interface IFuncionarioRepository
+    public interface IFinalizadorRepository
     {
         Task<List<FuncionariosDto>> ListarPorCargoAsync(int idCargo);
     }

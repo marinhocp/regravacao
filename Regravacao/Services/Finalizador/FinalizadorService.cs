@@ -3,14 +3,14 @@ using Regravacao.Repositories.Funcionario;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Regravacao.Services.Funcionario.Impl
+namespace Regravacao.Services.Finalizador
 {
-    public class FuncionarioService : IFuncionarioService
+    public class FinalizadorService : IFinalizadorService
     {
-        private readonly IFuncionarioRepository _repository;
+        private readonly IFinalizadorRepository _repository;
         private const int ID_CARGO_FINALIZADOR = 4; // Regra de Negócio
 
-        public FuncionarioService(IFuncionarioRepository repository)
+        public FinalizadorService(IFinalizadorRepository repository)
         {
             _repository = repository;
         }

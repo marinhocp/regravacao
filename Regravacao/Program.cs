@@ -2,16 +2,18 @@
 using Microsoft.Extensions.Hosting;
 using Regravacao.Repositories;
 using Regravacao.Repositories.Funcionario;
-using Regravacao.Services.Funcionario;
 using Regravacao.Repositories.DetalhesDeErros;
 using Regravacao.Repositories.Funcionario.Impl;
 using Regravacao.Repositories.Regravacao;
 using Regravacao.Services.Auth;
 using Regravacao.Services.DetalhesDeErros;
-using Regravacao.Services.Funcionario.Impl;
 using Regravacao.Services.Regravacao;
 using Regravacao.Views;
 using Supabase;
+using Regravacao.Services.Finalizador;
+using Regravacao.Services.Conferente;
+using Regravacao.Repositories.Conferente;
+using Regravacao.Repositories.Conferente.Impl;
 
 namespace Regravacao
 {
@@ -46,11 +48,10 @@ namespace Regravacao
 
                     // Repositório de Regravação (Mantido)
                     services.AddScoped<IRegravacaoRepository, RegravacaoRepository>();
-
-                    // 🆕 REPOSITÓRIO: DETALHES DE ERROS
                     services.AddScoped<IDetalhesDeErrosRepository, DetalhesDeErrosRepository>();
                     services.AddScoped<IMaterialRepository, MaterialRepository>();
-                    services.AddScoped<IFuncionarioRepository, FuncionarioRepository>();                   
+                    services.AddScoped<IFinalizadorRepository, FinalizadorRepository>();
+                    services.AddScoped<IConferenteRepository, ConferenteRepository>();
 
 
                     // --- SERVIÇOS ---
@@ -59,7 +60,8 @@ namespace Regravacao
                     services.AddScoped<IAuthService, AuthService>();
                     services.AddScoped<IDetalhesDeErrosService, DetalhesDeErrosService>();
                     services.AddScoped<IMaterialService, MaterialService>();
-                    services.AddScoped<IFuncionarioService, FuncionarioService>();                    
+                    services.AddScoped<IFinalizadorService, FinalizadorService>();
+                    services.AddScoped<IConferenteService, ConferenteService>();
 
 
                     // ✅ Forms

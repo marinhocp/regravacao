@@ -1,12 +1,104 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\Mario.Pires\\source\\repos\\regravacao\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{2CB4C65B-5A75-478D-8D87-802C17AAA55C}|Regravacao\\Regravacao.csproj|c:\\users\\mario.pires\\source\\repos\\regravacao\\regravacao\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2CB4C65B-5A75-478D-8D87-802C17AAA55C}|Regravacao\\Regravacao.csproj|solutionrelative:regravacao\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2CB4C65B-5A75-478D-8D87-802C17AAA55C}|Regravacao\\Regravacao.csproj|c:\\users\\mario.pires\\source\\repos\\regravacao\\regravacao\\services\\conferente\\conferenteservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2CB4C65B-5A75-478D-8D87-802C17AAA55C}|Regravacao\\Regravacao.csproj|solutionrelative:regravacao\\services\\conferente\\conferenteservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2CB4C65B-5A75-478D-8D87-802C17AAA55C}|Regravacao\\Regravacao.csproj|c:\\users\\mario.pires\\source\\repos\\regravacao\\regravacao\\repositories\\conferente\\conferenterepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2CB4C65B-5A75-478D-8D87-802C17AAA55C}|Regravacao\\Regravacao.csproj|solutionrelative:regravacao\\repositories\\conferente\\conferenterepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2CB4C65B-5A75-478D-8D87-802C17AAA55C}|Regravacao\\Regravacao.csproj|c:\\users\\mario.pires\\source\\repos\\regravacao\\regravacao\\views\\main\\frmmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2CB4C65B-5A75-478D-8D87-802C17AAA55C}|Regravacao\\Regravacao.csproj|solutionrelative:regravacao\\views\\main\\frmmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2CB4C65B-5A75-478D-8D87-802C17AAA55C}|Regravacao\\Regravacao.csproj|C:\\Users\\Mario.Pires\\source\\repos\\regravacao\\regravacao\\views\\main\\frmmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{2CB4C65B-5A75-478D-8D87-802C17AAA55C}|Regravacao\\Regravacao.csproj|solutionrelative:regravacao\\views\\main\\frmmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "FrmMain.cs",
+              "DocumentMoniker": "C:\\Users\\Mario.Pires\\source\\repos\\regravacao\\Regravacao\\Views\\Main\\FrmMain.cs",
+              "RelativeDocumentMoniker": "Regravacao\\Views\\Main\\FrmMain.cs",
+              "ToolTip": "C:\\Users\\Mario.Pires\\source\\repos\\regravacao\\Regravacao\\Views\\Main\\FrmMain.cs",
+              "RelativeToolTip": "Regravacao\\Views\\Main\\FrmMain.cs",
+              "ViewState": "AgIAAJgAAAAAAAAAAAAAwLkAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-19T20:03:12.581Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "FrmMain.cs [Projeto]",
+              "DocumentMoniker": "C:\\Users\\Mario.Pires\\source\\repos\\regravacao\\Regravacao\\Views\\Main\\FrmMain.cs",
+              "RelativeDocumentMoniker": "Regravacao\\Views\\Main\\FrmMain.cs",
+              "ToolTip": "C:\\Users\\Mario.Pires\\source\\repos\\regravacao\\Regravacao\\Views\\Main\\FrmMain.cs [Projeto]",
+              "RelativeToolTip": "Regravacao\\Views\\Main\\FrmMain.cs [Projeto]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-19T18:21:36.923Z",
+              "EditorCaption": " [Projeto]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ConferenteRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Mario.Pires\\source\\repos\\regravacao\\Regravacao\\Repositories\\Conferente\\ConferenteRepository.cs",
+              "RelativeDocumentMoniker": "Regravacao\\Repositories\\Conferente\\ConferenteRepository.cs",
+              "ToolTip": "C:\\Users\\Mario.Pires\\source\\repos\\regravacao\\Regravacao\\Repositories\\Conferente\\ConferenteRepository.cs",
+              "RelativeToolTip": "Regravacao\\Repositories\\Conferente\\ConferenteRepository.cs",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAAwCgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-19T20:01:16.123Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ConferenteService.cs",
+              "DocumentMoniker": "C:\\Users\\Mario.Pires\\source\\repos\\regravacao\\Regravacao\\Services\\Conferente\\ConferenteService.cs",
+              "RelativeDocumentMoniker": "Regravacao\\Services\\Conferente\\ConferenteService.cs",
+              "ToolTip": "C:\\Users\\Mario.Pires\\source\\repos\\regravacao\\Regravacao\\Services\\Conferente\\ConferenteService.cs",
+              "RelativeToolTip": "Regravacao\\Services\\Conferente\\ConferenteService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-19T19:57:03.052Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Mario.Pires\\source\\repos\\regravacao\\Regravacao\\Program.cs",
+              "RelativeDocumentMoniker": "Regravacao\\Program.cs",
+              "ToolTip": "C:\\Users\\Mario.Pires\\source\\repos\\regravacao\\Regravacao\\Program.cs",
+              "RelativeToolTip": "Regravacao\\Program.cs",
+              "ViewState": "AgIAADgAAAAAAAAAAAAwwCwAAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-19T19:55:22.719Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }
