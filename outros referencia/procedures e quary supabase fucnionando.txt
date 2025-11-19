@@ -1,0 +1,187 @@
+::: OBTER A CONTAGEM POR FILTROS VIA PROCEDURE NO SUPABASE
+select * from dashboard_contagens();
+
+::: OBTER AS REGRAVAÇÕES POR FILTROS VIA PROCEDURE NO SUPABASE
+select * from busca_regravacoes_avancada();
+
+
+:::::: PROCEDURES:
+
+::: Busca regravações avançadas
+
+-- APAGA A VERSÃO ANTIGA
+DROP FUNCTION IF EXISTS dashboard_contagens(text,integer,integer,integer,integer,integer,integer,timestamp,timestamp);
+
+-- VERSÃO FINAL COM MOTIVO PRINCIPAL
+create or replace function dashboard_contagens(
+  p_req text default null,
+  p_id_solicitante int default null,
+  p_id_finalizado int default null,
+  p_id_conferente int default null,
+  p_id_enviar_para int default null,
+  p_id_status int default null,
+  p_id_cobrar_de_quem int default null,
+  p_id_motivo_principal int default null,   -- <<< NOVO FILTRO
+  p_data_ini timestamp default null,
+  p_data_fim timestamp default null
+)
+returns table (
+  total_geral bigint,
+  por_finalizado json,
+  por_conferente json,
+  por_solicitante json,
+  por_enviar_para json,
+  por_cobrar_de_quem json
+)
+language sql stable as $$
+  with filtradas as (
+    select r.*
+    from "TblRegravacao" r
+    where (p_req is null or r.requerimento_atual = p_req)
+      and (p_id_solicitante is null or r.id_solicitante = p_id_solicitante)
+      and (p_id_finalizado is null or r.id_quem_finalizou = p_id_finalizado)
+      and (p_id_conferente is null or r.id_conferente = p_id_conferente)
+      and (p_id_enviar_para is null or r.id_enviar_para = p_id_enviar_para)
+      and (p_id_status is null or r.id_status = p_id_status)
+      and (p_id_cobrar_de_quem is null or r.id_cobrar_de_quem = p_id_cobrar_de_quem)
+      and (p_id_motivo_principal is null or r.id_motivo_principal = p_id_motivo_principal)  -- <<< AQUI
+      and (p_data_ini is null or r.data_cadastro >= p_data_ini)
+      and (p_data_fim is null or r.data_cadastro < p_data_fim + interval '1 day')
+  )
+
+  select
+    (select count(*) from filtradas)::bigint as total_geral,
+
+    coalesce((
+      select json_agg(json_build_object(
+        'id_funcionario', f.id_funcionario, 'nome', f.nome, 'quantidade', qtd.qtd
+      ))
+      from (select id_quem_finalizou, count(*) as qtd from filtradas where id_quem_finalizou is not null group by id_quem_finalizou) qtd
+      join "TblFuncionarios" f on f.id_funcionario = qtd.id_quem_finalizou
+    ), '[]'::json) as por_finalizado,
+
+    coalesce((
+      select json_agg(json_build_object(
+        'id_funcionario', f.id_funcionario, 'nome', f.nome, 'quantidade', qtd.qtd
+      ))
+      from (select id_conferente, count(*) as qtd from filtradas where id_conferente is not null group by id_conferente) qtd
+      join "TblFuncionarios" f on f.id_funcionario = qtd.id_conferente
+    ), '[]'::json) as por_conferente,
+
+    coalesce((
+      select json_agg(json_build_object(
+        'id_funcionario', f.id_funcionario, 'nome', f.nome, 'quantidade', qtd.qtd
+      ))
+      from (select id_solicitante, count(*) as qtd from filtradas group by id_solicitante) qtd
+      join "TblFuncionarios" f on f.id_funcionario = qtd.id_solicitante
+    ), '[]'::json) as por_solicitante,
+
+    coalesce((
+      select json_agg(json_build_object(
+        'id_empresa', emp.id_empresa, 'nome_empresa', emp.nome_empresa, 'quantidade', qtd.qtd
+      ))
+      from (select id_enviar_para, count(*) as qtd from filtradas where id_enviar_para is not null group by id_enviar_para) qtd
+      join "TblEmpresa" emp on emp.id_empresa = qtd.id_enviar_para
+    ), '[]'::json) as por_enviar_para,
+
+    coalesce((
+      select json_agg(json_build_object(
+        'id_funcionario', f.id_funcionario, 'nome', f.nome, 'quantidade', qtd.qtd
+      ))
+      from (select id_cobrar_de_quem, count(*) as qtd from filtradas where id_cobrar_de_quem is not null group by id_cobrar_de_quem) qtd
+      join "TblFuncionarios" f on f.id_funcionario = qtd.id_cobrar_de_quem
+    ), '[]'::json) as por_cobrar_de_quem;
+$$;
+
+
+::: Dashboard Aggregated Counts
+
+-- APAGA A VERSÃO ANTIGA
+DROP FUNCTION IF EXISTS busca_regravacoes_avancada(text,integer,integer,integer,integer,integer,integer,timestamp,timestamp);
+
+-- VERSÃO FINAL COM MOTIVO PRINCIPAL
+create or replace function busca_regravacoes_avancada(
+  p_req text default null,
+  p_id_solicitante int default null,
+  p_id_finalizado int default null,
+  p_id_conferente int default null,
+  p_id_enviar_para int default null,
+  p_id_status int default null,
+  p_id_cobrar_de_quem int default null,
+  p_id_motivo_principal int default null,   -- <<< NOVO FILTRO
+  p_data_ini timestamp default null,
+  p_data_fim timestamp default null
+)
+returns table (
+  id_regravacao int,
+  requerimento_atual text,
+  requerimento_novo text,
+  descricao_arte text,
+  versao smallint,
+  qtde_placas smallint,
+  prioridade text,
+  status text,
+  motivo_principal text,
+  solicitante text,
+  conferente text,
+  finalizado_por text,
+  enviar_para text,
+  data_cadastro timestamp without time zone,
+  thumbnail text,
+  observacoes text,
+  cores json,
+  erros json
+)
+language sql stable as $$
+  SELECT 
+    r.id_regravacao,
+    r.requerimento_atual,
+    r.requerimento_novo,
+    r.descricao_arte,
+    r.versao,
+    r.qtde_placas,
+    p.prioridade,
+    s.status,
+    mot.motivo_principal,
+    sol.nome AS solicitante,
+    conf.nome AS conferente,
+    fin.nome AS finalizado_por,
+    emp.nome_empresa AS enviar_para,
+    r.data_cadastro,
+    r.thumbnail,
+    r.observacoes,
+    json_agg(DISTINCT jsonb_build_object(
+      'id_cor', c.id_cor, 'nome_cor', c.nome_cor, 'codigo_hex', c.codigo_exadecimal,
+      'largura', cr.largura, 'comprimento', cr.comprimento, 'custo_estimado', cr.custo_estimado
+    )) FILTER (WHERE c.id_cor IS NOT NULL) AS cores,
+    json_agg(DISTINCT jsonb_build_object(
+      'id_detalhes_erros', e.id_detalhes_erros, 'descricao_erro', e.descricao_erro
+    )) FILTER (WHERE e.id_detalhes_erros IS NOT NULL) AS erros
+  FROM "TblRegravacao" r
+    LEFT JOIN "TblPrioridade" p ON r.id_prioridade = p.id_prioridade
+    LEFT JOIN "TblStatus" s ON r.id_status = s.id_status
+    LEFT JOIN "TblMotivosPrincipais" mot ON r.id_motivo_principal = mot.id_motivo_principal
+    LEFT JOIN "TblFuncionarios" sol ON r.id_solicitante = sol.id_funcionario
+    LEFT JOIN "TblFuncionarios" conf ON r.id_conferente = conf.id_funcionario
+    LEFT JOIN "TblFuncionarios" fin ON r.id_quem_finalizou = fin.id_funcionario
+    LEFT JOIN "TblEmpresa" emp ON r.id_enviar_para = emp.id_empresa
+    LEFT JOIN "TblCoresRegravar" cr ON cr.id_regravacao = r.id_regravacao
+    LEFT JOIN "TblCores" c ON cr.id_cor = c.id_cor
+    LEFT JOIN "TblRelMotivosErros" rel ON rel.id_regravacao = r.id_regravacao
+    LEFT JOIN "TblDetalhesDeErros" e ON rel.id_detalhes_erros = e.id_detalhes_erros
+  WHERE 
+    (p_req IS NULL OR r.requerimento_atual = p_req)
+    AND (p_id_solicitante IS NULL OR r.id_solicitante = p_id_solicitante)
+    AND (p_id_finalizado IS NULL OR r.id_quem_finalizou = p_id_finalizado)
+    AND (p_id_conferente IS NULL OR r.id_conferente = p_id_conferente)
+    AND (p_id_enviar_para IS NULL OR r.id_enviar_para = p_id_enviar_para)
+    AND (p_id_status IS NULL OR r.id_status = p_id_status)
+    AND (p_id_cobrar_de_quem IS NULL OR r.id_cobrar_de_quem = p_id_cobrar_de_quem)
+    AND (p_id_motivo_principal IS NULL OR r.id_motivo_principal = p_id_motivo_principal)  -- <<< AQUI
+    AND (p_data_ini IS NULL OR r.data_cadastro >= p_data_ini)
+    AND (p_data_fim IS NULL OR r.data_cadastro < p_data_fim + interval '1 day')
+  GROUP BY 
+    r.id_regravacao, p.prioridade, s.status, mot.motivo_principal,
+    sol.nome, conf.nome, fin.nome, emp.nome_empresa
+  ORDER BY r.data_cadastro DESC;
+$$;

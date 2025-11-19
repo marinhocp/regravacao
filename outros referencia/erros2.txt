@@ -1,0 +1,40 @@
+A arte finalizada é diferente da arte aprovada no sistema
+O arquivo original não foi convertido em curvas corretamente
+Informações de cotas e outras informações gravadas no clichê
+Mapa do branco incorreto
+Requerimento na arte está incorreto
+Máquina incorreta pela quantidade do pedido
+Máquina incorreta pela qtde de cores
+Não tem cilindro para a máquina
+Quantidade de imagens incorretas
+Quantidade de pistas incorretas
+Medidas da embalagem incorretas
+Fontes pequenas ou muito finas no arquivo
+Espessura de linhas abaixo de 0,2mm
+Erro de digitação na arte
+Distorção incorreta
+Não fez distorção
+Gravou interno mas era externo
+Gravou externo mas era interno
+Erro na exportação do arquivo do software de origem
+Erro de normalização do arquivo
+Nem todas as alterações foram feitas conforme o arquivo aprovado
+Faltou substituir partes da arte aprovada pelas partes da arte base
+Separação de cores incorretas
+Sobreposição de cor incorreta
+Cores de encaixe não correspondem às cores aprovadas
+Tratamento da foto incorreta
+Sangria da arte incorreta
+Lineatura incorreta
+Ocorreu moiré (angulação das retículas incorretas)
+Trapping incorreto
+Não adicionou a fotocélula
+Cores da fotocélula incorretas
+Micropontos incorretos ou inexistentes
+Camerom incorreto
+Cores dos camerons incorretas
+Opacidade dos camerons incorretas
+LEN gerado incorreto
+Problema no transporte
+Clinte pediu novas modificações após gravação
+Clichê não foi encontrado na fábrica

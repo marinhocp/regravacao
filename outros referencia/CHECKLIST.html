@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist Studio & Art - Editor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .controls {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .controls label {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+        
+        .controls select {
+            padding: 10px 15px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            font-size: 14px;
+            min-width: 250px;
+            cursor: pointer;
+        }
+        
+        .controls button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #229954;
+        }
+        
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+        
+        .container {
+            max-width: 210mm;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .page {
+            padding: 40px 50px;
+            min-height: 297mm;
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #2c3e50;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .header h2 {
+            color: #7f8c8d;
+            font-size: 14px;
+            font-weight: normal;
+        }
+        
+        .top-fields {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .top-field {
+            margin-bottom: 0;
+        }
+        
+        .top-field label {
+            display: block;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        
+        .top-field input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .section {
+            margin-bottom: 35px;
+            position: relative;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .section-title {
+            background: #2c3e50;
+            color: white;
+            padding: 12px 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            flex: 1;
+        }
+        
+        .section-title.editable {
+            background: white;
+            border: 2px solid #2c3e50;
+            color: #2c3e50;
+            outline: none;
+        }
+        
+        .section-controls {
+            display: none;
+            gap: 5px;
+        }
+        
+        .edit-mode .section-controls {
+            display: flex;
+        }
+        
+        .section-controls button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 5px 10px;
+            margin-bottom: 3px;
+            border-radius: 3px;
+            transition: background 0.2s;
+            position: relative;
+        }
+        
+        .checklist-item:hover {
+            background: #ecf0f1;
+        }
+        
+        .checklist-item input[type="checkbox"] {
+            margin-right: 12px;
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        
+        .checklist-item label {
+            font-size: 13px;
+            color: #34495e;
+            cursor: pointer;
+            line-height: 1.5;
+            transition: all 0.3s;
+            flex: 1;
+        }
+        
+        .checklist-item label.editable {
+            border: 1px dashed #3498db;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        
+        .checklist-item input[type="checkbox"]:checked + label {
+            text-decoration: line-through;
+            color: #95a5a6;
+        }
+        
+        .item-controls {
+            display: none;
+            gap: 5px;
+            margin-left: 10px;
+        }
+        
+        .edit-mode .item-controls {
+            display: flex;
+        }
+        
+        .item-controls button {
+            padding: 3px 8px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+        
+        .btn-move {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-move:hover {
+            background: #2980b9;
+        }
+        
+        .divider {
+            border: none;
+            border-top: 2px solid #ecf0f1;
+            margin: 30px 0;
+        }
+        
+        .footer-fields {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #ecf0f1;
+        }
+        
+        .obs-field {
+            margin-bottom: 15px;
+        }
+        
+        .obs-field label {
+            display: block;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 12px;
+        }
+        
+        .obs-field textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            font-size: 12px;
+            min-height: 60px;
+            resize: vertical;
+        }
+        
+        .action-buttons {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-buttons button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+        
+        .action-buttons button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-content h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+        
+        .modal-content input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 8px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .checkbox-item label {
+            cursor: pointer;
+            flex: 1;
+            font-size: 14px;
+            color: #2c3e50;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        .edit-mode {
+            border: 3px dashed #f39c12 !important;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+            }
+            
+            .controls, .action-buttons, .section-controls, .item-controls {
+                display: none !important;
+            }
+            
+            .edit-mode {
+                border: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <label>Modelo:</label>
+        <select id="modelSelect" onchange="carregarModelo()">
+            <option value="padrao">Checklist Padrão</option>
+        </select>
+        
+        <button class="btn-primary" onclick="novoModelo()">➕ Novo Modelo</button>
+        <button class="btn-warning" onclick="renomearModelo()">✏️ Renomear Modelo</button>
+        <button class="btn-warning" onclick="toggleEditMode()" id="btnEditMode">✏️ Editar Modelo</button>
+        <button class="btn-success" onclick="salvarModelo()" id="btnSalvar" style="display:none;">💾 Salvar Modelo</button>
+        <button class="btn-secondary" onclick="cancelarEdicao()" id="btnCancelar" style="display:none;">❌ Cancelar</button>
+        <button class="btn-danger" onclick="excluirModelo()">🗑️ Excluir Modelo</button>
+        <button class="btn-primary" onclick="abrirMenuExportar()">📤 Exportar</button>
+        <button class="btn-primary" onclick="importarModelos()">📥 Importar</button>
+        
+        <div style="margin-left: 40px; border-left: 2px solid #ddd; padding-left: 20px; display: flex; gap: 10px; align-items: center;">
+            <input type="text" id="buscaRequerimento" placeholder="Buscar por requerimento..." style="padding: 10px; border: 1px solid #bdc3c7; border-radius: 4px; font-size: 14px; width: 200px;">
+            <button class="btn-primary" onclick="buscarChecklist()">🔍 Buscar</button>
+            <button class="btn-secondary" onclick="novoChecklist()">📄 Novo</button>
+        </div>
+    </div>
+    
+    <div class="container" id="checklistContainer">
+        <div class="page">
+            <div class="header">
+                <h1>CHECKLIST PARA FINALIZAÇÃO DE ARTE</h1>
+                <h2>STUDIO & ART</h2>
+            </div>
+            
+            <div class="top-fields">
+                <div class="top-field">
+                    <label>REQUERIMENTO DE ARTE:</label>
+                    <input type="text" id="reqField" maxlength="10">
+                </div>
+                <div class="top-field">
+                    <label>PREENCHIDO POR:</label>
+                    <input type="text" id="preenchidoPor">
+                </div>
+                <div class="top-field">
+                    <label>DATA:</label>
+                    <input type="date" id="dataField">
+                </div>
+            </div>
+            
+            <div id="sectionsContainer"></div>
+            
+            <div class="footer-fields">
+                <div class="obs-field">
+                    <label>OBSERVAÇÕES:</label>
+                    <textarea id="observacoes" placeholder="Digite observações adicionais..."></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="action-buttons">
+        <button class="btn-success" onclick="salvarChecklist()">💾 Salvar Checklist</button>
+        <button class="btn-success" onclick="gerarPDF()">📄 Gerar PDF</button>
+    </div>
+    
+    <!-- Modal Novo Modelo -->
+    <div class="modal" id="modalNovoModelo">
+        <div class="modal-content">
+            <h3>Novo Modelo de Checklist</h3>
+            <input type="text" id="nomeNovoModelo" placeholder="Nome do modelo">
+            <div class="modal-buttons">
+                <button class="btn-danger" onclick="fecharModal('modalNovoModelo')">Cancelar</button>
+                <button class="btn-success" onclick="criarNovoModelo()">Criar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Renomear Modelo -->
+    <div class="modal" id="modalRenomearModelo">
+        <div class="modal-content">
+            <h3>Renomear Modelo</h3>
+            <input type="text" id="nomeRenomearModelo" placeholder="Novo nome do modelo">
+            <div class="modal-buttons">
+                <button class="btn-danger" onclick="fecharModal('modalRenomearModelo')">Cancelar</button>
+                <button class="btn-success" onclick="confirmarRenomear()">Renomear</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Exportar -->
+    <div class="modal" id="modalExportar">
+        <div class="modal-content">
+            <h3>📤 Exportar Modelos</h3>
+            <p style="margin-bottom: 15px; color: #7f8c8d;">Selecione quais modelos deseja exportar:</p>
+            <div id="listaExportacao" style="max-height: 300px; overflow-y: auto; margin-bottom: 20px;"></div>
+            <div class="modal-buttons">
+                <button class="btn-danger" onclick="fecharModal('modalExportar')">Cancelar</button>
+                <button class="btn-primary" onclick="exportarTodos()">📦 Exportar Todos</button>
+                <button class="btn-success" onclick="exportarSelecionados()">✓ Exportar Selecionados</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Input file escondido para importar -->
+    <input type="file" id="inputImportar" accept=".json" style="display: none;" onchange="processarImportacao(event)">
+    
+    <script>
+        let modelos = {};
+        let modeloAtual = 'padrao';
+        let modoEdicao = false;
+        let backupModelo = null;
+        let checklistAtualId = null;
+        
+        // Modelo padrão
+        const modeloPadrao = {
+            nome: 'Checklist Padrão',
+            secoes: [
+                {
+                    titulo: 'ANTES DA EXPORTAÇÃO DO ARQUIVO',
+                    itens: [
+                        'Arte no cdr está igual a arte aprovada no sistema?',
+                        'O arquivo foi convertido em curvas?',
+                        'O arquivo em curvas está limpo de cotas e outras informações?',
+                        'O desenhista fez o mapa do branco?',
+                        'Requerimento na arte está correto?',
+                        'Requerimento base está correto?',
+                        'Máquina correta pela quantidade do pedido?',
+                        'Máquina correta pela qtde de cores?',
+                        'Tem cilindro para a máquina?',
+                        'Quantidade de imagens está correta pelo cilindro?',
+                        'Quantidade de pistas está correta pela máquina?',
+                        'Ficha de aprovação está correta?',
+                        'Medidas da embalagem batem com a ficha de aprovação?',
+                        'Verificou se há fontes pequenas ou muito finas?',
+                        'Verificou se há espessura de linhas abaixo de 0,2mm?',
+                        'Verificou se há erro de digitação na arte?'
+                    ]
+                },
+                {
+                    titulo: 'EXPORTAÇÃO DO ARQUIVO PARA NORMALIZAÇÃO',
+                    itens: [
+                        'Fez a distorção do arquivo conforme o cilindro?',
+                        'Publicou o arquivo em PDF no padrão da Studio e Renomeou o arquivo adicionando (INTERNO ou EXTERNO)?',
+                        'Normalizou o arquivo no padrão Esko com o Automation?'
+                    ]
+                },
+                {
+                    titulo: 'NA FINALIZAÇÃO',
+                    itens: [
+                        'Todas as alterações foram feitas conforme o arquivo aprovado?',
+                        'Usou as partes do requerimento base como solicitado?',
+                        'Separação de cores estão corretas?',
+                        'Verificou a sobreposição de cores?',
+                        'As cores de encaixe correspondem ao informado pelo desenho?',
+                        'Verificou tratamento da foto?',
+                        'Verificou se há fotos zerando?',
+                        'Verificou se há degradês zerando?',
+                        'Sangria da arte correta?',
+                        'Configurou a lineatura conforme a máquina / necessidade da arte?',
+                        'Verificou se ocorreu moiré (angulação das retículas)',
+                        'Verificou ganho de ponto com Flexo Print',
+                        'Fez o Trapping conforme e Fábrica?',
+                        'O Trapping foi gerado corretamente?',
+                        'Fez o Mapa do Branco conforme informado na print?',
+                        'Fez o Mapa do Verniz conforme informado na print?',
+                        'Adicionou a fotocélula?',
+                        'Cores da fotocélula corretas?',
+                        'As informações do arquivo foram atualizadas corretamente (nome, nº req. cores)',
+                        'Adicionou micropontos?',
+                        'Cores dos micropontos corretas?',
+                        'Espaçamento dos Micropontos conforme máquina',
+                        'Adicionou camerom?',
+                        'Cores dos camerons estão corretas?',
+                        'Opacidade dos camerons estão corretas?',
+                        'A quantidade de imagens da montagem corresponde à aprovação?',
+                        'A quantidade de pistas correspondem à aprovação?'
+                    ]
+                },
+                {
+                    titulo: 'APÓS GERAR O LEN',
+                    itens: [
+                        'Todas as cores foram geradas corretamente?',
+                        'Micropontos gerados corretamente?',
+                        'Camerons gerados corretamente?',
+                        'Informações dos arquivos gerados corretamente?',
+                        'Fez prova digital?',
+                        'Fez a faca?'
+                    ]
+                }
+            ]
+        };
+        
+        // Inicializar
+        function init() {
+            document.getElementById('dataField').valueAsDate = new Date();
+            carregarModelosDoStorage();
+            carregarModelo();
+        }
+        
+        // Carregar modelos do localStorage
+        function carregarModelosDoStorage() {
+            const savedModelos = localStorage.getItem('checklistModelos');
+            if (savedModelos) {
+                modelos = JSON.parse(savedModelos);
+            } else {
+                modelos = { padrao: modeloPadrao };
+                salvarModelosNoStorage();
+            }
+            atualizarSelectModelos();
+        }
+        
+        // Salvar modelos no localStorage
+        function salvarModelosNoStorage() {
+            localStorage.setItem('checklistModelos', JSON.stringify(modelos));
+        }
+        
+        // Atualizar select de modelos
+        function atualizarSelectModelos() {
+            const select = document.getElementById('modelSelect');
+            select.innerHTML = '';
+            
+            for (const [key, modelo] of Object.entries(modelos)) {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = modelo.nome;
+                select.appendChild(option);
+            }
+            
+            select.value = modeloAtual;
+        }
+        
+        // Carregar modelo
+        function carregarModelo() {
+            modeloAtual = document.getElementById('modelSelect').value;
+            const modelo = modelos[modeloAtual];
+            
+            if (!modelo) return;
+            
+            const container = document.getElementById('sectionsContainer');
+            container.innerHTML = '';
+            
+            modelo.secoes.forEach((secao, secaoIndex) => {
+                const secaoDiv = document.createElement('div');
+                secaoDiv.className = 'section';
+                secaoDiv.dataset.secaoIndex = secaoIndex;
+                
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'section-header';
+                
+                const titulo = document.createElement('div');
+                titulo.className = 'section-title';
+                titulo.textContent = secao.titulo;
+                titulo.contentEditable = false;
+                titulo.dataset.secaoIndex = secaoIndex;
+                
+                const controls = document.createElement('div');
+                controls.className = 'section-controls';
+                controls.innerHTML = `
+                    <button class="btn-primary" onclick="adicionarItem(${secaoIndex})">+ Item</button>
+                    <button class="btn-warning" onclick="editarTituloSecao(${secaoIndex})">✏️</button>
+                    <button class="btn-danger" onclick="removerSecao(${secaoIndex})">🗑️</button>
+                `;
+                
+                headerDiv.appendChild(titulo);
+                headerDiv.appendChild(controls);
+                secaoDiv.appendChild(headerDiv);
+                
+                secao.itens.forEach((item, itemIndex) => {
+                    const itemDiv = criarItemDiv(secaoIndex, itemIndex, item);
+                    secaoDiv.appendChild(itemDiv);
+                });
+                
+                container.appendChild(secaoDiv);
+            });
+            
+            // Botão adicionar seção (só aparece no modo edição)
+            const addSecaoBtn = document.createElement('button');
+            addSecaoBtn.className = 'btn-success section-controls';
+            addSecaoBtn.style.marginTop = '20px';
+            addSecaoBtn.textContent = '➕ Adicionar Seção';
+            addSecaoBtn.onclick = adicionarSecao;
+            container.appendChild(addSecaoBtn);
+        }
+        
+        // Criar div de item
+        function criarItemDiv(secaoIndex, itemIndex, texto) {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'checklist-item';
+            itemDiv.dataset.secaoIndex = secaoIndex;
+            itemDiv.dataset.itemIndex = itemIndex;
+            
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = `item_${secaoIndex}_${itemIndex}`;
+            
+            const label = document.createElement('label');
+            label.htmlFor = `item_${secaoIndex}_${itemIndex}`;
+            label.textContent = texto;
+            label.contentEditable = false;
+            
+            const controls = document.createElement('div');
+            controls.className = 'item-controls';
+            controls.innerHTML = `
+                <button class="btn-move" onclick="moverItemCima(${secaoIndex}, ${itemIndex})">↑</button>
+                <button class="btn-move" onclick="moverItemBaixo(${secaoIndex}, ${itemIndex})">↓</button>
+                <button class="btn-warning" onclick="editarItem(${secaoIndex}, ${itemIndex})">✏️</button>
+                <button class="btn-danger" onclick="removerItem(${secaoIndex}, ${itemIndex})">🗑️</button>
+            `;
+            
+            itemDiv.appendChild(checkbox);
+            itemDiv.appendChild(label);
+            itemDiv.appendChild(controls);
+            
+            return itemDiv;
+        }
+        
+        // Toggle modo edição
+        function toggleEditMode() {
+            modoEdicao = !modoEdicao;
+            const container = document.getElementById('checklistContainer');
+            
+            if (modoEdicao) {
+                // Fazer backup antes de editar
+                backupModelo = JSON.parse(JSON.stringify(modelos[modeloAtual]));
+                container.classList.add('edit-mode');
+                document.getElementById('btnSalvar').style.display = 'inline-block';
+                document.getElementById('btnCancelar').style.display = 'inline-block';
+                document.getElementById('btnEditMode').style.display = 'none';
+            } else {
+                container.classList.remove('edit-mode');
+                document.getElementById('btnSalvar').style.display = 'none';
+                document.getElementById('btnCancelar').style.display = 'none';
+                document.getElementById('btnEditMode').style.display = 'inline-block';
+            }
+        }
+        
+        // Cancelar edição
+        function cancelarEdicao() {
+            if (!confirm('Cancelar todas as alterações?')) return;
+            
+            // Restaurar backup
+            if (backupModelo) {
+                modelos[modeloAtual] = JSON.parse(JSON.stringify(backupModelo));
+                backupModelo = null;
+            }
+            
+            toggleEditMode();
+            carregarModelo();
+        }
+        
+        // Mover item para cima
+        function moverItemCima(secaoIndex, itemIndex) {
+            if (itemIndex === 0) return;
+            
+            const modelo = modelos[modeloAtual];
+            const temp = modelo.secoes[secaoIndex].itens[itemIndex];
+            modelo.secoes[secaoIndex].itens[itemIndex] = modelo.secoes[secaoIndex].itens[itemIndex - 1];
+            modelo.secoes[secaoIndex].itens[itemIndex - 1] = temp;
+            
+            carregarModelo();
+        }
+        
+        // Mover item para baixo
+        function moverItemBaixo(secaoIndex, itemIndex) {
+            const modelo = modelos[modeloAtual];
+            const itens = modelo.secoes[secaoIndex].itens;
+            
+            if (itemIndex === itens.length - 1) return;
+            
+            const temp = itens[itemIndex];
+            itens[itemIndex] = itens[itemIndex + 1];
+            itens[itemIndex + 1] = temp;
+            
+            carregarModelo();
+        }
+        
+        // Renomear modelo
+        function renomearModelo() {
+            const modelo = modelos[modeloAtual];
+            document.getElementById('nomeRenomearModelo').value = modelo.nome;
+            document.getElementById('modalRenomearModelo').classList.add('active');
+        }
+        
+        // Confirmar renomear
+        function confirmarRenomear() {
+            const novoNome = document.getElementById('nomeRenomearModelo').value.trim();
+            
+            if (!novoNome) {
+                alert('Digite um nome para o modelo');
+                return;
+            }
+            
+            const novaKey = novoNome.toLowerCase().replace(/\s+/g, '_');
+            
+            // Verificar se já existe outro modelo com esse nome
+            if (novaKey !== modeloAtual && modelos[novaKey]) {
+                alert('Já existe um modelo com este nome');
+                return;
+            }
+            
+            // Se a chave mudou, precisamos mover o modelo
+            if (novaKey !== modeloAtual) {
+                modelos[novaKey] = modelos[modeloAtual];
+                delete modelos[modeloAtual];
+                modeloAtual = novaKey;
+            }
+            
+            // Atualizar nome
+            modelos[modeloAtual].nome = novoNome;
+            
+            salvarModelosNoStorage();
+            atualizarSelectModelos();
+            fecharModal('modalRenomearModelo');
+            alert('Modelo renomeado com sucesso!');
+        }
+        
+        // ========== FUNÇÕES DE CHECKLIST (SALVAR/BUSCAR) ==========
+        
+        // Coletar dados do checklist preenchido
+        function coletarDadosChecklist() {
+            const dados = {
+                id: checklistAtualId || Date.now().toString(),
+                modelo: modeloAtual,
+                requerimento: document.getElementById('reqField').value,
+                preenchidoPor: document.getElementById('preenchidoPor').value,
+                data: document.getElementById('dataField').value,
+                observacoes: document.getElementById('observacoes').value,
+                itens: {}
+            };
+            
+            // Coletar estado dos checkboxes
+            const checkboxes = document.querySelectorAll('.checklist-item input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                dados.itens[checkbox.id] = checkbox.checked;
+            });
+            
+            return dados;
+        }
+        
+        // Salvar checklist preenchido
+        function salvarChecklist() {
+            const requerimento = document.getElementById('reqField').value.trim();
+            
+            if (!requerimento) {
+                alert('Por favor, preencha o número do requerimento antes de salvar!');
+                document.getElementById('reqField').focus();
+                return;
+            }
+            
+            const dados = coletarDadosChecklist();
+            
+            // Buscar checklists salvos
+            let checklists = JSON.parse(localStorage.getItem('checklistsSalvos') || '{}');
+            
+            // Salvar usando requerimento como chave
+            checklists[requerimento] = dados;
+            
+            localStorage.setItem('checklistsSalvos', JSON.stringify(checklists));
+            
+            checklistAtualId = dados.id;
+            
+            alert(`Checklist do requerimento ${requerimento} salvo com sucesso!`);
+        }
+        
+        // Buscar checklist por requerimento
+        function buscarChecklist() {
+            const requerimento = document.getElementById('buscaRequerimento').value.trim();
+            
+            if (!requerimento) {
+                alert('Digite um número de requerimento para buscar!');
+                return;
+            }
+            
+            const checklists = JSON.parse(localStorage.getItem('checklistsSalvos') || '{}');
+            const checklist = checklists[requerimento];
+            
+            if (!checklist) {
+                alert(`Nenhum checklist encontrado para o requerimento ${requerimento}`);
+                return;
+            }
+            
+            // Carregar modelo do checklist
+            if (checklist.modelo && modelos[checklist.modelo]) {
+                modeloAtual = checklist.modelo;
+                document.getElementById('modelSelect').value = modeloAtual;
+                carregarModelo();
+            }
+            
+            // Aguardar modelo carregar e então preencher dados
+            setTimeout(() => {
+                // Preencher campos
+                document.getElementById('reqField').value = checklist.requerimento || '';
+                document.getElementById('preenchidoPor').value = checklist.preenchidoPor || '';
+                document.getElementById('dataField').value = checklist.data || '';
+                document.getElementById('observacoes').value = checklist.observacoes || '';
+                
+                // Marcar checkboxes
+                Object.keys(checklist.itens).forEach(id => {
+                    const checkbox = document.getElementById(id);
+                    if (checkbox) {
+                        checkbox.checked = checklist.itens[id];
+                    }
+                });
+                
+                checklistAtualId = checklist.id;
+                
+                alert(`Checklist do requerimento ${requerimento} carregado com sucesso!`);
+            }, 100);
+        }
+        
+        // Novo checklist (limpar campos)
+        function novoChecklist() {
+            if (confirm('Deseja criar um novo checklist? Os dados não salvos serão perdidos.')) {
+                // Limpar campos
+                document.getElementById('reqField').value = '';
+                document.getElementById('preenchidoPor').value = '';
+                document.getElementById('dataField').valueAsDate = new Date();
+                document.getElementById('observacoes').value = '';
+                document.getElementById('buscaRequerimento').value = '';
+                
+                // Desmarcar todos checkboxes
+                const checkboxes = document.querySelectorAll('.checklist-item input[type="checkbox"]');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                
+                checklistAtualId = null;
+            }
+        }
+        
+        // Adicionar seção
+        function adicionarSecao() {
+            const titulo = prompt('Título da nova seção:');
+            if (!titulo) return;
+            
+            const modelo = modelos[modeloAtual];
+            modelo.secoes.push({
+                titulo: titulo,
+                itens: []
+            });
+            
+            carregarModelo();
+        }
+        
+        // Remover seção
+        function removerSecao(index) {
+            if (!confirm('Remover esta seção?')) return;
+            
+            const modelo = modelos[modeloAtual];
+            modelo.secoes.splice(index, 1);
+            carregarModelo();
+        }
+        
+        // Editar título da seção
+        function editarTituloSecao(index) {
+            const modelo = modelos[modeloAtual];
+            const novoTitulo = prompt('Novo título:', modelo.secoes[index].titulo);
+            
+            if (novoTitulo) {
+                modelo.secoes[index].titulo = novoTitulo;
+                carregarModelo();
+            }
+        }
+        
+        // Adicionar item
+        function adicionarItem(secaoIndex) {
+            const texto = prompt('Texto do novo item:');
+            if (!texto) return;
+            
+            const modelo = modelos[modeloAtual];
+            modelo.secoes[secaoIndex].itens.push(texto);
+            carregarModelo();
+        }
+        
+        // Editar item
+        function editarItem(secaoIndex, itemIndex) {
+            const modelo = modelos[modeloAtual];
+            const novoTexto = prompt('Editar item:', modelo.secoes[secaoIndex].itens[itemIndex]);
+            
+            if (novoTexto) {
+                modelo.secoes[secaoIndex].itens[itemIndex] = novoTexto;
+                carregarModelo();
+            }
+        }
+        
+        // Remover item
+        function removerItem(secaoIndex, itemIndex) {
+            if (!confirm('Remover este item?')) return;
+            
+            const modelo = modelos[modeloAtual];
+            modelo.secoes[secaoIndex].itens.splice(itemIndex, 1);
+            carregarModelo();
+        }
+        
+        // Salvar modelo
+        function salvarModelo() {
+            salvarModelosNoStorage();
+            backupModelo = null;
+            toggleEditMode();
+            alert('Modelo salvo com sucesso!');
+        }
+        
+        // Novo modelo
+        function novoModelo() {
+            document.getElementById('modalNovoModelo').classList.add('active');
+        }
+        
+        // Criar novo modelo
+        function criarNovoModelo() {
+            const nome = document.getElementById('nomeNovoModelo').value.trim();
+            
+            if (!nome) {
+                alert('Digite um nome para o modelo');
+                return;
+            }
+            
+            const key = nome.toLowerCase().replace(/\s+/g, '_');
+            
+            if (modelos[key]) {
+                alert('Já existe um modelo com este nome');
+                return;
+            }
+            
+            modelos[key] = {
+                nome: nome,
+                secoes: []
+            };
+            
+            modeloAtual = key;
+            salvarModelosNoStorage();
+            atualizarSelectModelos();
+            carregarModelo();
+            fecharModal('modalNovoModelo');
+            toggleEditMode();
+        }
+        
+        // Excluir modelo
+        function excluirModelo() {
+            if (modeloAtual === 'padrao') {
+                alert('Não é possível excluir o modelo padrão');
+                return;
+            }
+            
+            if (!confirm('Excluir este modelo?')) return;
+            
+            delete modelos[modeloAtual];
+            modeloAtual = 'padrao';
+            salvarModelosNoStorage();
+            atualizarSelectModelos();
+            carregarModelo();
+        }
+        
+        // Fechar modal
+        function fecharModal(modalId) {
+            if (modalId) {
+                document.getElementById(modalId).classList.remove('active');
+            } else {
+                document.getElementById('modalNovoModelo').classList.remove('active');
+            }
+            document.getElementById('nomeNovoModelo').value = '';
+            document.getElementById('nomeRenomearModelo').value = '';
+        }
+        
+        // ========== EXPORTAR/IMPORTAR MODELOS ==========
+        
+        // Abrir menu de exportação
+        function abrirMenuExportar() {
+            const lista = document.getElementById('listaExportacao');
+            lista.innerHTML = '';
+            
+            // Criar checkbox para cada modelo
+            for (const [key, modelo] of Object.entries(modelos)) {
+                const div = document.createElement('div');
+                div.className = 'checkbox-item';
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `export_${key}`;
+                checkbox.value = key;
+                checkbox.checked = true;
+                
+                const label = document.createElement('label');
+                label.htmlFor = `export_${key}`;
+                label.textContent = modelo.nome;
+                
+                div.appendChild(checkbox);
+                div.appendChild(label);
+                lista.appendChild(div);
+            }
+            
+            document.getElementById('modalExportar').classList.add('active');
+        }
+        
+        // Exportar todos os modelos
+        function exportarTodos() {
+            const dados = {
+                versao: '1.0',
+                dataExportacao: new Date().toISOString(),
+                modelos: modelos
+            };
+            
+            baixarArquivoJSON(dados, 'checklist_modelos_completo.json');
+            fecharModal('modalExportar');
+        }
+        
+        // Exportar modelos selecionados
+        function exportarSelecionados() {
+            const checkboxes = document.querySelectorAll('#listaExportacao input[type="checkbox"]:checked');
+            
+            if (checkboxes.length === 0) {
+                alert('Selecione pelo menos um modelo para exportar!');
+                return;
+            }
+            
+            const modelosSelecionados = {};
+            checkboxes.forEach(checkbox => {
+                const key = checkbox.value;
+                modelosSelecionados[key] = modelos[key];
+            });
+            
+            const dados = {
+                versao: '1.0',
+                dataExportacao: new Date().toISOString(),
+                modelos: modelosSelecionados
+            };
+            
+            const nomeArquivo = checkboxes.length === 1 
+                ? `checklist_${checkboxes[0].value}.json`
+                : `checklist_modelos_${checkboxes.length}.json`;
+            
+            baixarArquivoJSON(dados, nomeArquivo);
+            fecharModal('modalExportar');
+        }
+        
+        // Função auxiliar para baixar JSON
+        function baixarArquivoJSON(dados, nomeArquivo) {
+            const json = JSON.stringify(dados, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = nomeArquivo;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            alert(`Arquivo ${nomeArquivo} baixado com sucesso!`);
+        }
+        
+        // Abrir seletor de arquivo para importar
+        function importarModelos() {
+            document.getElementById('inputImportar').click();
+        }
+        
+        // Processar importação
+        function processarImportacao(event) {
+            const arquivo = event.target.files[0];
+            
+            if (!arquivo) return;
+            
+            if (!arquivo.name.endsWith('.json')) {
+                alert('Por favor, selecione um arquivo JSON válido!');
+                return;
+            }
+            
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    const dados = JSON.parse(e.target.result);
+                    
+                    // Validar estrutura
+                    if (!dados.modelos || typeof dados.modelos !== 'object') {
+                        alert('Arquivo inválido! Não contém modelos válidos.');
+                        return;
+                    }
+                    
+                    // Verificar conflitos
+                    const conflitos = [];
+                    for (const key in dados.modelos) {
+                        if (modelos[key]) {
+                            conflitos.push(modelos[key].nome);
+                        }
+                    }
+                    
+                    let importar = true;
+                    if (conflitos.length > 0) {
+                        importar = confirm(
+                            `Os seguintes modelos já existem e serão substituídos:\n\n${conflitos.join('\n')}\n\nDeseja continuar?`
+                        );
+                    }
+                    
+                    if (importar) {
+                        // Importar modelos
+                        let importados = 0;
+                        for (const [key, modelo] of Object.entries(dados.modelos)) {
+                            modelos[key] = modelo;
+                            importados++;
+                        }
+                        
+                        salvarModelosNoStorage();
+                        atualizarSelectModelos();
+                        
+                        alert(`✓ ${importados} modelo(s) importado(s) com sucesso!`);
+                        
+                        // Carregar primeiro modelo importado
+                        const primeiraKey = Object.keys(dados.modelos)[0];
+                        if (primeiraKey) {
+                            modeloAtual = primeiraKey;
+                            document.getElementById('modelSelect').value = modeloAtual;
+                            carregarModelo();
+                        }
+                    }
+                } catch (error) {
+                    alert('Erro ao importar arquivo: ' + error.message);
+                }
+            };
+            
+            reader.readAsText(arquivo);
+            
+            // Limpar input para permitir reimportar o mesmo arquivo
+            event.target.value = '';
+        }
+        
+        // Gerar PDF
+        function gerarPDF() {
+            const req = document.getElementById('reqField').value || 'SEM_REQ';
+            const data = document.getElementById('dataField').value || new Date().toISOString().split('T')[0];
+            const dataFormatada = data.replace(/-/g, '');
+            const nomeArquivo = `Checklist_${req}_${dataFormatada}`;
+            
+            const tituloOriginal = document.title;
+            document.title = nomeArquivo;
+            
+            // Desativar modo edição temporariamente
+            const wasEditMode = modoEdicao;
+            if (modoEdicao) toggleEditMode();
+            
+            window.print();
+            
+            setTimeout(() => {
+                document.title = tituloOriginal;
+                if (wasEditMode) toggleEditMode();
+            }, 1000);
+        }
+        
+        // Atalho: Buscar ao pressionar Enter
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('buscaRequerimento').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    buscarChecklist();
+                }
+            });
+        });
+        
+        init();
+    </script>
+</body>
+</html>
