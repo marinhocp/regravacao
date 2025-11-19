@@ -34,10 +34,7 @@ namespace Regravacao.Views
         }
 
         // Construtor sem parâmetros para o modo Designer
-        public FrmChecklistErros()
-        {
-            InitializeComponent();
-        }
+        public FrmChecklistErros() => InitializeComponent();
 
         private void Btn_fechar_Click(object sender, EventArgs e) => Close();
         private void button4_Click(object sender, EventArgs e) => Close();

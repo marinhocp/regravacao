@@ -1060,7 +1060,6 @@
         private Panel PanelTop;
         private Label label7;
         private PictureBox pictureBox2;
-        private PictureBox BtnRestaurarJanela;
         private Label label6;
         private DateTimePicker DTXDataInicialCadastro;
         private DateTimePicker DTXDataFinalCadastro;
@@ -1117,7 +1116,6 @@
         private Label label28;
         private System.Windows.Forms.DataVisualization.Charting.Chart ChartComparativoFinalizador;
         private Panel panel11;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chart3;
         private Panel panel12;
         private System.Windows.Forms.DataVisualization.Charting.Chart ChartEvolucaoFinalizador;
         private Panel panel10;

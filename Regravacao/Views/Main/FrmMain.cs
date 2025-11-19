@@ -1,5 +1,4 @@
-﻿
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Regravacao.DTOs;
 using Regravacao.Helpers;
 using Regravacao.Models;
@@ -27,7 +26,7 @@ namespace Regravacao
         private readonly IMaterialService _materialService;
         private readonly IFuncionarioService _funcionarioService;
 
-        private List<DetalhesDeErrosDto> _errosSelecionados = new();
+        private List<DetalhesDeErrosDto> _errosSelecionados = [];
 
         public FrmMain(
           IRegravacaoService regravacaoService,
@@ -66,7 +65,7 @@ namespace Regravacao
                 List<MaterialDto> materiais = await _materialService.ListarMateriaisAsync();
 
                 // Converter o texto para MAIÚSCULAS
-                if (materiais.Any())
+                if (materiais.Count != 0)
                 {
                     // Usando forEach para atualizar a lista
                     materiais.ForEach(m =>
@@ -151,14 +150,14 @@ namespace Regravacao
 
             for (int i = 1; i <= MaxCores; i++)
             {
-                // 1. Buscando controles (Presumindo ComboBox, TextBoxes)
-                var cbxCor = this.Controls.Find($"CBxCor{i}", true).FirstOrDefault() as ComboBox; // Ex: CBxCor1
-                var txbLargura = this.Controls.Find($"TxbLarguraCor{i}", true).FirstOrDefault() as TextBox;
+                // 1. Buscando controles (Presumindo ComboBox, TextBoxes)
+                // Ex: CBxCor1
+                var txbLargura = this.Controls.Find($"TxbLarguraCor{i}", true).FirstOrDefault() as TextBox;
                 var txbComprimento = this.Controls.Find($"TxbComprimentoCor{i}", true).FirstOrDefault() as TextBox;
                 var txbCustoEstimado = this.Controls.Find($"TxbCustoCor{i}", true).FirstOrDefault() as TextBox; // Novo campo de custo
 
                 // Se a cor não foi selecionada ou campos numéricos estão vazios, ignora a linha.
-                if (cbxCor == null || cbxCor.SelectedValue == null || string.IsNullOrWhiteSpace(txbLargura?.Text))
+                if (this.Controls.Find($"CBxCor{i}", true).FirstOrDefault() is not ComboBox cbxCor || cbxCor.SelectedValue == null || string.IsNullOrWhiteSpace(txbLargura?.Text))
                     continue;
 
                 // 2. Conversão Segura de Dados
@@ -206,7 +205,7 @@ namespace Regravacao
 
 
 
-        private async Task InicializarSessaoAsync()
+        private async Task InicializarSessaoAsync()
         {
             var sessaoSalva = SessaoHelper.CarregarSessao();
             if (sessaoSalva != null &&
@@ -221,12 +220,10 @@ namespace Regravacao
                     if (currentSession != null)
                     {
                         var expiresAt = currentSession.ExpiresAt();
-                        if (expiresAt > DateTime.UtcNow)
+                        if (expiresAt > DateTime.UtcNow)
                         {
                             MostrarUsuarioLogado();
-                            IniciarVerificacaoDeSessao();
-                            await CarregarMateriais();
-                            await CarregarFinalizadores();
+                            IniciarVerificacaoDeSessao();                            
                             return;
                         }
                     }
@@ -542,10 +539,7 @@ namespace Regravacao
         private async void BtnSalvarCadastro_Click_1(object sender, EventArgs e)
         {
             // 1. Obter o valor selecionado
-            int idFinalizadorSelecionado = (int)CBxFinalizadoPor.SelectedValue;
-
-            // 2. Realizar a validação
-            if (idFinalizadorSelecionado <= 0) // Verifica se o valor é o placeholder
+            if (CBxFinalizadoPor.SelectedValue is not int idFinalizadorSelecionado)
             {
                 MessageBox.Show("Por favor, selecione o funcionário que finalizou o registro.",
                                 "Campo Obrigatório",
@@ -625,7 +619,7 @@ namespace Regravacao
             };
 
             // 1. Anexar os IDs de erro coletados (MotivosErrosIds é opcional no DTO)
-            if (_errosSelecionados.Any())
+            if (_errosSelecionados.Count != 0)
             {
                 dados.MotivosErrosIds = _errosSelecionados.Select(e => e.IdDetalhesErros).ToList();
             }
@@ -655,6 +649,12 @@ namespace Regravacao
                 MessageBox.Show($"Erro ao salvar no banco: {ex.Message}", "Erro Crítico", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
+        }
+
+        private async void FrmMain_Load(object sender, EventArgs e)
+        {
+            await CarregarMateriais();
+            await CarregarFinalizadores();
         }
     }
 }

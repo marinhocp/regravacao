@@ -19,10 +19,7 @@ namespace Regravacao.Views
             _supabase = supabase;
         }
 
-        public LoginControl()
-        {
-            InitializeComponent();
-        }
+        public LoginControl() => InitializeComponent();
 
         private void BtnSolicitarAcesso_Click(object sender, EventArgs e)
         {

@@ -2369,6 +2369,7 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "CONTROLE DE CLICHÊS REGRAVADOS";
             WindowState = FormWindowState.Maximized;
+            Load += FrmMain_Load;
             panel1.ResumeLayout(false);
             panel6.ResumeLayout(false);
             groupBox7.ResumeLayout(false);
