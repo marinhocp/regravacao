@@ -27,7 +27,6 @@ namespace Regravacao
         private readonly IMaterialService _materialService;
         private readonly IFinalizadorService _finalizadorService;
         private readonly IConferenteService _conferenteService;
-
         private List<DetalhesDeErrosDto> _errosSelecionados = [];
 
         public FrmMain(
@@ -41,12 +40,22 @@ namespace Regravacao
         {
             InitializeComponent();
 
+            // habilita a seleção do item do DropDownList para todos os ComboBoxes ao digitar uma letra
+            CBxMaterial.DropDownStyle = ComboBoxStyle.DropDownList;
+            CBxFinalizadoPor.DropDownStyle = ComboBoxStyle.DropDownList;
+            CBxConferidoPor.DropDownStyle = ComboBoxStyle.DropDownList;
+            CBxSolicitante.DropDownStyle = ComboBoxStyle.DropDownList;
+            CBxEnviarPara.DropDownStyle = ComboBoxStyle.DropDownList;
+            CBxMotivoPrincipal.DropDownStyle = ComboBoxStyle.DropDownList;
+            CBxPrioridade.DropDownStyle = ComboBoxStyle.DropDownList;
+            CBxStatus.DropDownStyle = ComboBoxStyle.DropDownList;
+            CBxCustoDeQuem.DropDownStyle = ComboBoxStyle.DropDownList;
+
             _regravacaoService = regravacaoService;
             _detalhesDeErrosService = detalhesDeErrosService;
             _materialService = materialService;
             _finalizadorService = finalizadorService;
-            _conferenteService = conferenteService;
-            
+            _conferenteService = conferenteService;            
             _supabase = supabase;
 
             // TAMANHO FIXO DO LOGIN
@@ -60,6 +69,37 @@ namespace Regravacao
 
         }
 
+        private void EstilizarDGWDetalhesErros()
+        {
+            // 1. Estilo Básico do DataGrid
+            DGWDetalhesErros.BorderStyle = BorderStyle.None; // Remove a borda padrão
+            DGWDetalhesErros.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(245, 245, 245); // Fundo cinza claro para linhas alternadas
+            DGWDetalhesErros.BackgroundColor = Color.White; // Fundo do controle como branco
+            DGWDetalhesErros.GridColor = Color.LightGray; // Cor das linhas de grade
+
+            // 2. Comportamento e Seleção
+            DGWDetalhesErros.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal; // Linhas horizontais mais limpas
+            DGWDetalhesErros.SelectionMode = DataGridViewSelectionMode.FullRowSelect; // Seleção na linha inteira
+            DGWDetalhesErros.MultiSelect = false; // Permite selecionar apenas uma linha por vez
+            DGWDetalhesErros.RowHeadersVisible = false; // Oculta a coluna de seleção esquerda (seta)
+            DGWDetalhesErros.EnableHeadersVisualStyles = false; // Permite aplicar estilo customizado ao cabeçalho
+            DGWDetalhesErros.ColumnHeadersVisible = false;
+            DGWDetalhesErros.EnableHeadersVisualStyles = false;
+
+            // 3. Estilo do Cabeçalho (Header)
+            DGWDetalhesErros.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+
+            // Configura o estilo padrão do cabeçalho
+            DGWDetalhesErros.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(64, 64, 64); // Fundo cinza escuro (quase preto)
+            DGWDetalhesErros.ColumnHeadersDefaultCellStyle.ForeColor = Color.White; // Texto branco
+            DGWDetalhesErros.ColumnHeadersDefaultCellStyle.Font = new Font(DGWDetalhesErros.Font, FontStyle.Bold); // Fonte em negrito
+            DGWDetalhesErros.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Texto centralizado
+            DGWDetalhesErros.ColumnHeadersHeight = 30; // Altura do cabeçalho
+
+            // 4. Estilo de Célula (Quando selecionada)
+            DGWDetalhesErros.DefaultCellStyle.SelectionBackColor = Color.FromArgb(200, 200, 200); // Fundo ao selecionar
+            DGWDetalhesErros.DefaultCellStyle.SelectionForeColor = Color.Black; // Texto branco ao selecionar
+        }
 
         #region CARREGAR OS COMBOBOXES COM INFORMAÇÕES DO BANCO
 
@@ -186,7 +226,6 @@ namespace Regravacao
         }
         #endregion
 
-
         private List<CoresInserirDto> ColetarDadosDasCoresDoFormulario()
         {
             var cores = new List<CoresInserirDto>();
@@ -245,8 +284,6 @@ namespace Regravacao
             // MUDANÇA 2: Retorna a lista correta
             return cores;
         }
-
-
 
         private async Task InicializarSessaoAsync()
         {
@@ -336,7 +373,6 @@ namespace Regravacao
                 }
             };
         }
-
         private void RemoverTelaDeLogin()
         {
             // Remove o login
@@ -360,7 +396,6 @@ namespace Regravacao
             this.Text = "Sistema de Regravações - Bem-vindo!";
 
         }
-
         private void MostrarUsuarioLogado()
         {
             try
@@ -394,7 +429,6 @@ namespace Regravacao
                 Console.WriteLine($"Erro ao mostrar usuário: {ex.Message}");
             }
         }
-
         private void ConfigurarBotoes()
         {
             // Remove eventos duplicados (Boa Prática)
@@ -413,7 +447,6 @@ namespace Regravacao
             BtnConfiguracoes.Click += BtnConfiguracoes_Click;
             BtnLogout.Click += BtnLogout_Click;
         }
-
         private void BtnRelatorios_Click(object? sender, EventArgs e)
         {
             if (Program.ServiceProvider is null)
@@ -425,9 +458,6 @@ namespace Regravacao
             frm.Show();
         }
 
-        // ======================================================
-        // ✅ EVENTO: Adicionar Erros (BUSCA DTOs)
-        // ======================================================
         private async void BtnAddErros_Click(object? sender, EventArgs e)
         {
             if (Program.ServiceProvider is null)
@@ -455,6 +485,7 @@ namespace Regravacao
                         // 3. Exibir no DataGridView
                         DGWDetalhesErros.DataSource = null; // Limpa antes de atribuir
                         DGWDetalhesErros.DataSource = _errosSelecionados;
+                        ConfigurarColunasErros();
                     }
                     catch (Exception ex)
                     {
@@ -467,6 +498,23 @@ namespace Regravacao
                     _errosSelecionados.Clear();
                     DGWDetalhesErros.DataSource = null;
                 }
+
+            }
+        }
+
+        private void ConfigurarColunasErros()
+        {
+            // 1. Ocultar o ID
+            if (DGWDetalhesErros.Columns.Contains("IdDetalhesErros"))
+            {
+                DGWDetalhesErros.Columns["IdDetalhesErros"].Visible = false;
+            }
+
+            // 2. Renomear e Otimizar a Coluna de Descrição
+            if (DGWDetalhesErros.Columns.Contains("DescricaoErro"))
+            {
+                DGWDetalhesErros.Columns["DescricaoErro"].HeaderText = "Descrição do Erro"; // Título amigável
+                DGWDetalhesErros.Columns["DescricaoErro"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; // Preenche o espaço
             }
         }
 
@@ -696,6 +744,7 @@ namespace Regravacao
 
         private async void FrmMain_Load(object sender, EventArgs e)
         {
+            EstilizarDGWDetalhesErros();
             await CarregarMateriais();
             await CarregarFinalizadores();
             await CarregarConferentes();
