@@ -31,7 +31,7 @@ namespace Regravacao
 
         public FrmMain(
           IRegravacaoService regravacaoService,
-          IDetalhesDeErrosService detalhesDeErrosService,         
+          IDetalhesDeErrosService detalhesDeErrosService,
           IMaterialService materialService,
           IFinalizadorService finalizadorService,
           IConferenteService conferenteService,
@@ -55,7 +55,7 @@ namespace Regravacao
             _detalhesDeErrosService = detalhesDeErrosService;
             _materialService = materialService;
             _finalizadorService = finalizadorService;
-            _conferenteService = conferenteService;            
+            _conferenteService = conferenteService;
             _supabase = supabase;
 
             // TAMANHO FIXO DO LOGIN
@@ -303,7 +303,7 @@ namespace Regravacao
                         if (expiresAt > DateTime.UtcNow)
                         {
                             MostrarUsuarioLogado();
-                            IniciarVerificacaoDeSessao();                            
+                            IniciarVerificacaoDeSessao();
                             return;
                         }
                     }
@@ -458,7 +458,12 @@ namespace Regravacao
             frm.Show();
         }
 
-        private async void BtnAddErros_Click(object? sender, EventArgs e)
+        private async void BtnAddErros_Click(object? sender, EventArgs e)
+        {
+            await AbrirEAtualizarErrosAsync();
+        }
+
+        private async Task AbrirEAtualizarErrosAsync()
         {
             if (Program.ServiceProvider is null)
             {
@@ -468,6 +473,16 @@ namespace Regravacao
 
             var frm = Program.ServiceProvider.GetRequiredService<FrmChecklistErros>();
 
+            // 1. ENVIAR SELEÇÕES ATUAIS PARA O CHECKLIST (Pré-seleção)
+            if (_errosSelecionados != null && _errosSelecionados.Count > 0)
+            {
+                // Extrai apenas os IDs dos DTOs atualmente no grid
+                var idsAtuais = _errosSelecionados.Select(e => e.IdDetalhesErros).ToList();
+
+                // Passa a lista de IDs para o FrmChecklistErros para pré-seleção
+                frm.IdsErrosSelecionadosAnteriores = idsAtuais;
+            }
+
             if (frm.ShowDialog() == DialogResult.OK)
             {
                 var errosSelecionadosIds = frm.IdsErrosSelecionados;
@@ -476,15 +491,17 @@ namespace Regravacao
                 {
                     try
                     {
-                        // 1. Buscar os DTOs completos com base nos IDs retornados
-                        var listaDetalhada = await _detalhesDeErrosService.ListarErrosPorIdsDtoAsync(errosSelecionadosIds.ToList());
+                        // 2. Buscar os DTOs completos com base nos IDs retornados
+                        var listaDetalhada = await _detalhesDeErrosService.ListarErrosPorIdsDtoAsync(errosSelecionadosIds.ToList());
 
-                        // 2. Armazenar no campo de estado do FrmMain
-                        _errosSelecionados = listaDetalhada;
+                        // 3. Armazenar a nova lista de DTOs no campo de estado
+                        _errosSelecionados = listaDetalhada;
 
-                        // 3. Exibir no DataGridView
-                        DGWDetalhesErros.DataSource = null; // Limpa antes de atribuir
-                        DGWDetalhesErros.DataSource = _errosSelecionados;
+                        // 4. Exibir no DataGridView
+                        DGWDetalhesErros.DataSource = null;
+                        DGWDetalhesErros.DataSource = _errosSelecionados;
+
+                        // 5. Reaplicar estilos e ocultar colunas
                         ConfigurarColunasErros();
                     }
                     catch (Exception ex)
@@ -494,11 +511,10 @@ namespace Regravacao
                 }
                 else
                 {
-                    // Se o usuário desmarcou tudo, limpa a lista e o Grid
-                    _errosSelecionados.Clear();
+                    // Se o usuário desmarcou TUDO no checklist, limpa a lista e o Grid
+                    _errosSelecionados.Clear();
                     DGWDetalhesErros.DataSource = null;
                 }
-
             }
         }
 
@@ -748,6 +764,11 @@ namespace Regravacao
             await CarregarMateriais();
             await CarregarFinalizadores();
             await CarregarConferentes();
+        }
+
+        private async void DGWDetalhesErros_DoubleClick(object sender, EventArgs e)
+        {
+            await AbrirEAtualizarErrosAsync();
         }
     }
 }

@@ -361,6 +361,7 @@
             DGWDetalhesErros.Size = new Size(1188, 117);
             DGWDetalhesErros.TabIndex = 0;
             DGWDetalhesErros.TabStop = false;
+            DGWDetalhesErros.DoubleClick += DGWDetalhesErros_DoubleClick;
             // 
             // BtnSalvarCadastro
             // 

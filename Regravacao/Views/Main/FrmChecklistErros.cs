@@ -20,7 +20,7 @@ namespace Regravacao.Views
 
         // 4. Propriedade para armazenar os IDs selecionados (pode ser null se o usuário cancelar)
         public int[]? IdsErrosSelecionados { get; private set; }
-
+        public List<int> IdsErrosSelecionadosAnteriores { get; set; } = [];
 
         public FrmChecklistErros(
             IRegravacaoService regravacaoService,
@@ -61,18 +61,31 @@ namespace Regravacao.Views
                 // 1. Chamada assíncrona ao serviço para obter a lista de DTOs
                 List<DetalhesDeErrosDto> listaErros = await _detalhesDeErrosService.ListarTodosErrosDtoAsync();
 
-                // 2. Preenchimento do CheckedListBox
-
                 if (listaErros.Count > 0)
                 {
-                    // Opcional, mas limpa e facilita a vinculação
+                    // 2. Preenchimento do CheckedListBox
                     CxbListErros.DataSource = listaErros;
-
-                    // O que o usuário vê na lista
                     CxbListErros.DisplayMember = "DescricaoErro";
-
-                    // Qual propriedade será usada para obter o ID
                     CxbListErros.ValueMember = "IdDetalhesErros";
+
+                    // 🛑 CÓDIGO FALTANDO: Aplicar a seleção anterior
+                    if (IdsErrosSelecionadosAnteriores.Count > 0)
+                    {
+                        // Percorre a lista de itens vinculados no CheckedListBox
+                        for (int i = 0; i < CxbListErros.Items.Count; i++)
+                        {
+                            // O item no CheckedListBox é um objeto DetalhesDeErrosDto
+                            if (CxbListErros.Items[i] is DetalhesDeErrosDto dto)
+                            {
+                                // Verifica se o ID do DTO atual está na lista de IDs a serem mantidos
+                                if (IdsErrosSelecionadosAnteriores.Contains(dto.IdDetalhesErros))
+                                {
+                                    // Marca o item no índice 'i' como checado
+                                    CxbListErros.SetItemChecked(i, true);
+                                }
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -83,12 +96,18 @@ namespace Regravacao.Views
         }
 
         private void BtnOkErro_Click(object sender, EventArgs e)
-        {// 1. Coletar os IDs dos itens marcados
-         // O CheckedItems do CheckedListBox é uma coleção de objetos (os DTOs)
+        {
+            // 1. Coletar os IDs dos itens marcados
+            // O CheckedItems do CheckedListBox é uma coleção de objetos (os DTOs)
             var idsSelecionados = CxbListErros.CheckedItems
-                .Cast<DetalhesDeErrosDto>() // Converte para o DTO correto
-                .Select(dto => dto.IdDetalhesErros) // Seleciona apenas a propriedade de ID
-                .ToArray(); // Converte para array de int[]
+                // Converte o objeto genérico de volta para o DTO
+                .Cast<DetalhesDeErrosDto>()
+
+                // Seleciona a propriedade de ID de cada DTO
+                .Select(dto => dto.IdDetalhesErros)
+
+                // Converte para array de int[] (conforme a propriedade IdsErrosSelecionados espera)
+                .ToArray();
 
             // 2. Armazenar o array coletado na propriedade pública
             IdsErrosSelecionados = idsSelecionados;
