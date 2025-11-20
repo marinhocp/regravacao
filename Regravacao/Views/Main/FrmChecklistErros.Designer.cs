@@ -42,6 +42,7 @@
             groupBox3 = new GroupBox();
             CxbListErros = new CheckedListBox();
             panel2 = new Panel();
+            BtnLimparCheckbox = new Button();
             PanelTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             ((System.ComponentModel.ISupportInitialize)BtnRestaurarJanela).BeginInit();
@@ -83,6 +84,7 @@
             // panel3
             // 
             panel3.BackColor = Color.LightGray;
+            panel3.Controls.Add(BtnLimparCheckbox);
             panel3.Controls.Add(BtnCancelarErro);
             panel3.Controls.Add(BtnOkErro);
             panel3.Controls.Add(groupBox1);
@@ -155,6 +157,16 @@
             resources.ApplyResources(panel2, "panel2");
             panel2.Name = "panel2";
             // 
+            // BtnLimparCheckbox
+            // 
+            resources.ApplyResources(BtnLimparCheckbox, "BtnLimparCheckbox");
+            BtnLimparCheckbox.BackColor = Color.Gainsboro;
+            BtnLimparCheckbox.FlatAppearance.BorderSize = 0;
+            BtnLimparCheckbox.Image = Properties.Resources.borracha1_32x32;
+            BtnLimparCheckbox.Name = "BtnLimparCheckbox";
+            BtnLimparCheckbox.UseVisualStyleBackColor = false;
+            BtnLimparCheckbox.Click += BtnLimparCheckbox_Click;
+            // 
             // FrmChecklistErros
             // 
             resources.ApplyResources(this, "$this");
@@ -198,5 +210,6 @@
         private Button BtnCancelarErro;
         private Button BtnLimparCampoBuscarErro;
         private CheckedListBox CxbListErros;
+        private Button BtnLimparCheckbox;
     }
 }
