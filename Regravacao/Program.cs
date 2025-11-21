@@ -1,19 +1,21 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Regravacao.Repositories;
-using Regravacao.Repositories.Funcionario;
+using Regravacao.Repositories.Conferente;
+using Regravacao.Repositories.Conferente.Impl;
+using Regravacao.Repositories.Configuracoes;
 using Regravacao.Repositories.DetalhesDeErros;
+using Regravacao.Repositories.Funcionario;
 using Regravacao.Repositories.Funcionario.Impl;
 using Regravacao.Repositories.Regravacao;
 using Regravacao.Services.Auth;
+using Regravacao.Services.Conferente;
+using Regravacao.Services.Configuracoes;
 using Regravacao.Services.DetalhesDeErros;
+using Regravacao.Services.Finalizador;
 using Regravacao.Services.Regravacao;
 using Regravacao.Views;
 using Supabase;
-using Regravacao.Services.Finalizador;
-using Regravacao.Services.Conferente;
-using Regravacao.Repositories.Conferente;
-using Regravacao.Repositories.Conferente.Impl;
 
 namespace Regravacao
 {
@@ -52,6 +54,8 @@ namespace Regravacao
                     services.AddScoped<IMaterialRepository, MaterialRepository>();
                     services.AddScoped<IFinalizadorRepository, FinalizadorRepository>();
                     services.AddScoped<IConferenteRepository, ConferenteRepository>();
+                    services.AddScoped<IRegravacaoRepository, RegravacaoRepository>();
+                    services.AddScoped<IConfiguracoesCustoRepository, ConfiguracoesCustoRepository>();
 
 
                     // --- SERVIÇOS ---
@@ -62,6 +66,9 @@ namespace Regravacao
                     services.AddScoped<IMaterialService, MaterialService>();
                     services.AddScoped<IFinalizadorService, FinalizadorService>();
                     services.AddScoped<IConferenteService, ConferenteService>();
+                    services.AddScoped<IRegravacaoService, RegravacaoService>();
+                    services.AddScoped<IConfiguracoesCustoService, ConfiguracoesCustoService>();
+
 
 
                     // ✅ Forms
@@ -70,6 +77,7 @@ namespace Regravacao
                     services.AddTransient<FrmGraficosEstatistica>();
                     services.AddTransient<FrmChecklistErros>();
                     services.AddTransient<FrmConfiguracoes>();
+
                 });
         }
     }

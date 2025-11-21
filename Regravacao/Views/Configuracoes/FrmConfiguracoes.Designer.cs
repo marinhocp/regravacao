@@ -39,13 +39,13 @@
             BtnCancelarConfiguracoes = new Button();
             BtnSalvarConfiguracoes = new Button();
             groupBox3 = new GroupBox();
-            panel2 = new Panel();
+            TxbMaoObraEOutros = new TextBox();
             label8 = new Label();
-            TxbOutros = new TextBox();
-            TxbFatorCusto = new TextBox();
-            label46 = new Label();
-            label22 = new Label();
             TxbMargem = new TextBox();
+            TxbFatorCusto = new TextBox();
+            label22 = new Label();
+            label46 = new Label();
+            panel2 = new Panel();
             PanelTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             ((System.ComponentModel.ISupportInitialize)Btn_maximizar).BeginInit();
@@ -167,12 +167,13 @@
             BtnSalvarConfiguracoes.TabIndex = 1;
             BtnSalvarConfiguracoes.Text = "SALVAR";
             BtnSalvarConfiguracoes.UseVisualStyleBackColor = false;
+            BtnSalvarConfiguracoes.Click += BtnSalvarConfiguracoes_Click;
             // 
             // groupBox3
             // 
             groupBox3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             groupBox3.BackColor = Color.Transparent;
-            groupBox3.Controls.Add(TxbOutros);
+            groupBox3.Controls.Add(TxbMaoObraEOutros);
             groupBox3.Controls.Add(label8);
             groupBox3.Controls.Add(TxbMargem);
             groupBox3.Controls.Add(TxbFatorCusto);
@@ -186,14 +187,16 @@
             groupBox3.TabStop = false;
             groupBox3.Text = "Informe os dados padrões para calcular o custo do clichê.";
             // 
-            // panel2
+            // TxbMaoObraEOutros
             // 
-            panel2.BackColor = Color.FromArgb(48, 48, 48);
-            panel2.Dock = DockStyle.Bottom;
-            panel2.Location = new Point(0, 642);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(1026, 10);
-            panel2.TabIndex = 88;
+            TxbMaoObraEOutros.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
+            TxbMaoObraEOutros.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            TxbMaoObraEOutros.Location = new Point(560, 331);
+            TxbMaoObraEOutros.Name = "TxbMaoObraEOutros";
+            TxbMaoObraEOutros.PlaceholderText = "R$";
+            TxbMaoObraEOutros.Size = new Size(285, 32);
+            TxbMaoObraEOutros.TabIndex = 2;
+            TxbMaoObraEOutros.TextAlign = HorizontalAlignment.Center;
             // 
             // label8
             // 
@@ -206,18 +209,16 @@
             label8.TabIndex = 90;
             label8.Text = "MÃO DE OBRA / HORA MÁQUINA / CUSTOS ACESSÓRIOS ";
             // 
-            // TxbOutros
+            // TxbMargem
             // 
-            TxbOutros.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            TxbOutros.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
-            TxbOutros.Location = new Point(560, 331);
-            TxbOutros.Name = "TxbOutros";
-            TxbOutros.PlaceholderText = "R$";
-            TxbOutros.ReadOnly = true;
-            TxbOutros.Size = new Size(285, 32);
-            TxbOutros.TabIndex = 2;
-            TxbOutros.Text = "2";
-            TxbOutros.TextAlign = HorizontalAlignment.Center;
+            TxbMargem.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
+            TxbMargem.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            TxbMargem.Location = new Point(560, 115);
+            TxbMargem.Name = "TxbMargem";
+            TxbMargem.PlaceholderText = "cm";
+            TxbMargem.Size = new Size(285, 32);
+            TxbMargem.TabIndex = 0;
+            TxbMargem.TextAlign = HorizontalAlignment.Center;
             // 
             // TxbFatorCusto
             // 
@@ -226,22 +227,9 @@
             TxbFatorCusto.Location = new Point(560, 223);
             TxbFatorCusto.Name = "TxbFatorCusto";
             TxbFatorCusto.PlaceholderText = "R$";
-            TxbFatorCusto.ReadOnly = true;
             TxbFatorCusto.Size = new Size(285, 32);
             TxbFatorCusto.TabIndex = 1;
-            TxbFatorCusto.Text = "1";
             TxbFatorCusto.TextAlign = HorizontalAlignment.Center;
-            // 
-            // label46
-            // 
-            label46.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            label46.AutoSize = true;
-            label46.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            label46.Location = new Point(315, 227);
-            label46.Name = "label46";
-            label46.Size = new Size(210, 21);
-            label46.TabIndex = 88;
-            label46.Text = "CUSTO DO CM² DO CLICHÊ";
             // 
             // label22
             // 
@@ -255,17 +243,25 @@
             label22.Text = "MARGEM TOTAL DE CORTE DO CLICHÊ EM CM";
             label22.TextAlign = ContentAlignment.TopRight;
             // 
-            // TxbMargem
+            // label46
             // 
-            TxbMargem.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            TxbMargem.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
-            TxbMargem.Location = new Point(560, 115);
-            TxbMargem.Name = "TxbMargem";
-            TxbMargem.PlaceholderText = "cm";
-            TxbMargem.Size = new Size(285, 32);
-            TxbMargem.TabIndex = 0;
-            TxbMargem.Text = "0";
-            TxbMargem.TextAlign = HorizontalAlignment.Center;
+            label46.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label46.AutoSize = true;
+            label46.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            label46.Location = new Point(315, 227);
+            label46.Name = "label46";
+            label46.Size = new Size(210, 21);
+            label46.TabIndex = 88;
+            label46.Text = "CUSTO DO CM² DO CLICHÊ";
+            // 
+            // panel2
+            // 
+            panel2.BackColor = Color.FromArgb(48, 48, 48);
+            panel2.Dock = DockStyle.Bottom;
+            panel2.Location = new Point(0, 642);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(1026, 10);
+            panel2.TabIndex = 88;
             // 
             // FrmConfiguracoes
             // 
@@ -305,7 +301,7 @@
         private Button BtnSalvarConfiguracoes;
         private GroupBox groupBox3;
         private Panel panel2;
-        private TextBox TxbOutros;
+        private TextBox TxbMaoObraEOutros;
         private Label label8;
         private TextBox TxbMargem;
         private TextBox TxbFatorCusto;
