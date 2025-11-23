@@ -1,14 +1,18 @@
 ﻿using Supabase.Postgrest.Attributes;
+using Supabase.Postgrest.Models;
+using Supabase.Postgrest;
 
 namespace Regravacao.DTOs
 {
     [Table("TblStatus")]
-    public class StatusDto
+    public class StatusDto : BaseModel 
     {
-        [Column("id_status")]
+        // Chave primária definida
+        [PrimaryKey("id_status", false)]
         public int IdStatus { get; set; }
 
         [Column("descricao_status")]
-        public required string DescricaoStatus { get; set; }
+        // Removido 'required'
+        public string DescricaoStatus { get; set; }
     }
 }

@@ -1,17 +1,25 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Regravacao.DTOs;
+using Regravacao.DTOs.Calculo;
 using Regravacao.Helpers;
 using Regravacao.Models;
 using Regravacao.Services.Auth;
-using Regravacao.Services.DetalhesDeErros;
-using Regravacao.Services.Finalizador;
+using Regravacao.Services.Calculo;
 using Regravacao.Services.Conferente;
+using Regravacao.Services.Configuracoes;
+using Regravacao.Services.Cores;
+using Regravacao.Services.CustoDeQuem;
+using Regravacao.Services.DetalhesDeErros;
+using Regravacao.Services.Empresa;
+using Regravacao.Services.Finalizador;
+using Regravacao.Services.MotivosPrincipais;
+using Regravacao.Services.Prioridade;
 using Regravacao.Services.Regravacao;
+using Regravacao.Services.Solicitante;
+using Regravacao.Services.Status;
 using Regravacao.Views;
 using Supabase;
-using Supabase.Interfaces;
-using Supabase.Postgrest.Extensions;
-using System.Linq;
+using System.Globalization;
 
 namespace Regravacao
 {
@@ -27,18 +35,55 @@ namespace Regravacao
         private readonly IMaterialService _materialService;
         private readonly IFinalizadorService _finalizadorService;
         private readonly IConferenteService _conferenteService;
+        private readonly ISolicitanteService _solicitanteService;
+        private readonly IEmpresaService _empresaService;
+        private readonly ICustoDeQuemService _custoDeQuemService;
+        private readonly IMotivosPrincipaisService _motivosService;
+        private readonly IPrioridadeService _prioridadeService;
+        private readonly IStatusService _statusService;
+        private readonly IConfiguracoesCustoService _configuracoesCustoService;
+        private readonly CalculadoraDeCusto _calculadora;
+        private readonly ICoresService _coresService;
+
         private List<DetalhesDeErrosDto> _errosSelecionados = [];
+        private decimal _margemCorte = 0m;
+        private decimal _fatorCalculo = 0m;
+        private decimal? _maoObra = 0m;
+
+        private static readonly (string Chk, string NomeCor, string Largura, string Comprimento, string MedidaParcial, string CustoParcial, string Panel)[] _mapaCores =
+     {
+        ("CkBCor1", "TxbNomeCor1", "TxbLarguraCor1", "TxbComprimentoCor1", "TxbMedidaPlacaCor1", "TxbCustoParcialPlacaCor1", "PanelCor1"),
+        ("CkBCor2", "TxbNomeCor2", "TxbLarguraCor2", "TxbComprimentoCor2", "TxbMedidaPlacaCor2", "TxbCustoParcialPlacaCor2", "PanelCor2"),
+        ("CkBCor3", "TxbNomeCor3", "TxbLarguraCor3", "TxbComprimentoCor3", "TxbMedidaPlacaCor3", "TxbCustoParcialPlacaCor3", "PanelCor3"),
+        ("CkBCor4", "TxbNomeCor4", "TxbLarguraCor4", "TxbComprimentoCor4", "TxbMedidaPlacaCor4", "TxbCustoParcialPlacaCor4", "PanelCor4"),
+        ("CkBCor5", "TxbNomeCor5", "TxbLarguraCor5", "TxbComprimentoCor5", "TxbMedidaPlacaCor5", "TxbCustoParcialPlacaCor5", "PanelCor5"),
+        ("CkBCor6", "TxbNomeCor6", "TxbLarguraCor6", "TxbComprimentoCor6", "TxbMedidaPlacaCor6", "TxbCustoParcialPlacaCor6", "PanelCor6"),
+        ("CkBCor7", "TxbNomeCor7", "TxbLarguraCor7", "TxbComprimentoCor7", "TxbMedidaPlacaCor7", "TxbCustoParcialPlacaCor7", "PanelCor7"),
+        ("CkBCor8", "TxbNomeCor8", "TxbLarguraCor8", "TxbComprimentoCor8", "TxbMedidaPlacaCor8", "TxbCustoParcialPlacaCor8", "PanelCor8"),
+    };
 
         public FrmMain(
+
           IRegravacaoService regravacaoService,
           IDetalhesDeErrosService detalhesDeErrosService,
           IMaterialService materialService,
           IFinalizadorService finalizadorService,
           IConferenteService conferenteService,
+          ISolicitanteService solicitanteService,
+          IEmpresaService empresaService,
+          ICustoDeQuemService custoDeQuemService,
+          IPrioridadeService prioridadeService,
+          IMotivosPrincipaisService motivosService,
+          IConfiguracoesCustoService configuracoesCustoService,
+          IStatusService statusService,
+          CalculadoraDeCusto calculadora,
+          ICoresService coresService,
 
           Client supabase)
         {
             InitializeComponent();
+
+            NumUpDQtdePlacas.ValueChanged += NumUpDQtdePlacas_ValueChanged;
 
             // habilita a seleção do item do DropDownList para todos os ComboBoxes ao digitar uma letra
             CBxMaterial.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -50,12 +95,23 @@ namespace Regravacao
             CBxPrioridade.DropDownStyle = ComboBoxStyle.DropDownList;
             CBxStatus.DropDownStyle = ComboBoxStyle.DropDownList;
             CBxCustoDeQuem.DropDownStyle = ComboBoxStyle.DropDownList;
+            CBxSolicitante.DropDownStyle = ComboBoxStyle.DropDownList;
 
             _regravacaoService = regravacaoService;
             _detalhesDeErrosService = detalhesDeErrosService;
             _materialService = materialService;
             _finalizadorService = finalizadorService;
             _conferenteService = conferenteService;
+            _solicitanteService = solicitanteService;
+            _empresaService = empresaService;
+            _custoDeQuemService = custoDeQuemService;
+            _motivosService = motivosService;
+            _prioridadeService = prioridadeService;
+            _statusService = statusService;
+            _configuracoesCustoService = configuracoesCustoService;
+            _calculadora = calculadora;
+            _coresService = coresService;
+
             _supabase = supabase;
 
             // TAMANHO FIXO DO LOGIN
@@ -63,11 +119,23 @@ namespace Regravacao
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.StartPosition = FormStartPosition.CenterScreen;
             this.Text = "Sistema de Regravações - Login";
+            NumUpDQtdePlacas.Maximum = 8;
+            NumUpDQtdePlacas.Minimum = 1;
+            NumUpDQtdePlacas.ValueChanged += NumUpDQtdePlacas_ValueChanged;
+            this.Load += FrmMain_Load;
+            ConectarEventosCalculo();
+            ConectarEventosCores();
 
             ConfigurarBotoes();
             _ = InicializarSessaoAsync();
 
         }
+
+        private void NumUpDQtdePlacas_ValueChanged(object sender, EventArgs e)
+        {
+            AtualizarControlesCores((int)NumUpDQtdePlacas.Value);
+        }
+
 
         private void EstilizarDGWDetalhesErros()
         {
@@ -100,6 +168,258 @@ namespace Regravacao
             DGWDetalhesErros.DefaultCellStyle.SelectionBackColor = Color.FromArgb(200, 200, 200); // Fundo ao selecionar
             DGWDetalhesErros.DefaultCellStyle.SelectionForeColor = Color.Black; // Texto branco ao selecionar
         }
+
+        // FrmMain.cs
+
+        private void ConectarEventosCalculo()
+        {
+            foreach (var mapa in _mapaCores)
+            {
+                TextBox txbLargura = this.Controls.Find(mapa.Largura, true).FirstOrDefault() as TextBox;
+                TextBox txbComprimento = this.Controls.Find(mapa.Comprimento, true).FirstOrDefault() as TextBox;
+                CheckBox ckBox = this.Controls.Find(mapa.Chk, true).FirstOrDefault() as CheckBox;
+
+                // Conexão dos eventos de CÁLCULO (Apenas Largura, Comprimento, CheckBox)
+                if (txbLargura != null) txbLargura.TextChanged += (sender, e) => CalcularCustoCores();
+                if (txbComprimento != null) txbComprimento.TextChanged += (sender, e) => CalcularCustoCores();
+                if (ckBox != null) ckBox.CheckedChanged += (sender, e) => CalcularCustoCores();                
+            }
+        }
+
+        // Conecta APENAS eventos que disparam a BUSCA DE COR
+        private void ConectarEventosCores()
+        {
+            foreach (var mapa in _mapaCores)
+            {
+                TextBox txbNomeCor = this.Controls.Find(mapa.NomeCor, true).FirstOrDefault() as TextBox;
+
+                if (txbNomeCor != null)
+                {
+                    // (Lógica para extrair o numeroCor 1-8)
+                    // ...
+                    int numeroCor = int.Parse(new string(mapa.NomeCor.Where(char.IsDigit).ToArray()));
+
+                    // ✅ Esta é a função que é chamada quando o texto muda:
+                    txbNomeCor.TextChanged += (sender, e) => BuscarEPreencherCorAsync(txbNomeCor.Text, numeroCor);
+                }
+            }
+        }
+
+        // FrmMain.cs
+
+        private System.Drawing.Color HexParaColor(string hexCode)
+        {
+            if (string.IsNullOrWhiteSpace(hexCode))
+            {
+                return System.Drawing.Color.Transparent;
+            }
+
+            // 1. Limpa o código (remove '#' e espaços)
+            hexCode = hexCode.Replace("#", "").Trim();
+
+            // 2. Garante o formato ARGB completo (8 caracteres) ou RGB (6 caracteres)
+            if (hexCode.Length == 6)
+            {
+                // Se for 6 caracteres (RGB), prefixamos com FF (opacidade total) para obter ARGB
+                hexCode = "FF" + hexCode;
+            }
+
+            if (hexCode.Length != 8)
+            {
+                // Formato inválido após limpeza
+                return System.Drawing.Color.Transparent;
+            }
+
+            try
+            {
+                // 3. Converte a string hexadecimal (8 chars) em um inteiro ARGB
+                int argb = int.Parse(hexCode, System.Globalization.NumberStyles.HexNumber);
+
+                // 4. Cria a cor a partir do inteiro ARGB
+                return System.Drawing.Color.FromArgb(argb);
+            }
+            catch
+            {
+                // Falha na conversão
+                return System.Drawing.Color.Transparent;
+            }
+        }
+
+        // FrmMain.cs
+
+        public async void BuscarEPreencherCorAsync(string termoDigitado, int numeroCor)
+        {
+            // 1. Condição de busca (pode estar impedindo a execução)
+            if (termoDigitado.Length < 3)
+            {
+                // Se o termo for muito curto, garantimos que o painel esteja limpo.
+                Panel? panel = this.Controls.Find($"PanelCor{numeroCor}", true).FirstOrDefault() as Panel;
+                if (panel != null) panel.BackColor = System.Drawing.Color.Transparent;
+                return;
+            }
+
+            // 2. Busca no Serviço (Assumimos que está retornando o modelo correto)
+            Models.CoresModel? corEncontrada = await _coresService.BuscarCorPorNomeParcialAsync(termoDigitado);
+
+            // 3. Busca e atribuição ao Painel
+            Panel? panelCor = this.Controls.Find($"PanelCor{numeroCor}", true).FirstOrDefault() as Panel;
+
+            if (panelCor != null)
+            {
+                if (corEncontrada != null)
+                {
+                    // ✅ Atribui a cor convertida do código Hexa do banco
+                    panelCor.BackColor = HexParaColor(corEncontrada.CodigoExadecimal);
+                }
+                else
+                {
+                    // Limpa se não encontrou (útil para feedback visual)
+                    panelCor.BackColor = System.Drawing.Color.Transparent;
+                }
+            }
+            // NOTA: Se o painel for nulo (PanelCor# não existe), nada acontece.
+        }
+
+        #region
+        private void CalcularCustoCores()
+        {
+            CultureInfo culture = new CultureInfo("pt-BR");
+            var coresParaCalcular = new List<CorCalculoDto>();
+
+            // 1. Coleta e Validação dos Dados da UI
+            for (int i = 0; i < _mapaCores.Length; i++)
+            {
+                var mapa = _mapaCores[i];
+
+                // Busca os controles APENAS usando o nome fornecido
+                CheckBox ckBox = this.Controls.Find(mapa.Chk, true).FirstOrDefault() as CheckBox;
+                TextBox txbLargura = this.Controls.Find(mapa.Largura, true).FirstOrDefault() as TextBox;
+                TextBox txbComprimento = this.Controls.Find(mapa.Comprimento, true).FirstOrDefault() as TextBox;
+
+                if (ckBox == null || txbLargura == null || txbComprimento == null) continue;
+
+                decimal largura = 0m;
+                decimal comprimento = 0m;
+
+                // Tenta fazer o Parse, assumindo 0m se falhar (texto vazio, inválido)
+                decimal.TryParse(txbLargura.Text, NumberStyles.Number, culture, out largura);
+                decimal.TryParse(txbComprimento.Text, NumberStyles.Number, culture, out comprimento);
+
+                // Adiciona à lista de entrada para a calculadora
+                coresParaCalcular.Add(new CorCalculoDto
+                {
+                    NumeroCor = i + 1,
+                    Largura = largura,
+                    Comprimento = comprimento,
+                    EstaTotalmenteMarcada = ckBox.Checked
+                });
+            }
+
+            // 2. Chama a Calculadora Externa (Lógica de Negócio Isolada)
+            CalculoResultadoDto resultados = _calculadora.Calcular(
+                coresParaCalcular,
+                _margemCorte,
+                _fatorCalculo,
+                _maoObra ?? 0m
+            );
+
+            // 3. Atualiza a UI com os resultados
+
+            // Atualiza parciais
+            foreach (var resultadoParcial in resultados.ResultadosParciais)
+            {
+                var mapa = _mapaCores[resultadoParcial.NumeroCor - 1];
+
+                TextBox txbMedidaParcial = this.Controls.Find(mapa.MedidaParcial, true).FirstOrDefault() as TextBox;
+                TextBox txbCustoParcial = this.Controls.Find(mapa.CustoParcial, true).FirstOrDefault() as TextBox;
+
+                if (txbMedidaParcial != null)
+                {
+                    txbMedidaParcial.Text = resultadoParcial.MedidaParcial.ToString("N0", culture);
+                }
+                if (txbCustoParcial != null)
+                {
+                    txbCustoParcial.Text = resultadoParcial.CustoParcial.ToString("N2", culture);
+                }
+            }
+
+            // Atualiza totais
+            TextBox txbMedidaTotal = this.Controls.Find("TxbMedidaTotal", true).FirstOrDefault() as TextBox;
+            TextBox txbCustoTotal = this.Controls.Find("TxbCustoTotal", true).FirstOrDefault() as TextBox;
+
+            if (txbMedidaTotal != null)
+            {
+                txbMedidaTotal.Text = resultados.MedidaTotal.ToString("F0", culture);
+            }
+            if (txbCustoTotal != null)
+            {
+                txbCustoTotal.Text = resultados.CustoTotal.ToString("N2", culture);
+            }
+        }
+
+        private void AtualizarControlesCores(int quantidadeCores)
+        {
+            for (int i = 0; i < _mapaCores.Length; i++)
+            {
+                var mapa = _mapaCores[i];
+                int numeroCor = i + 1;
+
+                // Define se a cor deve estar ATIVA ou INATIVA
+                bool deveEstarAtiva = numeroCor <= quantidadeCores;
+
+                // 1. Busca os controles essenciais para esta linha
+                CheckBox ckBox = this.Controls.Find(mapa.Chk, true).FirstOrDefault() as CheckBox;
+                TextBox txbNome = this.Controls.Find(mapa.NomeCor, true).FirstOrDefault() as TextBox;
+                TextBox txbLargura = this.Controls.Find(mapa.Largura, true).FirstOrDefault() as TextBox;
+                TextBox txbComprimento = this.Controls.Find(mapa.Comprimento, true).FirstOrDefault() as TextBox;
+
+                // Controles de Saída (também devem ser desativados/limpos)
+                TextBox txbMedidaParcial = this.Controls.Find(mapa.MedidaParcial, true).FirstOrDefault() as TextBox;
+                TextBox txbCustoParcial = this.Controls.Find(mapa.CustoParcial, true).FirstOrDefault() as TextBox;
+
+                // Itera sobre todos os controles e aplica a lógica
+                Control[] controlesDaLinha = { ckBox, txbNome, txbLargura, txbComprimento, txbMedidaParcial, txbCustoParcial };
+
+                foreach (var ctrl in controlesDaLinha)
+                {
+                    if (ctrl == null) continue;
+
+                    // Ativa/Desativa o controle
+                    ctrl.Enabled = deveEstarAtiva;
+
+                    if (deveEstarAtiva)
+                    {
+                        // Se a cor for ativada (Número <= QtdePlacas)
+                        if (ctrl is CheckBox ckb)
+                        {
+                            // Ativa e Marca o CheckBox
+                            ckb.Checked = true;
+                            ckb.CheckState = CheckState.Checked; // Garante o estado totalmente marcado
+                        }
+                    }
+                    else
+                    {
+                        // Se a cor for desativada (Número > QtdePlacas)
+                        if (ctrl is TextBox txb)
+                        {
+                            // Limpa o TextBox e zera o cálculo
+                            txb.Text = string.Empty;
+                        }
+                        else if (ctrl is CheckBox ckb)
+                        {
+                            // Desmarca o CheckBox e zera o estado
+                            ckb.Checked = false;
+                            ckb.CheckState = CheckState.Unchecked;
+                        }
+                    }
+                }
+            }
+
+            // IMPORTANTE: Recalcula o custo total e a medida total, pois cores foram desativadas/limpas.
+            CalcularCustoCores();
+        }
+
+        #endregion
 
         #region CARREGAR OS COMBOBOXES COM INFORMAÇÕES DO BANCO
 
@@ -175,7 +495,7 @@ namespace Regravacao
                     CBxFinalizadoPor.ValueMember = "";
 
                     CBxFinalizadoPor.DataSource = funcionario;
-                    CBxFinalizadoPor.DisplayMember = "Nome";
+                    CBxFinalizadoPor.DisplayMember = "Nome".ToUpper();
                     CBxFinalizadoPor.ValueMember = "IdFuncionario";
 
                     // 4. O ComboBox selecionará automaticamente o índice 0 (o item em branco)
@@ -224,6 +544,250 @@ namespace Regravacao
                 MessageBox.Show($"Erro ao buscar funcionários conferentes: {ex.Message}", "Erro de Serviço", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private async Task CarregarSolicitante()
+        {
+            try
+            {
+                // 1. Chama o serviço. O serviço já sabe que deve buscar cargos 5 E 7.
+                List<FuncionariosDto> funcionario = await _solicitanteService.ListarSolicitanteAsync();
+
+                if (funcionario.Count != 0)
+                {
+                    // Cria o DTO "placeholder" (Item Em Branco)
+                    var itemEmBranco = new FuncionariosDto
+                    {
+                        IdFuncionario = 0, // Um valor que não existe no DB
+                        Nome = ""
+                    };
+
+                    // Insere o item em branco no início da lista
+                    funcionario.Insert(0, itemEmBranco);
+
+                    // 3. Lógica de Data Binding conferente
+                    CBxSolicitante.DataSource = null;
+                    CBxSolicitante.DisplayMember = "";
+                    CBxSolicitante.ValueMember = "";
+
+                    CBxSolicitante.DataSource = funcionario;
+                    CBxSolicitante.DisplayMember = "Nome";
+                    CBxSolicitante.ValueMember = "IdFuncionario";
+
+                    // O ComboBox selecionará automaticamente o índice 0 (o item em branco)
+                }
+            }
+            catch (Exception ex)
+            {
+                // ⚠️ CORREÇÃO DE TEXTO: Mudar "finalizadores" para "conferentes"
+                MessageBox.Show($"Erro ao buscar funcionários conferentes: {ex.Message}", "Erro de Serviço", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async Task CarregarEmpresasAsync()
+        {
+            try
+            {
+                List<EmpresaDto> empresas = await _empresaService.ObterEmpresasAtivasAsync();
+
+                // 1. Cria e Insere o item em branco no início
+                var itemEmBranco = new EmpresaDto
+                {
+                    IdEmpresa = 0,
+                    NomeEmpresa = ""
+                };
+                empresas.Insert(0, itemEmBranco);
+
+                // -----------------------------------------------------
+                // ✅ CORREÇÃO: Converte o nome de todas as empresas para maiúsculas
+                // -----------------------------------------------------
+                var empresasMaiusculas = empresas
+                    .Select(e => new EmpresaDto
+                    {
+                        IdEmpresa = e.IdEmpresa,
+                        NomeEmpresa = e.NomeEmpresa?.ToUpper() // Converte para maiúsculo
+                                                               // Não é necessário mapear IdStatus, pois não será usado no ComboBox
+                    })
+                    .ToList();
+
+                // 1. Limpa o ComboBox
+                CBxEnviarPara.DataSource = null;
+                CBxEnviarPara.Items.Clear();
+                CBxCustoDeQuem.DataSource = null;
+                CBxCustoDeQuem.Items.Clear();
+
+                // 2. Configura a lista
+                CBxEnviarPara.DisplayMember = "NomeEmpresa"; // O que o usuário vê
+                CBxEnviarPara.ValueMember = "IdEmpresa";    // O valor interno (ID)
+                CBxCustoDeQuem.DisplayMember = "NomeEmpresa"; // O que o usuário vê
+                CBxCustoDeQuem.ValueMember = "IdEmpresa";    // O valor interno (ID)
+
+                // 3. Define a fonte de dados usando a NOVA lista em maiúsculas
+                CBxEnviarPara.DataSource = empresasMaiusculas;
+                CBxCustoDeQuem.DataSource = empresasMaiusculas;
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao carregar lista de empresas:\n{ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async Task CarregarMotivosAsync()
+        {
+            try
+            {
+                List<MotivosPrincipaisDto> motivos = await _motivosService.ObterTodosMotivosAsync();
+
+                // 1. Cria e Insere o item em branco no início
+                var itemEmBranco = new MotivosPrincipaisDto
+                {
+                    IdMotivoPrincipal = 0,
+                    MotivoPrincipal = ""
+                };
+                motivos.Insert(0, itemEmBranco);
+
+                // 2. CONVERTE PARA MAIÚSCULAS antes de atribuir ao DataSource
+                var motivosMaiusculos = motivos
+                    .Select(m => new MotivosPrincipaisDto
+                    {
+                        IdMotivoPrincipal = m.IdMotivoPrincipal,
+                        MotivoPrincipal = m.MotivoPrincipal?.ToUpper() // Converte para maiúsculo
+                    })
+                    .ToList();
+
+                // 3. Limpa e configura o ComboBox
+                CBxMotivoPrincipal.DataSource = null;
+                CBxMotivoPrincipal.Items.Clear();
+
+                CBxMotivoPrincipal.DisplayMember = "MotivoPrincipal";
+                CBxMotivoPrincipal.ValueMember = "IdMotivoPrincipal";
+
+                // 4. Atribuição da fonte de dados
+                CBxMotivoPrincipal.DataSource = motivosMaiusculos;
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao carregar lista de Motivos Principais:\n{ex.Message}", "Erro de Carregamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async Task CarregarPrioridadesAsync()
+        {
+            try
+            {
+                List<PrioridadeDto> prioridades = await _prioridadeService.ObterTodasPrioridadesAsync();
+
+                // 1. Cria e Insere o item em branco no início
+                var itemEmBranco = new PrioridadeDto
+                {
+                    IdPrioridade = 0,
+                    DescricaoPrioridade = ""
+                };
+                prioridades.Insert(0, itemEmBranco);
+
+                // 2. CONVERTE PARA MAIÚSCULAS antes de atribuir ao DataSource
+                var prioridadesMaiusculas = prioridades
+                    .Select(p => new PrioridadeDto
+                    {
+                        IdPrioridade = p.IdPrioridade,
+                        DescricaoPrioridade = p.DescricaoPrioridade?.ToUpper() // Converte para maiúsculo
+                    })
+                    .ToList();
+
+                // 3. Limpa e configura o ComboBox
+                CBxPrioridade.DataSource = null;
+                CBxPrioridade.Items.Clear();
+
+                // Configuração dos membros
+                CBxPrioridade.DisplayMember = "DescricaoPrioridade";
+                CBxPrioridade.ValueMember = "IdPrioridade";
+
+                // 4. Atribuição da fonte de dados
+                CBxPrioridade.DataSource = prioridadesMaiusculas;
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao carregar lista de Prioridades:\n{ex.Message}", "Erro de Carregamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async Task CarregarStatusAsync()
+        {
+            try
+            {
+                List<StatusDto> statusList = await _statusService.ObterTodosStatusAsync();
+
+                // 1. Cria e Insere o item em branco no início
+                var itemEmBranco = new StatusDto
+                {
+                    IdStatus = 0,
+                    DescricaoStatus = ""
+                };
+                statusList.Insert(0, itemEmBranco);
+
+                // 2. CONVERTE PARA MAIÚSCULAS antes de atribuir ao DataSource
+                var statusMaiusculos = statusList
+                    .Select(s => new StatusDto
+                    {
+                        IdStatus = s.IdStatus,
+                        DescricaoStatus = s.DescricaoStatus?.ToUpper() // Converte para maiúsculo
+                    })
+                    .ToList();
+
+                // 3. Limpa e configura o ComboBox
+                CBxStatus.DataSource = null;
+                CBxStatus.Items.Clear();
+
+                // Configuração dos membros
+                CBxStatus.DisplayMember = "DescricaoStatus";
+                CBxStatus.ValueMember = "IdStatus";
+
+                // 4. Atribuição da fonte de dados
+                CBxStatus.DataSource = statusMaiusculos;
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao carregar lista de Status:\n{ex.Message}", "Erro de Carregamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async Task CarregarConfiguracoesCustoAsync()
+        {
+            try
+            {
+                // 1. Chame o serviço para obter as configurações (assumindo ID fixo 1)
+                var config = await _configuracoesCustoService.ObterConfiguracoesCustoAsync();
+
+                // Define valores default caso o registro de configuração não seja encontrado
+                if (config == null)
+                {
+                    _margemCorte = 0m;
+                    _fatorCalculo = 0m;
+                    _maoObra = 0m; // Define 0m como default para o campo opcional
+
+                    MessageBox.Show("Configurações de custo não encontradas no banco de dados. Usando valores zero.", "Configuração Ausente", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else
+                {
+                    _margemCorte = config.MargemCorte;
+                    _fatorCalculo = config.FatorCalculo;
+                    _maoObra = config.MaoObra ?? 0m;
+                }
+
+                CultureInfo culture = new CultureInfo("pt-BR");
+                TxbMargem.Text = _margemCorte.ToString("N2", culture);
+                TxbFatorCusto.Text = _fatorCalculo.ToString("N2", culture);
+                TxbMaoObra.Text = _maoObra.Value.ToString("N2", culture);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao carregar as configurações de custo:\n{ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         #endregion
 
         private List<CoresInserirDto> ColetarDadosDasCoresDoFormulario()
@@ -764,11 +1328,140 @@ namespace Regravacao
             await CarregarMateriais();
             await CarregarFinalizadores();
             await CarregarConferentes();
+            await CarregarSolicitante();
+            await CarregarEmpresasAsync();
+            await CarregarMotivosAsync();
+            await CarregarPrioridadesAsync();
+            await CarregarStatusAsync();
+            await CarregarConfiguracoesCustoAsync();
+            AtualizarControlesCores((int)NumUpDQtdePlacas.Value);
         }
 
         private async void DGWDetalhesErros_DoubleClick(object sender, EventArgs e)
         {
             await AbrirEAtualizarErrosAsync();
         }
+
+        private void TxbLarguraCor1_TextChanged(object sender, EventArgs e)
+        {                       
+            CalcularCustoCores();
+        }
+
+        private void TxbComprimentoCor1_TextChanged(object sender, EventArgs e)
+        {            
+            CalcularCustoCores();
+        }
+
+        private void TxbLarguraCor2_TextChanged(object sender, EventArgs e)
+        {            
+            CalcularCustoCores();
+        }
+
+        private void TxbComprimentoCor2_TextChanged(object sender, EventArgs e)
+        {            
+            CalcularCustoCores();
+        }
+
+        private void TxbLarguraCor3_TextChanged(object sender, EventArgs e)
+        {            
+            CalcularCustoCores();
+        }
+
+        private void TxbComprimentoCor3_TextChanged(object sender, EventArgs e)
+        {
+            // ConectarEventosCalculo();
+            CalcularCustoCores();
+        }
+
+        private void TxbLarguraCor4_TextChanged(object sender, EventArgs e)
+        {            
+            CalcularCustoCores();
+        }
+
+        private void TxbComprimentoCor4_TextChanged(object sender, EventArgs e)
+        {           
+            CalcularCustoCores();
+        }
+
+        private void TxbLarguraCor5_TextChanged(object sender, EventArgs e)
+        {           
+            CalcularCustoCores();
+        }
+
+        private void TxbComprimentoCor5_TextChanged(object sender, EventArgs e)
+        {
+            CalcularCustoCores();
+        }
+
+        private void TxbLarguraCor6_TextChanged(object sender, EventArgs e)
+        {
+            CalcularCustoCores();
+        }
+
+        private void TxbComprimentoCor6_TextChanged(object sender, EventArgs e)
+        {
+            CalcularCustoCores();
+        }
+
+        private void TxbLarguraCor7_TextChanged(object sender, EventArgs e)
+        {
+            CalcularCustoCores();
+        }
+
+        private void TxbComprimentoCor7_TextChanged(object sender, EventArgs e)
+        {
+            CalcularCustoCores();
+        }
+
+        private void TxbLarguraCor8_TextChanged(object sender, EventArgs e)
+        {
+            CalcularCustoCores();
+        }
+
+        private void TxbComprimentoCor8_TextChanged(object sender, EventArgs e)
+        {
+            CalcularCustoCores();
+        }
+
+        private void CkBCor1_CheckedChanged(object sender, EventArgs e)
+        {
+            CalcularCustoCores();
+        }
+
+        private void CkBCor2_CheckedChanged(object sender, EventArgs e)
+        {
+            CalcularCustoCores();
+        }
+
+        private void CkBCor3_CheckedChanged(object sender, EventArgs e)
+        {
+            CalcularCustoCores();
+        }
+
+        private void CkBCor4_CheckedChanged(object sender, EventArgs e)
+        {
+            CalcularCustoCores();
+        }
+
+        private void CkBCor5_CheckedChanged(object sender, EventArgs e)
+        {
+            CalcularCustoCores();
+        }
+
+        private void CkBCor6_CheckedChanged(object sender, EventArgs e)
+        {
+            CalcularCustoCores();
+        }
+
+        private void CkBCor7_CheckedChanged(object sender, EventArgs e)
+        {
+            CalcularCustoCores();
+        }
+
+        private void CkBCor8_CheckedChanged(object sender, EventArgs e)
+        {
+            CalcularCustoCores();
+        }
+
     }
 }

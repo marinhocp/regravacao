@@ -1,16 +1,20 @@
 ﻿using Supabase.Postgrest.Attributes;
 using Supabase.Postgrest.Models;
+using Supabase.Postgrest;
 
 namespace Regravacao.DTOs
 {
+    // O DTO deve refletir a tabela
     [Table("TblEmpresa")]
-    public class EmpresaDto
+    public class EmpresaDto : BaseModel // ✅ Herança obrigatória para Supabase
     {
-        [Column("id_empresa")]
+        // ✅ Chave primária definida para o Postgrest
+        [PrimaryKey("id_empresa", false)]
         public int IdEmpresa { get; set; }
 
         [Column("nome_empresa")]
-        public required string NomeEmpresa { get; set; }
+        // ✅ Removido 'required' para compatibilidade com o construtor new() do Postgrest
+        public string NomeEmpresa { get; set; }
 
         [Column("id_status")]
         public int IdStatus { get; set; }

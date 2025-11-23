@@ -1,18 +1,24 @@
 ﻿using Supabase.Postgrest.Attributes;
+using Supabase.Postgrest.Models; // Ou using NOME_DO_SEU_NAMESPACE.BaseModel, se for Base
+using System.Text.Json.Serialization;
 
 namespace Regravacao.Models
 {
-
     [Table("TblCores")]
-    public class CoresModel
+    public class CoresModel : BaseModel // Ou Model, dependendo do seu projeto
     {
-        [Column("id_cor")]
+        [PrimaryKey("id_cor", false)]
+        [JsonPropertyName("id_cor")]
         public int IdCor { get; set; }
 
         [Column("nome_cor")]
-        public required string NomeCor { get; set; }
+        [JsonPropertyName("nome_cor")]
+        // ✅ REMOVIDO: required. Inicializado com string.Empty para segurança.
+        public string NomeCor { get; set; } = string.Empty;
 
         [Column("codigo_exadecimal")]
-        public required string CodigoExadecimal { get; set; }
+        [JsonPropertyName("codigo_exadecimal")]
+        // ✅ REMOVIDO: required. 
+        public string CodigoExadecimal { get; set; } = string.Empty;
     }
 }

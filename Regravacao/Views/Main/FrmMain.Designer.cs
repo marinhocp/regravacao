@@ -31,14 +31,14 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
             panel1 = new Panel();
             panel6 = new Panel();
+            groupBox2 = new GroupBox();
+            TxbObservacao = new TextBox();
             BtnLimparCamposCadastro = new Button();
             groupBox7 = new GroupBox();
             CBxConferidoPor = new ComboBox();
             CBxFinalizadoPor = new ComboBox();
             label26 = new Label();
             label16 = new Label();
-            groupBox8 = new GroupBox();
-            DGWDetalhesErros = new DataGridView();
             BtnSalvarCadastro = new Button();
             groupBox4 = new GroupBox();
             TxbMaoObra = new TextBox();
@@ -129,8 +129,8 @@
             label33 = new Label();
             label47 = new Label();
             label35 = new Label();
-            groupBox2 = new GroupBox();
-            TxbObservacao = new TextBox();
+            groupBox8 = new GroupBox();
+            DGWDetalhesErros = new DataGridView();
             GPPrint = new GroupBox();
             BtnDelThumbnail = new Button();
             BtnAddThumbnail = new Button();
@@ -199,11 +199,11 @@
             label30 = new Label();
             panel1.SuspendLayout();
             panel6.SuspendLayout();
+            groupBox2.SuspendLayout();
             groupBox7.SuspendLayout();
+            groupBox4.SuspendLayout();
             groupBox8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)DGWDetalhesErros).BeginInit();
-            groupBox4.SuspendLayout();
-            groupBox2.SuspendLayout();
             GPPrint.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)PictureBoxThumbnail).BeginInit();
             groupBox1.SuspendLayout();
@@ -239,13 +239,13 @@
             // 
             // panel6
             // 
-            panel6.BackColor = Color.LightGray;
+            panel6.BackColor = Color.Silver;
+            panel6.Controls.Add(groupBox2);
             panel6.Controls.Add(BtnLimparCamposCadastro);
             panel6.Controls.Add(groupBox7);
-            panel6.Controls.Add(groupBox8);
             panel6.Controls.Add(BtnSalvarCadastro);
             panel6.Controls.Add(groupBox4);
-            panel6.Controls.Add(groupBox2);
+            panel6.Controls.Add(groupBox8);
             panel6.Controls.Add(GPPrint);
             panel6.Controls.Add(groupBox1);
             panel6.Controls.Add(groupBox3);
@@ -256,6 +256,30 @@
             panel6.Size = new Size(1601, 904);
             panel6.TabIndex = 0;
             // 
+            // groupBox2
+            // 
+            groupBox2.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            groupBox2.Controls.Add(TxbObservacao);
+            groupBox2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            groupBox2.Location = new Point(950, 421);
+            groupBox2.Name = "groupBox2";
+            groupBox2.Size = new Size(283, 470);
+            groupBox2.TabIndex = 5;
+            groupBox2.TabStop = false;
+            groupBox2.Text = "OBSERVAÇÃO";
+            // 
+            // TxbObservacao
+            // 
+            TxbObservacao.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            TxbObservacao.BackColor = Color.WhiteSmoke;
+            TxbObservacao.BorderStyle = BorderStyle.FixedSingle;
+            TxbObservacao.Font = new Font("Segoe UI", 9F);
+            TxbObservacao.Location = new Point(9, 23);
+            TxbObservacao.Multiline = true;
+            TxbObservacao.Name = "TxbObservacao";
+            TxbObservacao.Size = new Size(266, 432);
+            TxbObservacao.TabIndex = 48;
+            // 
             // BtnLimparCamposCadastro
             // 
             BtnLimparCamposCadastro.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
@@ -264,10 +288,10 @@
             BtnLimparCamposCadastro.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             BtnLimparCamposCadastro.ForeColor = SystemColors.ButtonFace;
             BtnLimparCamposCadastro.ImageAlign = ContentAlignment.MiddleLeft;
-            BtnLimparCamposCadastro.Location = new Point(1471, 826);
+            BtnLimparCamposCadastro.Location = new Point(1493, 816);
             BtnLimparCamposCadastro.Name = "BtnLimparCamposCadastro";
-            BtnLimparCamposCadastro.Size = new Size(103, 55);
-            BtnLimparCamposCadastro.TabIndex = 51;
+            BtnLimparCamposCadastro.Size = new Size(93, 65);
+            BtnLimparCamposCadastro.TabIndex = 52;
             BtnLimparCamposCadastro.Text = "NOVO";
             BtnLimparCamposCadastro.UseVisualStyleBackColor = false;
             // 
@@ -329,59 +353,24 @@
             label16.TabIndex = 103;
             label16.Text = "Finalizado por";
             // 
-            // groupBox8
-            // 
-            groupBox8.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            groupBox8.Controls.Add(DGWDetalhesErros);
-            groupBox8.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox8.Location = new Point(16, 249);
-            groupBox8.Name = "groupBox8";
-            groupBox8.Size = new Size(1209, 152);
-            groupBox8.TabIndex = 4;
-            groupBox8.TabStop = false;
-            groupBox8.Text = "ERROS DETALHADOS";
-            // 
-            // DGWDetalhesErros
-            // 
-            DGWDetalhesErros.AllowUserToAddRows = false;
-            DGWDetalhesErros.AllowUserToDeleteRows = false;
-            DGWDetalhesErros.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            DGWDetalhesErros.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            DGWDetalhesErros.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-            DGWDetalhesErros.BackgroundColor = Color.WhiteSmoke;
-            DGWDetalhesErros.BorderStyle = BorderStyle.None;
-            DGWDetalhesErros.CellBorderStyle = DataGridViewCellBorderStyle.None;
-            DGWDetalhesErros.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableAlwaysIncludeHeaderText;
-            DGWDetalhesErros.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
-            DGWDetalhesErros.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            DGWDetalhesErros.Location = new Point(14, 26);
-            DGWDetalhesErros.Name = "DGWDetalhesErros";
-            DGWDetalhesErros.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
-            DGWDetalhesErros.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
-            DGWDetalhesErros.Size = new Size(1188, 117);
-            DGWDetalhesErros.TabIndex = 0;
-            DGWDetalhesErros.TabStop = false;
-            DGWDetalhesErros.DoubleClick += DGWDetalhesErros_DoubleClick;
-            // 
             // BtnSalvarCadastro
             // 
-            BtnSalvarCadastro.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            BtnSalvarCadastro.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             BtnSalvarCadastro.BackColor = Color.DarkSlateGray;
             BtnSalvarCadastro.FlatStyle = FlatStyle.Flat;
             BtnSalvarCadastro.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             BtnSalvarCadastro.ForeColor = SystemColors.ButtonFace;
             BtnSalvarCadastro.ImageAlign = ContentAlignment.MiddleLeft;
-            BtnSalvarCadastro.Location = new Point(1259, 828);
+            BtnSalvarCadastro.Location = new Point(1251, 818);
             BtnSalvarCadastro.Name = "BtnSalvarCadastro";
-            BtnSalvarCadastro.Size = new Size(206, 53);
-            BtnSalvarCadastro.TabIndex = 50;
+            BtnSalvarCadastro.Size = new Size(235, 63);
+            BtnSalvarCadastro.TabIndex = 51;
             BtnSalvarCadastro.Text = "SALVAR O CADASTRO";
             BtnSalvarCadastro.UseVisualStyleBackColor = false;
             BtnSalvarCadastro.Click += BtnSalvarCadastro_Click_1;
             // 
             // groupBox4
             // 
-            groupBox4.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             groupBox4.Controls.Add(TxbMaoObra);
             groupBox4.Controls.Add(label8);
             groupBox4.Controls.Add(PanelCor8);
@@ -471,19 +460,19 @@
             groupBox4.Controls.Add(label47);
             groupBox4.Controls.Add(label35);
             groupBox4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox4.Location = new Point(16, 415);
+            groupBox4.Location = new Point(16, 421);
             groupBox4.Name = "groupBox4";
-            groupBox4.Size = new Size(1209, 464);
-            groupBox4.TabIndex = 5;
+            groupBox4.Size = new Size(912, 470);
+            groupBox4.TabIndex = 4;
             groupBox4.TabStop = false;
             groupBox4.Text = "CALCULAR MEDIDAS E CUSTOS DO CLICHÊ";
             // 
             // TxbMaoObra
             // 
             TxbMaoObra.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            TxbMaoObra.BackColor = Color.FromArgb(255, 224, 192);
-            TxbMaoObra.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            TxbMaoObra.Location = new Point(627, 424);
+            TxbMaoObra.BackColor = Color.CadetBlue;
+            TxbMaoObra.Font = new Font("Segoe UI", 12F);
+            TxbMaoObra.Location = new Point(330, 426);
             TxbMaoObra.Name = "TxbMaoObra";
             TxbMaoObra.PlaceholderText = "R$";
             TxbMaoObra.ReadOnly = true;
@@ -497,7 +486,7 @@
             label8.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label8.AutoSize = true;
             label8.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
-            label8.Location = new Point(632, 400);
+            label8.Location = new Point(335, 403);
             label8.Name = "label8";
             label8.Size = new Size(75, 13);
             label8.TabIndex = 84;
@@ -505,56 +494,56 @@
             // 
             // PanelCor8
             // 
-            PanelCor8.Location = new Point(76, 350);
+            PanelCor8.Location = new Point(76, 354);
             PanelCor8.Name = "PanelCor8";
             PanelCor8.Size = new Size(18, 27);
             PanelCor8.TabIndex = 82;
             // 
             // PanelCor7
             // 
-            PanelCor7.Location = new Point(76, 309);
+            PanelCor7.Location = new Point(76, 313);
             PanelCor7.Name = "PanelCor7";
             PanelCor7.Size = new Size(18, 27);
             PanelCor7.TabIndex = 82;
             // 
             // PanelCor6
             // 
-            PanelCor6.Location = new Point(76, 267);
+            PanelCor6.Location = new Point(76, 271);
             PanelCor6.Name = "PanelCor6";
             PanelCor6.Size = new Size(18, 27);
             PanelCor6.TabIndex = 82;
             // 
             // PanelCor5
             // 
-            PanelCor5.Location = new Point(76, 229);
+            PanelCor5.Location = new Point(76, 233);
             PanelCor5.Name = "PanelCor5";
             PanelCor5.Size = new Size(18, 27);
             PanelCor5.TabIndex = 82;
             // 
             // PanelCor4
             // 
-            PanelCor4.Location = new Point(76, 188);
+            PanelCor4.Location = new Point(76, 192);
             PanelCor4.Name = "PanelCor4";
             PanelCor4.Size = new Size(18, 27);
             PanelCor4.TabIndex = 82;
             // 
             // PanelCor3
             // 
-            PanelCor3.Location = new Point(76, 150);
+            PanelCor3.Location = new Point(76, 154);
             PanelCor3.Name = "PanelCor3";
             PanelCor3.Size = new Size(18, 27);
             PanelCor3.TabIndex = 82;
             // 
             // PanelCor2
             // 
-            PanelCor2.Location = new Point(76, 110);
+            PanelCor2.Location = new Point(76, 114);
             PanelCor2.Name = "PanelCor2";
             PanelCor2.Size = new Size(18, 27);
             PanelCor2.TabIndex = 82;
             // 
             // PanelCor1
             // 
-            PanelCor1.Location = new Point(76, 70);
+            PanelCor1.Location = new Point(76, 74);
             PanelCor1.Name = "PanelCor1";
             PanelCor1.Size = new Size(18, 27);
             PanelCor1.TabIndex = 82;
@@ -562,10 +551,11 @@
             // label19
             // 
             label19.AutoSize = true;
+            label19.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold);
             label19.ForeColor = Color.IndianRed;
-            label19.Location = new Point(10, 24);
+            label19.Location = new Point(10, 26);
             label19.Name = "label19";
-            label19.Size = new Size(804, 15);
+            label19.Size = new Size(828, 13);
             label19.TabIndex = 81;
             label19.Text = "As medidas devem ser informadas em centímetros. Somente serão adicionadas ao custo final as cores que estiverem com o checkbox marcados.";
             // 
@@ -574,96 +564,112 @@
             CkBCor8.AutoSize = true;
             CkBCor8.FlatStyle = FlatStyle.Flat;
             CkBCor8.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            CkBCor8.Location = new Point(14, 351);
+            CkBCor8.Location = new Point(14, 355);
             CkBCor8.Name = "CkBCor8";
             CkBCor8.Size = new Size(65, 25);
-            CkBCor8.TabIndex = 43;
+            CkBCor8.TabIndex = 44;
             CkBCor8.Text = "Cor 8";
+            CkBCor8.ThreeState = true;
             CkBCor8.UseVisualStyleBackColor = true;
+            CkBCor8.CheckedChanged += CkBCor8_CheckedChanged;
             // 
             // CkBCor7
             // 
             CkBCor7.AutoSize = true;
             CkBCor7.FlatStyle = FlatStyle.Flat;
             CkBCor7.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            CkBCor7.Location = new Point(14, 311);
+            CkBCor7.Location = new Point(14, 315);
             CkBCor7.Name = "CkBCor7";
             CkBCor7.Size = new Size(65, 25);
-            CkBCor7.TabIndex = 39;
+            CkBCor7.TabIndex = 40;
             CkBCor7.Text = "Cor 7";
+            CkBCor7.ThreeState = true;
             CkBCor7.UseVisualStyleBackColor = true;
+            CkBCor7.CheckedChanged += CkBCor7_CheckedChanged;
             // 
             // CkBCor6
             // 
             CkBCor6.AutoSize = true;
             CkBCor6.FlatStyle = FlatStyle.Flat;
             CkBCor6.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            CkBCor6.Location = new Point(14, 271);
+            CkBCor6.Location = new Point(14, 275);
             CkBCor6.Name = "CkBCor6";
             CkBCor6.Size = new Size(65, 25);
-            CkBCor6.TabIndex = 35;
+            CkBCor6.TabIndex = 36;
             CkBCor6.Text = "Cor 6";
+            CkBCor6.ThreeState = true;
             CkBCor6.UseVisualStyleBackColor = true;
+            CkBCor6.CheckedChanged += CkBCor6_CheckedChanged;
             // 
             // CkBCor5
             // 
             CkBCor5.AutoSize = true;
             CkBCor5.FlatStyle = FlatStyle.Flat;
             CkBCor5.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            CkBCor5.Location = new Point(14, 231);
+            CkBCor5.Location = new Point(14, 235);
             CkBCor5.Name = "CkBCor5";
             CkBCor5.Size = new Size(65, 25);
-            CkBCor5.TabIndex = 31;
+            CkBCor5.TabIndex = 32;
             CkBCor5.Text = "Cor 5";
+            CkBCor5.ThreeState = true;
             CkBCor5.UseVisualStyleBackColor = true;
+            CkBCor5.CheckedChanged += CkBCor5_CheckedChanged;
             // 
             // CkBCor4
             // 
             CkBCor4.AutoSize = true;
             CkBCor4.FlatStyle = FlatStyle.Flat;
             CkBCor4.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            CkBCor4.Location = new Point(14, 191);
+            CkBCor4.Location = new Point(14, 195);
             CkBCor4.Name = "CkBCor4";
             CkBCor4.Size = new Size(65, 25);
-            CkBCor4.TabIndex = 27;
+            CkBCor4.TabIndex = 28;
             CkBCor4.Text = "Cor 4";
+            CkBCor4.ThreeState = true;
             CkBCor4.UseVisualStyleBackColor = true;
+            CkBCor4.CheckedChanged += CkBCor4_CheckedChanged;
             // 
             // CkBCor3
             // 
             CkBCor3.AutoSize = true;
             CkBCor3.FlatStyle = FlatStyle.Flat;
             CkBCor3.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            CkBCor3.Location = new Point(14, 151);
+            CkBCor3.Location = new Point(14, 155);
             CkBCor3.Name = "CkBCor3";
             CkBCor3.Size = new Size(65, 25);
-            CkBCor3.TabIndex = 23;
+            CkBCor3.TabIndex = 24;
             CkBCor3.Text = "Cor 3";
+            CkBCor3.ThreeState = true;
             CkBCor3.UseVisualStyleBackColor = true;
+            CkBCor3.CheckedChanged += CkBCor3_CheckedChanged;
             // 
             // CkBCor2
             // 
             CkBCor2.AutoSize = true;
             CkBCor2.FlatStyle = FlatStyle.Flat;
             CkBCor2.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            CkBCor2.Location = new Point(14, 111);
+            CkBCor2.Location = new Point(14, 115);
             CkBCor2.Name = "CkBCor2";
             CkBCor2.Size = new Size(65, 25);
-            CkBCor2.TabIndex = 19;
+            CkBCor2.TabIndex = 20;
             CkBCor2.Text = "Cor 2";
+            CkBCor2.ThreeState = true;
             CkBCor2.UseVisualStyleBackColor = true;
+            CkBCor2.CheckedChanged += CkBCor2_CheckedChanged;
             // 
             // CkBCor1
             // 
             CkBCor1.AutoSize = true;
             CkBCor1.FlatStyle = FlatStyle.Flat;
             CkBCor1.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            CkBCor1.Location = new Point(14, 71);
+            CkBCor1.Location = new Point(14, 75);
             CkBCor1.Name = "CkBCor1";
             CkBCor1.Size = new Size(65, 25);
-            CkBCor1.TabIndex = 15;
+            CkBCor1.TabIndex = 16;
             CkBCor1.Text = "Cor 1";
+            CkBCor1.ThreeState = true;
             CkBCor1.UseVisualStyleBackColor = true;
+            CkBCor1.CheckedChanged += CkBCor1_CheckedChanged;
             // 
             // label45
             // 
@@ -671,7 +677,7 @@
             label45.AutoSize = true;
             label45.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             label45.ForeColor = SystemColors.ControlDarkDark;
-            label45.Location = new Point(944, 359);
+            label45.Location = new Point(647, 363);
             label45.Name = "label45";
             label45.Size = new Size(19, 19);
             label45.TabIndex = 69;
@@ -683,7 +689,7 @@
             label41.AutoSize = true;
             label41.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             label41.ForeColor = SystemColors.ControlDarkDark;
-            label41.Location = new Point(944, 319);
+            label41.Location = new Point(647, 323);
             label41.Name = "label41";
             label41.Size = new Size(19, 19);
             label41.TabIndex = 68;
@@ -695,7 +701,7 @@
             label36.AutoSize = true;
             label36.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             label36.ForeColor = SystemColors.ControlDarkDark;
-            label36.Location = new Point(944, 279);
+            label36.Location = new Point(647, 283);
             label36.Name = "label36";
             label36.Size = new Size(19, 19);
             label36.TabIndex = 67;
@@ -707,7 +713,7 @@
             label9.AutoSize = true;
             label9.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             label9.ForeColor = SystemColors.ControlDarkDark;
-            label9.Location = new Point(944, 239);
+            label9.Location = new Point(647, 243);
             label9.Name = "label9";
             label9.Size = new Size(19, 19);
             label9.TabIndex = 66;
@@ -719,7 +725,7 @@
             label25.AutoSize = true;
             label25.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             label25.ForeColor = SystemColors.ControlDarkDark;
-            label25.Location = new Point(944, 199);
+            label25.Location = new Point(647, 203);
             label25.Name = "label25";
             label25.Size = new Size(19, 19);
             label25.TabIndex = 64;
@@ -731,7 +737,7 @@
             label17.AutoSize = true;
             label17.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             label17.ForeColor = SystemColors.ControlDarkDark;
-            label17.Location = new Point(944, 164);
+            label17.Location = new Point(647, 168);
             label17.Name = "label17";
             label17.Size = new Size(19, 19);
             label17.TabIndex = 65;
@@ -743,7 +749,7 @@
             label11.AutoSize = true;
             label11.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             label11.ForeColor = SystemColors.ControlDarkDark;
-            label11.Location = new Point(944, 119);
+            label11.Location = new Point(647, 123);
             label11.Name = "label11";
             label11.Size = new Size(19, 19);
             label11.TabIndex = 70;
@@ -755,7 +761,7 @@
             label12.AutoSize = true;
             label12.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             label12.ForeColor = SystemColors.ControlDarkDark;
-            label12.Location = new Point(944, 80);
+            label12.Location = new Point(647, 84);
             label12.Name = "label12";
             label12.Size = new Size(19, 19);
             label12.TabIndex = 71;
@@ -767,7 +773,7 @@
             label44.AutoSize = true;
             label44.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             label44.ForeColor = SystemColors.ControlDarkDark;
-            label44.Location = new Point(835, 356);
+            label44.Location = new Point(538, 360);
             label44.Name = "label44";
             label44.Size = new Size(17, 19);
             label44.TabIndex = 73;
@@ -779,7 +785,7 @@
             label40.AutoSize = true;
             label40.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             label40.ForeColor = SystemColors.ControlDarkDark;
-            label40.Location = new Point(835, 316);
+            label40.Location = new Point(538, 320);
             label40.Name = "label40";
             label40.Size = new Size(17, 19);
             label40.TabIndex = 74;
@@ -791,7 +797,7 @@
             label14.AutoSize = true;
             label14.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             label14.ForeColor = SystemColors.ControlDarkDark;
-            label14.Location = new Point(835, 276);
+            label14.Location = new Point(538, 280);
             label14.Name = "label14";
             label14.Size = new Size(17, 19);
             label14.TabIndex = 75;
@@ -803,7 +809,7 @@
             label28.AutoSize = true;
             label28.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             label28.ForeColor = SystemColors.ControlDarkDark;
-            label28.Location = new Point(835, 236);
+            label28.Location = new Point(538, 240);
             label28.Name = "label28";
             label28.Size = new Size(17, 19);
             label28.TabIndex = 72;
@@ -815,7 +821,7 @@
             label23.AutoSize = true;
             label23.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             label23.ForeColor = SystemColors.ControlDarkDark;
-            label23.Location = new Point(835, 196);
+            label23.Location = new Point(538, 200);
             label23.Name = "label23";
             label23.Size = new Size(17, 19);
             label23.TabIndex = 76;
@@ -827,7 +833,7 @@
             label18.AutoSize = true;
             label18.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             label18.ForeColor = SystemColors.ControlDarkDark;
-            label18.Location = new Point(835, 160);
+            label18.Location = new Point(538, 164);
             label18.Name = "label18";
             label18.Size = new Size(17, 19);
             label18.TabIndex = 77;
@@ -839,7 +845,7 @@
             label20.AutoSize = true;
             label20.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             label20.ForeColor = SystemColors.ControlDarkDark;
-            label20.Location = new Point(835, 116);
+            label20.Location = new Point(538, 120);
             label20.Name = "label20";
             label20.Size = new Size(17, 19);
             label20.TabIndex = 78;
@@ -851,7 +857,7 @@
             label21.AutoSize = true;
             label21.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             label21.ForeColor = SystemColors.ControlDarkDark;
-            label21.Location = new Point(835, 76);
+            label21.Location = new Point(538, 80);
             label21.Name = "label21";
             label21.Size = new Size(17, 19);
             label21.TabIndex = 3;
@@ -860,9 +866,9 @@
             // TxbMargem
             // 
             TxbMargem.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            TxbMargem.BackColor = Color.FromArgb(255, 224, 192);
-            TxbMargem.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            TxbMargem.Location = new Point(395, 424);
+            TxbMargem.BackColor = Color.CadetBlue;
+            TxbMargem.Font = new Font("Segoe UI", 12F);
+            TxbMargem.Location = new Point(98, 426);
             TxbMargem.Name = "TxbMargem";
             TxbMargem.PlaceholderText = "cm";
             TxbMargem.ReadOnly = true;
@@ -874,9 +880,9 @@
             // TxbFatorCusto
             // 
             TxbFatorCusto.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            TxbFatorCusto.BackColor = Color.FromArgb(255, 224, 192);
-            TxbFatorCusto.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            TxbFatorCusto.Location = new Point(511, 424);
+            TxbFatorCusto.BackColor = Color.CadetBlue;
+            TxbFatorCusto.Font = new Font("Segoe UI", 12F);
+            TxbFatorCusto.Location = new Point(214, 426);
             TxbFatorCusto.Name = "TxbFatorCusto";
             TxbFatorCusto.PlaceholderText = "R$";
             TxbFatorCusto.ReadOnly = true;
@@ -889,8 +895,8 @@
             // 
             TxbMedidaTotal.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             TxbMedidaTotal.BackColor = Color.FromArgb(255, 224, 192);
-            TxbMedidaTotal.Font = new Font("Segoe UI", 13F);
-            TxbMedidaTotal.Location = new Point(743, 422);
+            TxbMedidaTotal.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
+            TxbMedidaTotal.Location = new Point(446, 425);
             TxbMedidaTotal.Name = "TxbMedidaTotal";
             TxbMedidaTotal.PlaceholderText = "cm²";
             TxbMedidaTotal.Size = new Size(200, 31);
@@ -903,7 +909,7 @@
             TxbMedidaPlacaCor8.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             TxbMedidaPlacaCor8.BackColor = Color.FromArgb(255, 224, 192);
             TxbMedidaPlacaCor8.Font = new Font("Segoe UI", 12F);
-            TxbMedidaPlacaCor8.Location = new Point(963, 350);
+            TxbMedidaPlacaCor8.Location = new Point(666, 354);
             TxbMedidaPlacaCor8.Name = "TxbMedidaPlacaCor8";
             TxbMedidaPlacaCor8.PlaceholderText = "cm²";
             TxbMedidaPlacaCor8.Size = new Size(110, 29);
@@ -916,7 +922,7 @@
             TxbMedidaPlacaCor7.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             TxbMedidaPlacaCor7.BackColor = Color.FromArgb(255, 224, 192);
             TxbMedidaPlacaCor7.Font = new Font("Segoe UI", 12F);
-            TxbMedidaPlacaCor7.Location = new Point(963, 310);
+            TxbMedidaPlacaCor7.Location = new Point(666, 314);
             TxbMedidaPlacaCor7.Name = "TxbMedidaPlacaCor7";
             TxbMedidaPlacaCor7.PlaceholderText = "cm²";
             TxbMedidaPlacaCor7.Size = new Size(110, 29);
@@ -929,7 +935,7 @@
             TxbMedidaPlacaCor6.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             TxbMedidaPlacaCor6.BackColor = Color.FromArgb(255, 224, 192);
             TxbMedidaPlacaCor6.Font = new Font("Segoe UI", 12F);
-            TxbMedidaPlacaCor6.Location = new Point(963, 270);
+            TxbMedidaPlacaCor6.Location = new Point(666, 274);
             TxbMedidaPlacaCor6.Name = "TxbMedidaPlacaCor6";
             TxbMedidaPlacaCor6.PlaceholderText = "cm²";
             TxbMedidaPlacaCor6.Size = new Size(110, 29);
@@ -942,7 +948,7 @@
             TxbMedidaPlacaCor5.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             TxbMedidaPlacaCor5.BackColor = Color.FromArgb(255, 224, 192);
             TxbMedidaPlacaCor5.Font = new Font("Segoe UI", 12F);
-            TxbMedidaPlacaCor5.Location = new Point(963, 230);
+            TxbMedidaPlacaCor5.Location = new Point(666, 234);
             TxbMedidaPlacaCor5.Name = "TxbMedidaPlacaCor5";
             TxbMedidaPlacaCor5.PlaceholderText = "cm²";
             TxbMedidaPlacaCor5.Size = new Size(110, 29);
@@ -955,7 +961,7 @@
             TxbMedidaPlacaCor4.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             TxbMedidaPlacaCor4.BackColor = Color.FromArgb(255, 224, 192);
             TxbMedidaPlacaCor4.Font = new Font("Segoe UI", 12F);
-            TxbMedidaPlacaCor4.Location = new Point(963, 190);
+            TxbMedidaPlacaCor4.Location = new Point(666, 194);
             TxbMedidaPlacaCor4.Name = "TxbMedidaPlacaCor4";
             TxbMedidaPlacaCor4.PlaceholderText = "cm²";
             TxbMedidaPlacaCor4.Size = new Size(110, 29);
@@ -968,7 +974,7 @@
             TxbMedidaPlacaCor3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             TxbMedidaPlacaCor3.BackColor = Color.FromArgb(255, 224, 192);
             TxbMedidaPlacaCor3.Font = new Font("Segoe UI", 12F);
-            TxbMedidaPlacaCor3.Location = new Point(963, 150);
+            TxbMedidaPlacaCor3.Location = new Point(666, 154);
             TxbMedidaPlacaCor3.Name = "TxbMedidaPlacaCor3";
             TxbMedidaPlacaCor3.PlaceholderText = "cm²";
             TxbMedidaPlacaCor3.Size = new Size(110, 29);
@@ -981,7 +987,7 @@
             TxbMedidaPlacaCor2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             TxbMedidaPlacaCor2.BackColor = Color.FromArgb(255, 224, 192);
             TxbMedidaPlacaCor2.Font = new Font("Segoe UI", 12F);
-            TxbMedidaPlacaCor2.Location = new Point(963, 110);
+            TxbMedidaPlacaCor2.Location = new Point(666, 114);
             TxbMedidaPlacaCor2.Name = "TxbMedidaPlacaCor2";
             TxbMedidaPlacaCor2.PlaceholderText = "cm²";
             TxbMedidaPlacaCor2.Size = new Size(110, 29);
@@ -994,7 +1000,7 @@
             TxbMedidaPlacaCor1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             TxbMedidaPlacaCor1.BackColor = Color.FromArgb(255, 224, 192);
             TxbMedidaPlacaCor1.Font = new Font("Segoe UI", 12F);
-            TxbMedidaPlacaCor1.Location = new Point(963, 71);
+            TxbMedidaPlacaCor1.Location = new Point(666, 75);
             TxbMedidaPlacaCor1.Name = "TxbMedidaPlacaCor1";
             TxbMedidaPlacaCor1.PlaceholderText = "cm²";
             TxbMedidaPlacaCor1.Size = new Size(110, 29);
@@ -1005,10 +1011,10 @@
             // TxbCustoTotal
             // 
             TxbCustoTotal.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            TxbCustoTotal.BackColor = Color.FromArgb(255, 192, 128);
+            TxbCustoTotal.BackColor = Color.FromArgb(255, 192, 192);
             TxbCustoTotal.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
-            TxbCustoTotal.ForeColor = SystemColors.ActiveCaptionText;
-            TxbCustoTotal.Location = new Point(963, 422);
+            TxbCustoTotal.ForeColor = SystemColors.WindowText;
+            TxbCustoTotal.Location = new Point(666, 425);
             TxbCustoTotal.Name = "TxbCustoTotal";
             TxbCustoTotal.PlaceholderText = "R$";
             TxbCustoTotal.ReadOnly = true;
@@ -1020,9 +1026,9 @@
             // TxbCustoParcialPlacaCor8
             // 
             TxbCustoParcialPlacaCor8.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            TxbCustoParcialPlacaCor8.BackColor = Color.FromArgb(255, 224, 192);
+            TxbCustoParcialPlacaCor8.BackColor = Color.FromArgb(255, 192, 192);
             TxbCustoParcialPlacaCor8.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            TxbCustoParcialPlacaCor8.Location = new Point(1082, 350);
+            TxbCustoParcialPlacaCor8.Location = new Point(785, 354);
             TxbCustoParcialPlacaCor8.Name = "TxbCustoParcialPlacaCor8";
             TxbCustoParcialPlacaCor8.PlaceholderText = "R$";
             TxbCustoParcialPlacaCor8.ReadOnly = true;
@@ -1034,9 +1040,9 @@
             // TxbCustoParcialPlacaCor7
             // 
             TxbCustoParcialPlacaCor7.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            TxbCustoParcialPlacaCor7.BackColor = Color.FromArgb(255, 224, 192);
+            TxbCustoParcialPlacaCor7.BackColor = Color.FromArgb(255, 192, 192);
             TxbCustoParcialPlacaCor7.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            TxbCustoParcialPlacaCor7.Location = new Point(1082, 310);
+            TxbCustoParcialPlacaCor7.Location = new Point(785, 314);
             TxbCustoParcialPlacaCor7.Name = "TxbCustoParcialPlacaCor7";
             TxbCustoParcialPlacaCor7.PlaceholderText = "R$";
             TxbCustoParcialPlacaCor7.ReadOnly = true;
@@ -1048,9 +1054,9 @@
             // TxbCustoParcialPlacaCor6
             // 
             TxbCustoParcialPlacaCor6.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            TxbCustoParcialPlacaCor6.BackColor = Color.FromArgb(255, 224, 192);
+            TxbCustoParcialPlacaCor6.BackColor = Color.FromArgb(255, 192, 192);
             TxbCustoParcialPlacaCor6.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            TxbCustoParcialPlacaCor6.Location = new Point(1082, 270);
+            TxbCustoParcialPlacaCor6.Location = new Point(785, 274);
             TxbCustoParcialPlacaCor6.Name = "TxbCustoParcialPlacaCor6";
             TxbCustoParcialPlacaCor6.PlaceholderText = "R$";
             TxbCustoParcialPlacaCor6.ReadOnly = true;
@@ -1062,9 +1068,9 @@
             // TxbCustoParcialPlacaCor5
             // 
             TxbCustoParcialPlacaCor5.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            TxbCustoParcialPlacaCor5.BackColor = Color.FromArgb(255, 224, 192);
+            TxbCustoParcialPlacaCor5.BackColor = Color.FromArgb(255, 192, 192);
             TxbCustoParcialPlacaCor5.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            TxbCustoParcialPlacaCor5.Location = new Point(1082, 230);
+            TxbCustoParcialPlacaCor5.Location = new Point(785, 234);
             TxbCustoParcialPlacaCor5.Name = "TxbCustoParcialPlacaCor5";
             TxbCustoParcialPlacaCor5.PlaceholderText = "R$";
             TxbCustoParcialPlacaCor5.ReadOnly = true;
@@ -1076,9 +1082,9 @@
             // TxbCustoParcialPlacaCor4
             // 
             TxbCustoParcialPlacaCor4.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            TxbCustoParcialPlacaCor4.BackColor = Color.FromArgb(255, 224, 192);
+            TxbCustoParcialPlacaCor4.BackColor = Color.FromArgb(255, 192, 192);
             TxbCustoParcialPlacaCor4.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            TxbCustoParcialPlacaCor4.Location = new Point(1082, 190);
+            TxbCustoParcialPlacaCor4.Location = new Point(785, 194);
             TxbCustoParcialPlacaCor4.Name = "TxbCustoParcialPlacaCor4";
             TxbCustoParcialPlacaCor4.PlaceholderText = "R$";
             TxbCustoParcialPlacaCor4.ReadOnly = true;
@@ -1090,9 +1096,9 @@
             // TxbCustoParcialPlacaCor3
             // 
             TxbCustoParcialPlacaCor3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            TxbCustoParcialPlacaCor3.BackColor = Color.FromArgb(255, 224, 192);
+            TxbCustoParcialPlacaCor3.BackColor = Color.FromArgb(255, 192, 192);
             TxbCustoParcialPlacaCor3.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            TxbCustoParcialPlacaCor3.Location = new Point(1082, 150);
+            TxbCustoParcialPlacaCor3.Location = new Point(785, 154);
             TxbCustoParcialPlacaCor3.Name = "TxbCustoParcialPlacaCor3";
             TxbCustoParcialPlacaCor3.PlaceholderText = "R$";
             TxbCustoParcialPlacaCor3.ReadOnly = true;
@@ -1104,9 +1110,9 @@
             // TxbCustoParcialPlacaCor2
             // 
             TxbCustoParcialPlacaCor2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            TxbCustoParcialPlacaCor2.BackColor = Color.FromArgb(255, 224, 192);
+            TxbCustoParcialPlacaCor2.BackColor = Color.FromArgb(255, 192, 192);
             TxbCustoParcialPlacaCor2.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            TxbCustoParcialPlacaCor2.Location = new Point(1082, 110);
+            TxbCustoParcialPlacaCor2.Location = new Point(785, 114);
             TxbCustoParcialPlacaCor2.Name = "TxbCustoParcialPlacaCor2";
             TxbCustoParcialPlacaCor2.PlaceholderText = "R$";
             TxbCustoParcialPlacaCor2.ReadOnly = true;
@@ -1118,9 +1124,9 @@
             // TxbCustoParcialPlacaCor1
             // 
             TxbCustoParcialPlacaCor1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            TxbCustoParcialPlacaCor1.BackColor = Color.FromArgb(255, 224, 192);
+            TxbCustoParcialPlacaCor1.BackColor = Color.FromArgb(255, 192, 192);
             TxbCustoParcialPlacaCor1.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            TxbCustoParcialPlacaCor1.Location = new Point(1082, 71);
+            TxbCustoParcialPlacaCor1.Location = new Point(785, 75);
             TxbCustoParcialPlacaCor1.Name = "TxbCustoParcialPlacaCor1";
             TxbCustoParcialPlacaCor1.PlaceholderText = "R$";
             TxbCustoParcialPlacaCor1.ReadOnly = true;
@@ -1134,245 +1140,264 @@
             TxbComprimentoCor8.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             TxbComprimentoCor8.BackColor = SystemColors.Control;
             TxbComprimentoCor8.Font = new Font("Segoe UI", 12F);
-            TxbComprimentoCor8.Location = new Point(854, 349);
+            TxbComprimentoCor8.Location = new Point(557, 353);
             TxbComprimentoCor8.Name = "TxbComprimentoCor8";
             TxbComprimentoCor8.PlaceholderText = "cm";
             TxbComprimentoCor8.Size = new Size(88, 29);
-            TxbComprimentoCor8.TabIndex = 46;
+            TxbComprimentoCor8.TabIndex = 47;
             TxbComprimentoCor8.TextAlign = HorizontalAlignment.Right;
+            TxbComprimentoCor8.TextChanged += TxbComprimentoCor8_TextChanged;
             // 
             // TxbComprimentoCor7
             // 
             TxbComprimentoCor7.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             TxbComprimentoCor7.BackColor = SystemColors.Control;
             TxbComprimentoCor7.Font = new Font("Segoe UI", 12F);
-            TxbComprimentoCor7.Location = new Point(854, 309);
+            TxbComprimentoCor7.Location = new Point(557, 313);
             TxbComprimentoCor7.Name = "TxbComprimentoCor7";
             TxbComprimentoCor7.PlaceholderText = "cm";
             TxbComprimentoCor7.Size = new Size(88, 29);
-            TxbComprimentoCor7.TabIndex = 42;
+            TxbComprimentoCor7.TabIndex = 43;
             TxbComprimentoCor7.TextAlign = HorizontalAlignment.Right;
+            TxbComprimentoCor7.TextChanged += TxbComprimentoCor7_TextChanged;
             // 
             // TxbComprimentoCor6
             // 
             TxbComprimentoCor6.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             TxbComprimentoCor6.BackColor = SystemColors.Control;
             TxbComprimentoCor6.Font = new Font("Segoe UI", 12F);
-            TxbComprimentoCor6.Location = new Point(854, 269);
+            TxbComprimentoCor6.Location = new Point(557, 273);
             TxbComprimentoCor6.Name = "TxbComprimentoCor6";
             TxbComprimentoCor6.PlaceholderText = "cm";
             TxbComprimentoCor6.Size = new Size(88, 29);
-            TxbComprimentoCor6.TabIndex = 38;
+            TxbComprimentoCor6.TabIndex = 39;
             TxbComprimentoCor6.TextAlign = HorizontalAlignment.Right;
+            TxbComprimentoCor6.TextChanged += TxbComprimentoCor6_TextChanged;
             // 
             // TxbComprimentoCor5
             // 
             TxbComprimentoCor5.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             TxbComprimentoCor5.BackColor = SystemColors.Control;
             TxbComprimentoCor5.Font = new Font("Segoe UI", 12F);
-            TxbComprimentoCor5.Location = new Point(854, 229);
+            TxbComprimentoCor5.Location = new Point(557, 233);
             TxbComprimentoCor5.Name = "TxbComprimentoCor5";
             TxbComprimentoCor5.PlaceholderText = "cm";
             TxbComprimentoCor5.Size = new Size(88, 29);
-            TxbComprimentoCor5.TabIndex = 34;
+            TxbComprimentoCor5.TabIndex = 35;
             TxbComprimentoCor5.TextAlign = HorizontalAlignment.Right;
+            TxbComprimentoCor5.TextChanged += TxbComprimentoCor5_TextChanged;
             // 
             // TxbComprimentoCor4
             // 
             TxbComprimentoCor4.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             TxbComprimentoCor4.BackColor = SystemColors.Control;
             TxbComprimentoCor4.Font = new Font("Segoe UI", 12F);
-            TxbComprimentoCor4.Location = new Point(854, 189);
+            TxbComprimentoCor4.Location = new Point(557, 193);
             TxbComprimentoCor4.Name = "TxbComprimentoCor4";
             TxbComprimentoCor4.PlaceholderText = "cm";
             TxbComprimentoCor4.Size = new Size(88, 29);
-            TxbComprimentoCor4.TabIndex = 30;
+            TxbComprimentoCor4.TabIndex = 31;
             TxbComprimentoCor4.TextAlign = HorizontalAlignment.Right;
+            TxbComprimentoCor4.TextChanged += TxbComprimentoCor4_TextChanged;
             // 
             // TxbComprimentoCor3
             // 
             TxbComprimentoCor3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             TxbComprimentoCor3.BackColor = SystemColors.Control;
             TxbComprimentoCor3.Font = new Font("Segoe UI", 12F);
-            TxbComprimentoCor3.Location = new Point(854, 149);
+            TxbComprimentoCor3.Location = new Point(557, 153);
             TxbComprimentoCor3.Name = "TxbComprimentoCor3";
             TxbComprimentoCor3.PlaceholderText = "cm";
             TxbComprimentoCor3.Size = new Size(88, 29);
-            TxbComprimentoCor3.TabIndex = 26;
+            TxbComprimentoCor3.TabIndex = 27;
             TxbComprimentoCor3.TextAlign = HorizontalAlignment.Right;
+            TxbComprimentoCor3.TextChanged += TxbComprimentoCor3_TextChanged;
             // 
             // TxbComprimentoCor2
             // 
             TxbComprimentoCor2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             TxbComprimentoCor2.BackColor = SystemColors.Control;
             TxbComprimentoCor2.Font = new Font("Segoe UI", 12F);
-            TxbComprimentoCor2.Location = new Point(854, 109);
+            TxbComprimentoCor2.Location = new Point(557, 113);
             TxbComprimentoCor2.Name = "TxbComprimentoCor2";
             TxbComprimentoCor2.PlaceholderText = "cm";
             TxbComprimentoCor2.Size = new Size(88, 29);
-            TxbComprimentoCor2.TabIndex = 22;
+            TxbComprimentoCor2.TabIndex = 23;
             TxbComprimentoCor2.TextAlign = HorizontalAlignment.Right;
+            TxbComprimentoCor2.TextChanged += TxbComprimentoCor2_TextChanged;
             // 
             // TxbComprimentoCor1
             // 
             TxbComprimentoCor1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             TxbComprimentoCor1.BackColor = SystemColors.Control;
             TxbComprimentoCor1.Font = new Font("Segoe UI", 12F);
-            TxbComprimentoCor1.Location = new Point(854, 70);
+            TxbComprimentoCor1.Location = new Point(557, 74);
             TxbComprimentoCor1.Name = "TxbComprimentoCor1";
             TxbComprimentoCor1.PlaceholderText = "cm";
             TxbComprimentoCor1.Size = new Size(88, 29);
-            TxbComprimentoCor1.TabIndex = 18;
+            TxbComprimentoCor1.TabIndex = 19;
             TxbComprimentoCor1.TextAlign = HorizontalAlignment.Right;
+            TxbComprimentoCor1.TextChanged += TxbComprimentoCor1_TextChanged;
             // 
             // TxbNomeCor8
             // 
             TxbNomeCor8.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            TxbNomeCor8.AutoCompleteMode = AutoCompleteMode.Append;
             TxbNomeCor8.BackColor = SystemColors.Control;
             TxbNomeCor8.Font = new Font("Segoe UI", 12F);
-            TxbNomeCor8.Location = new Point(98, 349);
+            TxbNomeCor8.Location = new Point(98, 353);
             TxbNomeCor8.Name = "TxbNomeCor8";
-            TxbNomeCor8.Size = new Size(636, 29);
-            TxbNomeCor8.TabIndex = 44;
+            TxbNomeCor8.Size = new Size(339, 29);
+            TxbNomeCor8.TabIndex = 45;
             // 
             // TxbLarguraCor8
             // 
             TxbLarguraCor8.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             TxbLarguraCor8.BackColor = SystemColors.Control;
             TxbLarguraCor8.Font = new Font("Segoe UI", 12F);
-            TxbLarguraCor8.Location = new Point(743, 349);
+            TxbLarguraCor8.Location = new Point(446, 353);
             TxbLarguraCor8.Name = "TxbLarguraCor8";
             TxbLarguraCor8.PlaceholderText = "cm";
             TxbLarguraCor8.Size = new Size(88, 29);
-            TxbLarguraCor8.TabIndex = 45;
+            TxbLarguraCor8.TabIndex = 46;
             TxbLarguraCor8.TextAlign = HorizontalAlignment.Right;
+            TxbLarguraCor8.TextChanged += TxbLarguraCor8_TextChanged;
             // 
             // TxbNomeCor7
             // 
             TxbNomeCor7.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            TxbNomeCor7.AutoCompleteMode = AutoCompleteMode.Append;
             TxbNomeCor7.BackColor = SystemColors.Control;
             TxbNomeCor7.Font = new Font("Segoe UI", 12F);
-            TxbNomeCor7.Location = new Point(98, 309);
+            TxbNomeCor7.Location = new Point(98, 313);
             TxbNomeCor7.Name = "TxbNomeCor7";
-            TxbNomeCor7.Size = new Size(636, 29);
-            TxbNomeCor7.TabIndex = 40;
+            TxbNomeCor7.Size = new Size(339, 29);
+            TxbNomeCor7.TabIndex = 41;
             // 
             // TxbLarguraCor7
             // 
             TxbLarguraCor7.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             TxbLarguraCor7.BackColor = SystemColors.Control;
             TxbLarguraCor7.Font = new Font("Segoe UI", 12F);
-            TxbLarguraCor7.Location = new Point(743, 309);
+            TxbLarguraCor7.Location = new Point(446, 313);
             TxbLarguraCor7.Name = "TxbLarguraCor7";
             TxbLarguraCor7.PlaceholderText = "cm";
             TxbLarguraCor7.Size = new Size(88, 29);
-            TxbLarguraCor7.TabIndex = 41;
+            TxbLarguraCor7.TabIndex = 42;
             TxbLarguraCor7.TextAlign = HorizontalAlignment.Right;
+            TxbLarguraCor7.TextChanged += TxbLarguraCor7_TextChanged;
             // 
             // TxbNomeCor6
             // 
             TxbNomeCor6.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            TxbNomeCor6.AutoCompleteMode = AutoCompleteMode.Append;
             TxbNomeCor6.BackColor = SystemColors.Control;
             TxbNomeCor6.Font = new Font("Segoe UI", 12F);
-            TxbNomeCor6.Location = new Point(98, 269);
+            TxbNomeCor6.Location = new Point(98, 273);
             TxbNomeCor6.Name = "TxbNomeCor6";
-            TxbNomeCor6.Size = new Size(636, 29);
-            TxbNomeCor6.TabIndex = 36;
+            TxbNomeCor6.Size = new Size(339, 29);
+            TxbNomeCor6.TabIndex = 37;
             // 
             // TxbLarguraCor6
             // 
             TxbLarguraCor6.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             TxbLarguraCor6.BackColor = SystemColors.Control;
             TxbLarguraCor6.Font = new Font("Segoe UI", 12F);
-            TxbLarguraCor6.Location = new Point(743, 269);
+            TxbLarguraCor6.Location = new Point(446, 273);
             TxbLarguraCor6.Name = "TxbLarguraCor6";
             TxbLarguraCor6.PlaceholderText = "cm";
             TxbLarguraCor6.Size = new Size(88, 29);
-            TxbLarguraCor6.TabIndex = 37;
+            TxbLarguraCor6.TabIndex = 38;
             TxbLarguraCor6.TextAlign = HorizontalAlignment.Right;
+            TxbLarguraCor6.TextChanged += TxbLarguraCor6_TextChanged;
             // 
             // TxbNomeCor5
             // 
             TxbNomeCor5.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            TxbNomeCor5.AutoCompleteMode = AutoCompleteMode.Append;
             TxbNomeCor5.BackColor = SystemColors.Control;
             TxbNomeCor5.Font = new Font("Segoe UI", 12F);
-            TxbNomeCor5.Location = new Point(98, 229);
+            TxbNomeCor5.Location = new Point(98, 233);
             TxbNomeCor5.Name = "TxbNomeCor5";
-            TxbNomeCor5.Size = new Size(636, 29);
-            TxbNomeCor5.TabIndex = 32;
+            TxbNomeCor5.Size = new Size(339, 29);
+            TxbNomeCor5.TabIndex = 33;
             // 
             // TxbLarguraCor5
             // 
             TxbLarguraCor5.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             TxbLarguraCor5.BackColor = SystemColors.Control;
             TxbLarguraCor5.Font = new Font("Segoe UI", 12F);
-            TxbLarguraCor5.Location = new Point(743, 229);
+            TxbLarguraCor5.Location = new Point(446, 233);
             TxbLarguraCor5.Name = "TxbLarguraCor5";
             TxbLarguraCor5.PlaceholderText = "cm";
             TxbLarguraCor5.Size = new Size(88, 29);
-            TxbLarguraCor5.TabIndex = 33;
+            TxbLarguraCor5.TabIndex = 34;
             TxbLarguraCor5.TextAlign = HorizontalAlignment.Right;
+            TxbLarguraCor5.TextChanged += TxbLarguraCor5_TextChanged;
             // 
             // TxbNomeCor4
             // 
             TxbNomeCor4.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            TxbNomeCor4.AutoCompleteMode = AutoCompleteMode.Append;
             TxbNomeCor4.BackColor = SystemColors.Control;
             TxbNomeCor4.Font = new Font("Segoe UI", 12F);
-            TxbNomeCor4.Location = new Point(98, 189);
+            TxbNomeCor4.Location = new Point(98, 193);
             TxbNomeCor4.Name = "TxbNomeCor4";
-            TxbNomeCor4.Size = new Size(636, 29);
-            TxbNomeCor4.TabIndex = 28;
+            TxbNomeCor4.Size = new Size(339, 29);
+            TxbNomeCor4.TabIndex = 29;
             // 
             // TxbLarguraCor4
             // 
             TxbLarguraCor4.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             TxbLarguraCor4.BackColor = SystemColors.Control;
             TxbLarguraCor4.Font = new Font("Segoe UI", 12F);
-            TxbLarguraCor4.Location = new Point(743, 189);
+            TxbLarguraCor4.Location = new Point(446, 193);
             TxbLarguraCor4.Name = "TxbLarguraCor4";
             TxbLarguraCor4.PlaceholderText = "cm";
             TxbLarguraCor4.Size = new Size(88, 29);
-            TxbLarguraCor4.TabIndex = 29;
+            TxbLarguraCor4.TabIndex = 30;
             TxbLarguraCor4.TextAlign = HorizontalAlignment.Right;
+            TxbLarguraCor4.TextChanged += TxbLarguraCor4_TextChanged;
             // 
             // TxbNomeCor3
             // 
             TxbNomeCor3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             TxbNomeCor3.BackColor = SystemColors.Control;
             TxbNomeCor3.Font = new Font("Segoe UI", 12F);
-            TxbNomeCor3.Location = new Point(98, 149);
+            TxbNomeCor3.Location = new Point(98, 153);
             TxbNomeCor3.Name = "TxbNomeCor3";
-            TxbNomeCor3.Size = new Size(636, 29);
-            TxbNomeCor3.TabIndex = 24;
+            TxbNomeCor3.Size = new Size(339, 29);
+            TxbNomeCor3.TabIndex = 25;
             // 
             // TxbLarguraCor3
             // 
             TxbLarguraCor3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             TxbLarguraCor3.BackColor = SystemColors.Control;
             TxbLarguraCor3.Font = new Font("Segoe UI", 12F);
-            TxbLarguraCor3.Location = new Point(743, 149);
+            TxbLarguraCor3.Location = new Point(446, 153);
             TxbLarguraCor3.Name = "TxbLarguraCor3";
             TxbLarguraCor3.PlaceholderText = "cm";
             TxbLarguraCor3.Size = new Size(88, 29);
-            TxbLarguraCor3.TabIndex = 25;
+            TxbLarguraCor3.TabIndex = 26;
             TxbLarguraCor3.TextAlign = HorizontalAlignment.Right;
+            TxbLarguraCor3.TextChanged += TxbLarguraCor3_TextChanged;
             // 
             // TxbNomeCor2
             // 
             TxbNomeCor2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             TxbNomeCor2.BackColor = SystemColors.Control;
             TxbNomeCor2.Font = new Font("Segoe UI", 12F);
-            TxbNomeCor2.Location = new Point(98, 109);
+            TxbNomeCor2.Location = new Point(98, 113);
             TxbNomeCor2.Name = "TxbNomeCor2";
-            TxbNomeCor2.Size = new Size(636, 29);
-            TxbNomeCor2.TabIndex = 20;
+            TxbNomeCor2.Size = new Size(339, 29);
+            TxbNomeCor2.TabIndex = 21;
             // 
             // label22
             // 
             label22.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label22.AutoSize = true;
             label22.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
-            label22.Location = new Point(403, 401);
+            label22.Location = new Point(106, 404);
             label22.Name = "label22";
             label22.Size = new Size(69, 13);
             label22.TabIndex = 39;
@@ -1383,7 +1408,7 @@
             label24.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label24.AutoSize = true;
             label24.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
-            label24.Location = new Point(967, 400);
+            label24.Location = new Point(670, 403);
             label24.Name = "label24";
             label24.Size = new Size(184, 13);
             label24.TabIndex = 39;
@@ -1394,7 +1419,7 @@
             label27.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label27.AutoSize = true;
             label27.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
-            label27.Location = new Point(745, 400);
+            label27.Location = new Point(448, 403);
             label27.Name = "label27";
             label27.Size = new Size(116, 13);
             label27.TabIndex = 39;
@@ -1405,7 +1430,7 @@
             label46.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label46.AutoSize = true;
             label46.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
-            label46.Location = new Point(513, 400);
+            label46.Location = new Point(216, 403);
             label46.Name = "label46";
             label46.Size = new Size(93, 13);
             label46.TabIndex = 39;
@@ -1416,44 +1441,47 @@
             TxbLarguraCor2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             TxbLarguraCor2.BackColor = SystemColors.Control;
             TxbLarguraCor2.Font = new Font("Segoe UI", 12F);
-            TxbLarguraCor2.Location = new Point(743, 109);
+            TxbLarguraCor2.Location = new Point(446, 113);
             TxbLarguraCor2.Name = "TxbLarguraCor2";
             TxbLarguraCor2.PlaceholderText = "cm";
             TxbLarguraCor2.Size = new Size(88, 29);
-            TxbLarguraCor2.TabIndex = 21;
+            TxbLarguraCor2.TabIndex = 22;
             TxbLarguraCor2.TextAlign = HorizontalAlignment.Right;
+            TxbLarguraCor2.TextChanged += TxbLarguraCor2_TextChanged;
             // 
             // TxbNomeCor1
             // 
             TxbNomeCor1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            TxbNomeCor1.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
             TxbNomeCor1.BackColor = SystemColors.Control;
             TxbNomeCor1.Font = new Font("Segoe UI", 12F);
-            TxbNomeCor1.Location = new Point(98, 70);
+            TxbNomeCor1.Location = new Point(98, 74);
             TxbNomeCor1.Name = "TxbNomeCor1";
-            TxbNomeCor1.Size = new Size(636, 29);
-            TxbNomeCor1.TabIndex = 16;
+            TxbNomeCor1.Size = new Size(339, 29);
+            TxbNomeCor1.TabIndex = 17;
             // 
             // TxbLarguraCor1
             // 
             TxbLarguraCor1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             TxbLarguraCor1.BackColor = SystemColors.Control;
             TxbLarguraCor1.Font = new Font("Segoe UI", 12F);
-            TxbLarguraCor1.Location = new Point(743, 70);
+            TxbLarguraCor1.Location = new Point(446, 74);
             TxbLarguraCor1.Name = "TxbLarguraCor1";
             TxbLarguraCor1.PlaceholderText = "cm";
             TxbLarguraCor1.Size = new Size(88, 29);
-            TxbLarguraCor1.TabIndex = 17;
+            TxbLarguraCor1.TabIndex = 18;
             TxbLarguraCor1.TextAlign = HorizontalAlignment.Right;
+            TxbLarguraCor1.TextChanged += TxbLarguraCor1_TextChanged;
             // 
             // label31
             // 
             label31.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             label31.AutoSize = true;
-            label31.Font = new Font("Segoe UI", 9F);
+            label31.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold);
             label31.ForeColor = Color.FromArgb(64, 64, 64);
-            label31.Location = new Point(1088, 48);
+            label31.Location = new Point(791, 52);
             label31.Name = "label31";
-            label31.Size = new Size(92, 15);
+            label31.Size = new Size(101, 13);
             label31.TabIndex = 40;
             label31.Text = "Custo parcial R$";
             // 
@@ -1461,11 +1489,11 @@
             // 
             label37.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             label37.AutoSize = true;
-            label37.Font = new Font("Segoe UI", 9F);
+            label37.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold);
             label37.ForeColor = Color.FromArgb(64, 64, 64);
-            label37.Location = new Point(967, 48);
+            label37.Location = new Point(670, 52);
             label37.Name = "label37";
-            label37.Size = new Size(98, 15);
+            label37.Size = new Size(101, 13);
             label37.TabIndex = 40;
             label37.Text = "Medida unit. cm²";
             // 
@@ -1473,22 +1501,22 @@
             // 
             label33.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             label33.AutoSize = true;
-            label33.Font = new Font("Segoe UI", 9F);
+            label33.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold);
             label33.ForeColor = Color.FromArgb(64, 64, 64);
-            label33.Location = new Point(856, 48);
+            label33.Location = new Point(559, 52);
             label33.Name = "label33";
-            label33.Size = new Size(82, 15);
+            label33.Size = new Size(79, 13);
             label33.TabIndex = 41;
             label33.Text = "Comprimento";
             // 
             // label47
             // 
             label47.AutoSize = true;
-            label47.Font = new Font("Segoe UI", 9F);
+            label47.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold);
             label47.ForeColor = Color.FromArgb(64, 64, 64);
-            label47.Location = new Point(98, 48);
+            label47.Location = new Point(98, 52);
             label47.Name = "label47";
-            label47.Size = new Size(94, 15);
+            label47.Size = new Size(104, 13);
             label47.TabIndex = 42;
             label47.Text = "Descrição da cor";
             // 
@@ -1496,47 +1524,57 @@
             // 
             label35.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             label35.AutoSize = true;
-            label35.Font = new Font("Segoe UI", 9F);
+            label35.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold);
             label35.ForeColor = Color.FromArgb(64, 64, 64);
-            label35.Location = new Point(751, 48);
+            label35.Location = new Point(454, 52);
             label35.Name = "label35";
-            label35.Size = new Size(47, 15);
+            label35.Size = new Size(50, 13);
             label35.TabIndex = 38;
             label35.Text = "Largura";
             // 
-            // groupBox2
+            // groupBox8
             // 
-            groupBox2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            groupBox2.Controls.Add(TxbObservacao);
-            groupBox2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox2.Location = new Point(1244, 650);
-            groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(344, 162);
-            groupBox2.TabIndex = 7;
-            groupBox2.TabStop = false;
-            groupBox2.Text = "OBSERVAÇÃO";
+            groupBox8.Controls.Add(DGWDetalhesErros);
+            groupBox8.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            groupBox8.Location = new Point(16, 249);
+            groupBox8.Name = "groupBox8";
+            groupBox8.Size = new Size(1217, 159);
+            groupBox8.TabIndex = 3;
+            groupBox8.TabStop = false;
+            groupBox8.Text = "ERROS DETALHADOS";
             // 
-            // TxbObservacao
+            // DGWDetalhesErros
             // 
-            TxbObservacao.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            TxbObservacao.BackColor = Color.WhiteSmoke;
-            TxbObservacao.Font = new Font("Segoe UI", 9F);
-            TxbObservacao.Location = new Point(15, 26);
-            TxbObservacao.Multiline = true;
-            TxbObservacao.Name = "TxbObservacao";
-            TxbObservacao.Size = new Size(315, 127);
-            TxbObservacao.TabIndex = 49;
+            DGWDetalhesErros.AllowUserToAddRows = false;
+            DGWDetalhesErros.AllowUserToDeleteRows = false;
+            DGWDetalhesErros.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            DGWDetalhesErros.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            DGWDetalhesErros.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            DGWDetalhesErros.BackgroundColor = Color.WhiteSmoke;
+            DGWDetalhesErros.CellBorderStyle = DataGridViewCellBorderStyle.None;
+            DGWDetalhesErros.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableAlwaysIncludeHeaderText;
+            DGWDetalhesErros.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            DGWDetalhesErros.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            DGWDetalhesErros.EditMode = DataGridViewEditMode.EditOnEnter;
+            DGWDetalhesErros.Location = new Point(13, 27);
+            DGWDetalhesErros.Name = "DGWDetalhesErros";
+            DGWDetalhesErros.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            DGWDetalhesErros.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
+            DGWDetalhesErros.Size = new Size(1192, 122);
+            DGWDetalhesErros.TabIndex = 0;
+            DGWDetalhesErros.TabStop = false;
+            DGWDetalhesErros.DoubleClick += DGWDetalhesErros_DoubleClick;
             // 
             // GPPrint
             // 
-            GPPrint.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            GPPrint.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             GPPrint.Controls.Add(BtnDelThumbnail);
             GPPrint.Controls.Add(BtnAddThumbnail);
             GPPrint.Controls.Add(PictureBoxThumbnail);
             GPPrint.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            GPPrint.Location = new Point(1244, 249);
+            GPPrint.Location = new Point(1251, 249);
             GPPrint.Name = "GPPrint";
-            GPPrint.Size = new Size(342, 391);
+            GPPrint.Size = new Size(335, 549);
             GPPrint.TabIndex = 6;
             GPPrint.TabStop = false;
             GPPrint.Text = "PRINT DA ARTE";
@@ -1545,30 +1583,32 @@
             // 
             BtnDelThumbnail.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             BtnDelThumbnail.Image = Properties.Resources.borracha1_32x32;
-            BtnDelThumbnail.Location = new Point(256, 348);
+            BtnDelThumbnail.Location = new Point(242, 22);
             BtnDelThumbnail.Name = "BtnDelThumbnail";
-            BtnDelThumbnail.Size = new Size(74, 34);
-            BtnDelThumbnail.TabIndex = 48;
+            BtnDelThumbnail.Size = new Size(81, 34);
+            BtnDelThumbnail.TabIndex = 50;
             BtnDelThumbnail.UseVisualStyleBackColor = true;
             // 
             // BtnAddThumbnail
             // 
-            BtnAddThumbnail.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            BtnAddThumbnail.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             BtnAddThumbnail.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            BtnAddThumbnail.Location = new Point(14, 348);
+            BtnAddThumbnail.Location = new Point(10, 22);
             BtnAddThumbnail.Name = "BtnAddThumbnail";
-            BtnAddThumbnail.Size = new Size(236, 34);
-            BtnAddThumbnail.TabIndex = 47;
+            BtnAddThumbnail.Size = new Size(225, 34);
+            BtnAddThumbnail.TabIndex = 49;
             BtnAddThumbnail.Text = "ADICIONAR PRINT";
             BtnAddThumbnail.UseVisualStyleBackColor = true;
             // 
             // PictureBoxThumbnail
             // 
+            PictureBoxThumbnail.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             PictureBoxThumbnail.BackColor = Color.WhiteSmoke;
+            PictureBoxThumbnail.BorderStyle = BorderStyle.FixedSingle;
             PictureBoxThumbnail.Image = Properties.Resources.no_imagem;
-            PictureBoxThumbnail.Location = new Point(15, 28);
+            PictureBoxThumbnail.Location = new Point(10, 62);
             PictureBoxThumbnail.Name = "PictureBoxThumbnail";
-            PictureBoxThumbnail.Size = new Size(315, 315);
+            PictureBoxThumbnail.Size = new Size(313, 479);
             PictureBoxThumbnail.SizeMode = PictureBoxSizeMode.Zoom;
             PictureBoxThumbnail.TabIndex = 0;
             PictureBoxThumbnail.TabStop = false;
@@ -1606,7 +1646,7 @@
             DateTimeBoxCadastro.Location = new Point(13, 53);
             DateTimeBoxCadastro.Name = "DateTimeBoxCadastro";
             DateTimeBoxCadastro.Size = new Size(132, 27);
-            DateTimeBoxCadastro.TabIndex = 14;
+            DateTimeBoxCadastro.TabIndex = 15;
             // 
             // groupBox3
             // 
@@ -1647,7 +1687,7 @@
             CBxMaterial.MaxDropDownItems = 15;
             CBxMaterial.Name = "CBxMaterial";
             CBxMaterial.Size = new Size(229, 29);
-            CBxMaterial.TabIndex = 4;
+            CBxMaterial.TabIndex = 3;
             // 
             // label43
             // 
@@ -1704,7 +1744,7 @@
             TxbDescricao.Location = new Point(142, 57);
             TxbDescricao.Name = "TxbDescricao";
             TxbDescricao.Size = new Size(643, 29);
-            TxbDescricao.TabIndex = 2;
+            TxbDescricao.TabIndex = 1;
             // 
             // TxbVersao
             // 
@@ -1714,9 +1754,8 @@
             TxbVersao.HideSelection = false;
             TxbVersao.Location = new Point(791, 57);
             TxbVersao.Name = "TxbVersao";
-            TxbVersao.PlaceholderText = "00";
             TxbVersao.Size = new Size(69, 29);
-            TxbVersao.TabIndex = 3;
+            TxbVersao.TabIndex = 2;
             TxbVersao.TextAlign = HorizontalAlignment.Center;
             // 
             // groupBox6
@@ -1763,9 +1802,10 @@
             NumUpDQtdePlacas.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             NumUpDQtdePlacas.Font = new Font("Segoe UI", 12F);
             NumUpDQtdePlacas.Location = new Point(890, 51);
+            NumUpDQtdePlacas.Maximum = new decimal(new int[] { 8, 0, 0, 0 });
             NumUpDQtdePlacas.Name = "NumUpDQtdePlacas";
             NumUpDQtdePlacas.Size = new Size(74, 29);
-            NumUpDQtdePlacas.TabIndex = 10;
+            NumUpDQtdePlacas.TabIndex = 11;
             NumUpDQtdePlacas.TextAlign = HorizontalAlignment.Center;
             // 
             // BtnAddErros
@@ -1775,7 +1815,7 @@
             BtnAddErros.Location = new Point(848, 50);
             BtnAddErros.Name = "BtnAddErros";
             BtnAddErros.Size = new Size(33, 30);
-            BtnAddErros.TabIndex = 9;
+            BtnAddErros.TabIndex = 10;
             BtnAddErros.UseVisualStyleBackColor = true;
             BtnAddErros.Click += BtnAddErros_Click;
             // 
@@ -1787,7 +1827,7 @@
             CBxStatus.Location = new Point(1277, 51);
             CBxStatus.Name = "CBxStatus";
             CBxStatus.Size = new Size(117, 29);
-            CBxStatus.TabIndex = 13;
+            CBxStatus.TabIndex = 14;
             // 
             // TxbReqNovo
             // 
@@ -1797,7 +1837,7 @@
             TxbReqNovo.Location = new Point(14, 51);
             TxbReqNovo.Name = "TxbReqNovo";
             TxbReqNovo.Size = new Size(121, 29);
-            TxbReqNovo.TabIndex = 1;
+            TxbReqNovo.TabIndex = 6;
             TxbReqNovo.TextAlign = HorizontalAlignment.Center;
             // 
             // CBxPrioridade
@@ -1809,7 +1849,7 @@
             CBxPrioridade.Location = new Point(1128, 51);
             CBxPrioridade.Name = "CBxPrioridade";
             CBxPrioridade.Size = new Size(142, 29);
-            CBxPrioridade.TabIndex = 12;
+            CBxPrioridade.TabIndex = 13;
             // 
             // CBxMotivoPrincipal
             // 
@@ -1819,7 +1859,7 @@
             CBxMotivoPrincipal.Location = new Point(518, 51);
             CBxMotivoPrincipal.Name = "CBxMotivoPrincipal";
             CBxMotivoPrincipal.Size = new Size(325, 29);
-            CBxMotivoPrincipal.TabIndex = 8;
+            CBxMotivoPrincipal.TabIndex = 9;
             // 
             // CBxCustoDeQuem
             // 
@@ -1829,7 +1869,7 @@
             CBxCustoDeQuem.Location = new Point(971, 51);
             CBxCustoDeQuem.Name = "CBxCustoDeQuem";
             CBxCustoDeQuem.Size = new Size(150, 29);
-            CBxCustoDeQuem.TabIndex = 11;
+            CBxCustoDeQuem.TabIndex = 12;
             // 
             // CBxEnviarPara
             // 
@@ -1838,7 +1878,7 @@
             CBxEnviarPara.Location = new Point(354, 51);
             CBxEnviarPara.Name = "CBxEnviarPara";
             CBxEnviarPara.Size = new Size(157, 29);
-            CBxEnviarPara.TabIndex = 7;
+            CBxEnviarPara.TabIndex = 8;
             // 
             // label10
             // 
@@ -1870,7 +1910,7 @@
             CBxSolicitante.Location = new Point(142, 51);
             CBxSolicitante.Name = "CBxSolicitante";
             CBxSolicitante.Size = new Size(205, 29);
-            CBxSolicitante.TabIndex = 6;
+            CBxSolicitante.TabIndex = 7;
             // 
             // label49
             // 
@@ -2055,7 +2095,7 @@
             BtnBackup.Location = new Point(9, 807);
             BtnBackup.Name = "BtnBackup";
             BtnBackup.Size = new Size(165, 44);
-            BtnBackup.TabIndex = 54;
+            BtnBackup.TabIndex = 55;
             BtnBackup.Text = "  Backup";
             BtnBackup.TextAlign = ContentAlignment.MiddleLeft;
             BtnBackup.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -2074,7 +2114,7 @@
             BtnRelatorios.Location = new Point(8, 157);
             BtnRelatorios.Name = "BtnRelatorios";
             BtnRelatorios.Size = new Size(165, 44);
-            BtnRelatorios.TabIndex = 53;
+            BtnRelatorios.TabIndex = 54;
             BtnRelatorios.Text = "  Relatórios";
             BtnRelatorios.TextAlign = ContentAlignment.MiddleLeft;
             BtnRelatorios.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -2093,7 +2133,7 @@
             BtnGraficos.Location = new Point(9, 95);
             BtnGraficos.Name = "BtnGraficos";
             BtnGraficos.Size = new Size(165, 44);
-            BtnGraficos.TabIndex = 52;
+            BtnGraficos.TabIndex = 53;
             BtnGraficos.Text = "  Gráficos";
             BtnGraficos.TextAlign = ContentAlignment.MiddleLeft;
             BtnGraficos.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -2143,7 +2183,7 @@
             BtnLogout.Location = new Point(0, 937);
             BtnLogout.Name = "BtnLogout";
             BtnLogout.Size = new Size(183, 44);
-            BtnLogout.TabIndex = 55;
+            BtnLogout.TabIndex = 57;
             BtnLogout.Text = "  Logout";
             BtnLogout.TextImageRelation = TextImageRelation.ImageBeforeText;
             BtnLogout.UseVisualStyleBackColor = true;
@@ -2161,7 +2201,7 @@
             BtnConfiguracoes.Location = new Point(8, 861);
             BtnConfiguracoes.Name = "BtnConfiguracoes";
             BtnConfiguracoes.Size = new Size(166, 44);
-            BtnConfiguracoes.TabIndex = 55;
+            BtnConfiguracoes.TabIndex = 56;
             BtnConfiguracoes.Text = "  Configurações";
             BtnConfiguracoes.TextImageRelation = TextImageRelation.ImageBeforeText;
             BtnConfiguracoes.UseVisualStyleBackColor = true;
@@ -2380,14 +2420,14 @@
             Load += FrmMain_Load;
             panel1.ResumeLayout(false);
             panel6.ResumeLayout(false);
-            groupBox7.ResumeLayout(false);
-            groupBox7.PerformLayout();
-            groupBox8.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)DGWDetalhesErros).EndInit();
-            groupBox4.ResumeLayout(false);
-            groupBox4.PerformLayout();
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
+            groupBox7.ResumeLayout(false);
+            groupBox7.PerformLayout();
+            groupBox4.ResumeLayout(false);
+            groupBox4.PerformLayout();
+            groupBox8.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)DGWDetalhesErros).EndInit();
             GPPrint.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)PictureBoxThumbnail).EndInit();
             groupBox1.ResumeLayout(false);
