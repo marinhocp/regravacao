@@ -815,13 +815,17 @@ namespace Regravacao
                 CultureInfo culture = new CultureInfo("pt-BR");
                 TxbMargem.Text = _margemCorte.ToString("N2", culture);
                 TxbFatorCusto.Text = _fatorCalculo.ToString("N2", culture);
-                TxbMaoObra.Text = _maoObra.Value.ToString("N1", culture);
+                // Observação: Usei "N2" para TxbMaoObra para consistência, já que é um valor monetário/percentual.
+                TxbMaoObra.Text = _maoObra.Value.ToString("N2", culture);
+
+                // 🎯 DISPARA O RECÁLCULO
+                CalcularCustoCores();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao carregar as configurações de custo:\n{ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Captura tanto erros de carregamento (acesso a dados) quanto erros de cálculo.
+                MessageBox.Show($"Erro ao carregar as configurações de custo ou ao recalcular:\n{ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-             CalcularCustoCores();
         }
 
         #endregion
