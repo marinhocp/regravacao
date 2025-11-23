@@ -1,5 +1,5 @@
 ﻿using Supabase.Postgrest.Attributes;
-using Supabase.Postgrest.Models; // Ou using NOME_DO_SEU_NAMESPACE.BaseModel, se for Base
+using Supabase.Postgrest.Models;
 using System.Text.Json.Serialization;
 
 namespace Regravacao.Models
@@ -13,12 +13,18 @@ namespace Regravacao.Models
 
         [Column("nome_cor")]
         [JsonPropertyName("nome_cor")]
-        // ✅ REMOVIDO: required. Inicializado com string.Empty para segurança.
         public string NomeCor { get; set; } = string.Empty;
 
-        [Column("codigo_exadecimal")]
-        [JsonPropertyName("codigo_exadecimal")]
-        // ✅ REMOVIDO: required. 
-        public string CodigoExadecimal { get; set; } = string.Empty;
+        [Column("codigo_hexadecimal")]
+        [JsonPropertyName("codigo_hexadecimal")]
+        public string CodigoHexadecimal { get; set; } = string.Empty;
+
+        [Column("codigo_rgb")] // ✅ NOVO CAMPO
+        [JsonPropertyName("codigo_rgb")]
+        public string CodigoRgb { get; set; } = string.Empty;
+
+        [Column("codigo_cmyk")] // ✅ NOVO CAMPO
+        [JsonPropertyName("codigo_cmyk")]
+        public string CodigoCmyk { get; set; } = string.Empty;
     }
 }

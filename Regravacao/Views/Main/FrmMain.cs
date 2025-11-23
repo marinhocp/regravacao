@@ -269,7 +269,7 @@ namespace Regravacao
                 if (corEncontrada != null)
                 {
                     // ✅ Atribui a cor convertida do código Hexa do banco
-                    panelCor.BackColor = HexParaColor(corEncontrada.CodigoExadecimal);
+                    panelCor.BackColor = HexParaColor(corEncontrada.CodigoHexadecimal);
                 }
                 else
                 {

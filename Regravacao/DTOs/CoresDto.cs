@@ -12,7 +12,13 @@ namespace Regravacao.DTOs
         [Column("nome_cor")]
         public required string NomeCor { get; set; }
 
-        [Column("codigo_exadecimal")]
-        public required string CodigoExadecimal { get; set; }
+        [Column("codigo_hexadecimal")] // ✅ CORRIGIDO: Nome da coluna
+        public required string CodigoHexadecimal { get; set; }
+
+        [Column("codigo_rgb")] // ✅ NOVO CAMPO
+        public required string CodigoRgb { get; set; }
+
+        [Column("codigo_cmyk")] // ✅ NOVO CAMPO
+        public required string CodigoCmyk { get; set; }
     }
 }
