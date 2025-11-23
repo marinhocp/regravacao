@@ -10,22 +10,14 @@ namespace Regravacao.Services.Calculo
             List<CorCalculoDto> coresParaCalcular,
             decimal margemCorte,
             decimal fatorCalculo,
-            decimal maoObra)
+            decimal percentualMaoObra) // Recebe o valor como INTEIRO (ex: 10)
         {
             decimal medidaTotal = 0m;
             decimal custoTotal = 0m;
 
-            List<CorCalculoDto> coresAtivas = coresParaCalcular
-                .Where(c => c.EstaTotalmenteMarcada)
-                .ToList();
-
-            int quantidadeCoresAtivas = coresAtivas.Count;
-
-            decimal maoObraParcial = 0m;
-            if (quantidadeCoresAtivas > 0 && maoObra > 0m)
-            {
-                maoObraParcial = maoObra / quantidadeCoresAtivas;
-            }
+            // 🎯 CONVERSÃO DO PERCENTUAL: 10 -> 0.10
+            // Isso deve ser feito APENAS UMA VEZ.
+            decimal fatorPercentual = percentualMaoObra / 100m;
 
             var resultadosParciais = new List<ResultadoParcialDto>();
 
@@ -34,11 +26,18 @@ namespace Regravacao.Services.Calculo
                 decimal medidaParcial = 0m;
                 decimal custoParcial = 0m;
 
-                // Regra: Só calcula se estiver marcado E Largura/Comprimento > 0
                 if (cor.EstaTotalmenteMarcada && cor.Largura > 0m && cor.Comprimento > 0m)
                 {
                     medidaParcial = (cor.Largura + margemCorte) * (cor.Comprimento + margemCorte);
-                    custoParcial = (medidaParcial * fatorCalculo) + maoObraParcial;
+
+                    // 1. Calcula o custo SÓ do material
+                    decimal custoMaterial = medidaParcial * fatorCalculo;
+
+                    // 2. Calcula a Mão de Obra usando o fator percentual ajustado
+                    decimal maoObraCalculada = custoMaterial * fatorPercentual;
+
+                    // 3. O Custo Parcial é a soma do material com a mão de obra percentual
+                    custoParcial = custoMaterial + maoObraCalculada;
 
                     medidaTotal += medidaParcial;
                     custoTotal += custoParcial;

@@ -136,6 +136,7 @@ namespace Regravacao
         }
 
 
+
         private void EstilizarDGWDetalhesErros()
         {
             // 1. Estilo Básico do DataGrid
@@ -581,7 +582,7 @@ namespace Regravacao
             }
         }
 
-        private async Task CarregarEmpresasAsync()
+        private async Task CarregarEnviarParaAsync()
         {
             try
             {
@@ -610,18 +611,13 @@ namespace Regravacao
                 // 1. Limpa o ComboBox
                 CBxEnviarPara.DataSource = null;
                 CBxEnviarPara.Items.Clear();
-                CBxCustoDeQuem.DataSource = null;
-                CBxCustoDeQuem.Items.Clear();
 
                 // 2. Configura a lista
                 CBxEnviarPara.DisplayMember = "NomeEmpresa"; // O que o usuário vê
                 CBxEnviarPara.ValueMember = "IdEmpresa";    // O valor interno (ID)
-                CBxCustoDeQuem.DisplayMember = "NomeEmpresa"; // O que o usuário vê
-                CBxCustoDeQuem.ValueMember = "IdEmpresa";    // O valor interno (ID)
 
                 // 3. Define a fonte de dados usando a NOVA lista em maiúsculas
                 CBxEnviarPara.DataSource = empresasMaiusculas;
-                CBxCustoDeQuem.DataSource = empresasMaiusculas;
 
             }
             catch (Exception ex)
@@ -711,6 +707,50 @@ namespace Regravacao
             }
         }
 
+        private async Task CarregarCustoDeQuemAsync()
+        {
+            try
+            {
+                List<EmpresaDto> empresas = await _empresaService.ObterEmpresasAtivasAsync();
+
+                // 1. Cria e Insere o item em branco no início
+                var itemEmBranco = new EmpresaDto
+                {
+                    IdEmpresa = 0,
+                    NomeEmpresa = ""
+                };
+                empresas.Insert(0, itemEmBranco);
+
+                // -----------------------------------------------------
+                // ✅ CORREÇÃO: Converte o nome de todas as empresas para maiúsculas
+                // -----------------------------------------------------
+                var empresasMaiusculas = empresas
+                    .Select(e => new EmpresaDto
+                    {
+                        IdEmpresa = e.IdEmpresa,
+                        NomeEmpresa = e.NomeEmpresa?.ToUpper() // Converte para maiúsculo
+                                                               // Não é necessário mapear IdStatus, pois não será usado no ComboBox
+                    })
+                    .ToList();
+
+                // 1. Limpa o ComboBox
+                CBxCustoDeQuem.DataSource = null;
+                CBxCustoDeQuem.Items.Clear();
+
+                // 2. Configura a lista
+                CBxCustoDeQuem.DisplayMember = "NomeEmpresa"; // O que o usuário vê
+                CBxCustoDeQuem.ValueMember = "IdEmpresa";    // O valor interno (ID)
+
+                // 3. Define a fonte de dados usando a NOVA lista em maiúsculas
+                CBxCustoDeQuem.DataSource = empresasMaiusculas;
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao carregar lista de empresas:\n{ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private async Task CarregarStatusAsync()
         {
             try
@@ -778,7 +818,7 @@ namespace Regravacao
                 CultureInfo culture = new CultureInfo("pt-BR");
                 TxbMargem.Text = _margemCorte.ToString("N2", culture);
                 TxbFatorCusto.Text = _fatorCalculo.ToString("N2", culture);
-                TxbMaoObra.Text = _maoObra.Value.ToString("N2", culture);
+                TxbMaoObra.Text = _maoObra.Value.ToString("N1", culture);
             }
             catch (Exception ex)
             {
@@ -1114,8 +1154,9 @@ namespace Regravacao
                 MessageBox.Show("Serviço de dependências não está disponível.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            var frm = Program.ServiceProvider.GetRequiredService<FrmConfiguracoes>();
-            frm.ShowDialog();
+            var frmConfig = Program.ServiceProvider.GetRequiredService<FrmConfiguracoes>();
+            frmConfig.OnConfigSaved = async () => await CarregarConfiguracoesCustoAsync();
+            frmConfig.ShowDialog();
         }
 
         private async void BtnLogout_Click(object? sender, EventArgs e)
@@ -1327,9 +1368,10 @@ namespace Regravacao
             await CarregarFinalizadores();
             await CarregarConferentes();
             await CarregarSolicitante();
-            await CarregarEmpresasAsync();
+            await CarregarEnviarParaAsync();
             await CarregarMotivosAsync();
             await CarregarPrioridadesAsync();
+            await CarregarCustoDeQuemAsync();
             await CarregarStatusAsync();
             await CarregarConfiguracoesCustoAsync();
             AtualizarControlesCores((int)NumUpDQtdePlacas.Value);
@@ -1366,8 +1408,7 @@ namespace Regravacao
         }
 
         private void TxbComprimentoCor3_TextChanged(object sender, EventArgs e)
-        {
-            // ConectarEventosCalculo();
+        {            
             CalcularCustoCores();
         }
 
@@ -1515,5 +1556,5 @@ namespace Regravacao
                 if (txbCustoEstimado != null) txbCustoEstimado.Text = string.Empty;
             }
         }
-    }    
+    }
 }
