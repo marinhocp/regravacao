@@ -135,8 +135,6 @@ namespace Regravacao
             AtualizarControlesCores((int)NumUpDQtdePlacas.Value);
         }
 
-
-
         private void EstilizarDGWDetalhesErros()
         {
             // 1. Estilo Básico do DataGrid
@@ -244,7 +242,6 @@ namespace Regravacao
             }
         }
 
-        // FrmMain.cs
 
         public async void BuscarEPreencherCorAsync(string termoDigitado, int numeroCor)
         {
@@ -824,6 +821,7 @@ namespace Regravacao
             {
                 MessageBox.Show($"Erro ao carregar as configurações de custo:\n{ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+             CalcularCustoCores();
         }
 
         #endregion

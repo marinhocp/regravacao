@@ -40,7 +40,7 @@ namespace Regravacao.Views
                 // Busca dados usando a camada de Serviço
                 ConfiguracoesCustoDto? config = await _configuracoesCustoService.ObterConfiguracoesCustoAsync();
 
-                CultureInfo culture = new CultureInfo("pt-BR");
+                CultureInfo culture = new("pt-BR");
 
                 if (config != null)
                 {
@@ -62,82 +62,84 @@ namespace Regravacao.Views
             }
         }
 
-        private async void BtnSalvarConfiguracoes_Click(object sender, EventArgs e)
-{
-    // Define a cultura para garantir que o ponto e vírgula/vírgula seja tratado corretamente (pt-BR usa vírgula)
-    CultureInfo culture = new CultureInfo("pt-BR");
-
-    // Variáveis para armazenar os valores convertidos
-    decimal margemCorte;
-    decimal fatorCalculo;
-    decimal? maoObra = null; // Inicializado como nulo para campos opcionais
-
-    try
-    {
-        // 1. VALIDAÇÃO E PARSE DOS DADOS DE ENTRADA
-
-        // Valida Margem de Corte (Campo Obrigatório)
-        if (!decimal.TryParse(TxbMargem.Text, NumberStyles.Currency, culture, out margemCorte))
-        {
-            MessageBox.Show("Margem de Corte inválida. Verifique o formato numérico.", "Erro de Entrada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            TxbMargem.Focus();
-            return;
-        }
-
-        // Valida Fator de Cálculo (Campo Obrigatório)
-        if (!decimal.TryParse(TxbFatorCusto.Text, NumberStyles.Currency, culture, out fatorCalculo))
-        {
-            MessageBox.Show("Fator de Cálculo inválido. Verifique o formato numérico.", "Erro de Entrada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            TxbFatorCusto.Focus();
-            return;
-        }
-
-        // Valida Mão de Obra e Outros (Campo Opcional)
-        if (!string.IsNullOrWhiteSpace(TxbMaoObraEOutros.Text))
-        {
-            if (decimal.TryParse(TxbMaoObraEOutros.Text, NumberStyles.Currency, culture, out decimal valorMaoObra))
-            {
-                maoObra = valorMaoObra;
-            }
-            else
-            {
-                MessageBox.Show("Valor de Mão de Obra e Outros inválido. Verifique o formato numérico.", "Erro de Entrada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                TxbMaoObraEOutros.Focus();
-                return;
-            }
-        }
-
-        // 2. CRIAÇÃO DO DTO
-        ConfiguracoesCustoDto configDto = new ConfiguracoesCustoDto
-        {
-            // Importante: No seu repositório, assumimos que esta tabela tem um ID fixo (ex: 1).
-            // Você deve garantir que o ID seja o correto para que o Supabase realize o UPDATE.
-            IdConfigCusto = 1, // Assumindo o ID fixo da linha de configuração
-            MargemCorte = margemCorte,
-            FatorCalculo = fatorCalculo,
-            MaoObra = maoObra
-        };
-
-        // 3. CHAMADA AO SERVIÇO
-        _configuracoesCustoService.AtualizarConfiguracoesCustoAsync(configDto);
-
-        MessageBox.Show("Configurações salvas com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
         
-        // 🎯 AÇÃO CRÍTICA: Notificar o FrmMain para que ele chame CarregarConfiguracoesCustoAsync()
-        OnConfigSaved?.Invoke();
+        private async void BtnSalvarConfiguracoes_Click(object sender, EventArgs e)
+        {
+            // Define a cultura para garantir que o ponto e vírgula/vírgula seja tratado corretamente (pt-BR usa vírgula)
+            CultureInfo culture = new CultureInfo("pt-BR");
 
-        this.Close(); // Fecha o formulário após salvar
-    }
-    catch (ArgumentException ex)
-    {
-        // Captura exceções de lógica de negócio lançadas no Service (ex: valor negativo)
-        MessageBox.Show($"Não foi possível salvar a configuração (Regra de Negócio):\n{ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-    }
-    catch (Exception ex)
-    {
-        // Captura exceções de Repositório (banco de dados, Supabase) ou outras falhas
-        MessageBox.Show($"Erro inesperado ao salvar configurações:\n{ex.Message}", "Erro Geral", MessageBoxButtons.OK, MessageBoxIcon.Error);
-    }
-}
+            // Variáveis para armazenar os valores convertidos
+            decimal margemCorte;
+            decimal fatorCalculo;
+            decimal? maoObra = null; // Inicializado como nulo para campos opcionais
+
+            try
+            {
+                // 1. VALIDAÇÃO E PARSE DOS DADOS DE ENTRADA
+
+                // Valida Margem de Corte (Campo Obrigatório)
+                if (!decimal.TryParse(TxbMargem.Text, NumberStyles.Currency, culture, out margemCorte))
+                {
+                    MessageBox.Show("Margem de Corte inválida. Verifique o formato numérico.", "Erro de Entrada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    TxbMargem.Focus();
+                    return;
+                }
+
+                // Valida Fator de Cálculo (Campo Obrigatório)
+                if (!decimal.TryParse(TxbFatorCusto.Text, NumberStyles.Currency, culture, out fatorCalculo))
+                {
+                    MessageBox.Show("Fator de Cálculo inválido. Verifique o formato numérico.", "Erro de Entrada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    TxbFatorCusto.Focus();
+                    return;
+                }
+
+                // Valida Mão de Obra e Outros (Campo Opcional)
+                if (!string.IsNullOrWhiteSpace(TxbMaoObraEOutros.Text))
+                {
+                    if (decimal.TryParse(TxbMaoObraEOutros.Text, NumberStyles.Currency, culture, out decimal valorMaoObra))
+                    {
+                        maoObra = valorMaoObra;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Valor de Mão de Obra e Outros inválido. Verifique o formato numérico.", "Erro de Entrada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        TxbMaoObraEOutros.Focus();
+                        return;
+                    }
+                }
+
+                // 2. CRIAÇÃO DO DTO
+                ConfiguracoesCustoDto configDto = new ConfiguracoesCustoDto
+                {
+                    // Importante: No seu repositório, assumimos que esta tabela tem um ID fixo (ex: 1).
+                    // Você deve garantir que o ID seja o correto para que o Supabase realize o UPDATE.
+                    IdConfigCusto = 1, // Assumindo o ID fixo da linha de configuração
+                    MargemCorte = margemCorte,
+                    FatorCalculo = fatorCalculo,
+                    MaoObra = maoObra
+                };
+
+                // 3. CHAMADA AO SERVIÇO
+                await _configuracoesCustoService.AtualizarConfiguracoesCustoAsync(configDto);
+
+                MessageBox.Show("Configurações salvas com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // 🎯 AÇÃO CRÍTICA: Notificar o FrmMain para que ele chame CarregarConfiguracoesCustoAsync()
+                OnConfigSaved?.Invoke();
+
+                this.Close(); // Fecha o formulário após salvar
+            }
+            catch (ArgumentException ex)
+            {
+                // Captura exceções de lógica de negócio lançadas no Service (ex: valor negativo)
+                MessageBox.Show($"Não foi possível salvar a configuração (Regra de Negócio):\n{ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            catch (Exception ex)
+            {
+                // Captura exceções de Repositório (banco de dados, Supabase) ou outras falhas
+                MessageBox.Show($"Erro inesperado ao salvar configurações:\n{ex.Message}", "Erro Geral", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
     }
 }

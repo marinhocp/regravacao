@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\Mario\\source\\repos\\regravacao\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{2CB4C65B-5A75-478D-8D87-802C17AAA55C}|Regravacao\\Regravacao.csproj|c:\\users\\mario\\source\\repos\\regravacao\\regravacao\\views\\configuracoes\\frmconfiguracoes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2CB4C65B-5A75-478D-8D87-802C17AAA55C}|Regravacao\\Regravacao.csproj|solutionrelative:regravacao\\views\\configuracoes\\frmconfiguracoes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{2CB4C65B-5A75-478D-8D87-802C17AAA55C}|Regravacao\\Regravacao.csproj|c:\\users\\mario\\source\\repos\\regravacao\\regravacao\\views\\main\\frmmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2CB4C65B-5A75-478D-8D87-802C17AAA55C}|Regravacao\\Regravacao.csproj|solutionrelative:regravacao\\views\\main\\frmmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{2CB4C65B-5A75-478D-8D87-802C17AAA55C}|Regravacao\\Regravacao.csproj|c:\\users\\mario\\source\\repos\\regravacao\\regravacao\\views\\configuracoes\\frmconfiguracoes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
@@ -15,8 +15,8 @@
       "RelativeMoniker": "D:0:0:{2CB4C65B-5A75-478D-8D87-802C17AAA55C}|Regravacao\\Regravacao.csproj|solutionrelative:regravacao\\views\\main\\frmmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2CB4C65B-5A75-478D-8D87-802C17AAA55C}|Regravacao\\Regravacao.csproj|c:\\users\\mario\\source\\repos\\regravacao\\regravacao\\views\\main\\frmmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2CB4C65B-5A75-478D-8D87-802C17AAA55C}|Regravacao\\Regravacao.csproj|solutionrelative:regravacao\\views\\main\\frmmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{2CB4C65B-5A75-478D-8D87-802C17AAA55C}|Regravacao\\Regravacao.csproj|c:\\users\\mario\\source\\repos\\regravacao\\regravacao\\views\\configuracoes\\frmconfiguracoes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2CB4C65B-5A75-478D-8D87-802C17AAA55C}|Regravacao\\Regravacao.csproj|solutionrelative:regravacao\\views\\configuracoes\\frmconfiguracoes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,19 +26,19 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
               "Title": "FrmConfiguracoes.cs",
               "DocumentMoniker": "C:\\Users\\Mario\\source\\repos\\regravacao\\Regravacao\\Views\\Configuracoes\\FrmConfiguracoes.cs",
               "RelativeDocumentMoniker": "Regravacao\\Views\\Configuracoes\\FrmConfiguracoes.cs",
               "ToolTip": "C:\\Users\\Mario\\source\\repos\\regravacao\\Regravacao\\Views\\Configuracoes\\FrmConfiguracoes.cs",
               "RelativeToolTip": "Regravacao\\Views\\Configuracoes\\FrmConfiguracoes.cs",
-              "ViewState": "AgIAAGcAAAAAAAAAAADwv3kAAAAIAAAAAAAAAA==",
+              "ViewState": "AgIAADkAAAAAAAAAAAAswHgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-23T14:01:49.945Z",
+              "WhenOpened": "2025-11-23T14:20:50.868Z",
               "EditorCaption": ""
             },
             {
@@ -50,7 +50,7 @@
               "ToolTip": "C:\\Users\\Mario\\source\\repos\\regravacao\\Regravacao\\Views\\Configuracoes\\FrmConfiguracoes.cs [Projeto]",
               "RelativeToolTip": "Regravacao\\Views\\Configuracoes\\FrmConfiguracoes.cs [Projeto]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-23T13:31:46.835Z",
+              "WhenOpened": "2025-11-23T14:20:48.326Z",
               "EditorCaption": " [Projeto]"
             },
             {
@@ -67,13 +67,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 0,
               "Title": "FrmMain.cs",
               "DocumentMoniker": "C:\\Users\\Mario\\source\\repos\\regravacao\\Regravacao\\Views\\Main\\FrmMain.cs",
               "RelativeDocumentMoniker": "Regravacao\\Views\\Main\\FrmMain.cs",
               "ToolTip": "C:\\Users\\Mario\\source\\repos\\regravacao\\Regravacao\\Views\\Main\\FrmMain.cs",
               "RelativeToolTip": "Regravacao\\Views\\Main\\FrmMain.cs",
-              "ViewState": "AgIAAG0EAAAAAAAAAADwv4YEAAAjAAAAAAAAAA==",
+              "ViewState": "AgIAABMDAAAAAAAAAAAUwDcDAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-23T12:21:28.73Z",
               "EditorCaption": ""

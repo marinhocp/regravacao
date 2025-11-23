@@ -475,7 +475,7 @@
             TxbMaoObra.Font = new Font("Segoe UI", 12F);
             TxbMaoObra.Location = new Point(330, 426);
             TxbMaoObra.Name = "TxbMaoObra";
-            TxbMaoObra.PlaceholderText = "R$";
+            TxbMaoObra.PlaceholderText = "%";
             TxbMaoObra.ReadOnly = true;
             TxbMaoObra.Size = new Size(96, 29);
             TxbMaoObra.TabIndex = 83;
@@ -487,11 +487,11 @@
             label8.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label8.AutoSize = true;
             label8.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
-            label8.Location = new Point(335, 403);
+            label8.Location = new Point(331, 403);
             label8.Name = "label8";
-            label8.Size = new Size(75, 13);
+            label8.Size = new Size(91, 13);
             label8.TabIndex = 84;
-            label8.Text = "Mão de Obra";
+            label8.Text = "% Mão de Obra ";
             // 
             // PanelCor8
             // 
