@@ -196,10 +196,6 @@ namespace Regravacao.Views
             {
                 CxbListErros.SetItemChecked(i, false);
             }
-
-            // IMPORTANTE: Limpar o storage persistente
-            // Como o usuário limpou visualmente todos os itens, 
-            // precisamos garantir que nossa lista mestre de seleções também seja limpa.
             IdsErrosSelecionadosAnteriores.Clear();
         }
     }

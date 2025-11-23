@@ -138,7 +138,7 @@
             groupBox1 = new GroupBox();
             label38 = new Label();
             DateTimeBoxCadastro = new DateTimePicker();
-            groupBox3 = new GroupBox();
+            GPDadosClicheAtual = new GroupBox();
             label42 = new Label();
             CBxMaterial = new ComboBox();
             label43 = new Label();
@@ -207,7 +207,7 @@
             GPPrint.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)PictureBoxThumbnail).BeginInit();
             groupBox1.SuspendLayout();
-            groupBox3.SuspendLayout();
+            GPDadosClicheAtual.SuspendLayout();
             groupBox6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)NumUpDQtdePlacas).BeginInit();
             PanelTop.SuspendLayout();
@@ -248,7 +248,7 @@
             panel6.Controls.Add(groupBox8);
             panel6.Controls.Add(GPPrint);
             panel6.Controls.Add(groupBox1);
-            panel6.Controls.Add(groupBox3);
+            panel6.Controls.Add(GPDadosClicheAtual);
             panel6.Controls.Add(groupBox6);
             panel6.Dock = DockStyle.Fill;
             panel6.Location = new Point(183, 77);
@@ -294,6 +294,7 @@
             BtnLimparCamposCadastro.TabIndex = 52;
             BtnLimparCamposCadastro.Text = "NOVO";
             BtnLimparCamposCadastro.UseVisualStyleBackColor = false;
+            BtnLimparCamposCadastro.Click += BtnLimparCamposCadastro_Click;
             // 
             // groupBox7
             // 
@@ -1648,24 +1649,24 @@
             DateTimeBoxCadastro.Size = new Size(132, 27);
             DateTimeBoxCadastro.TabIndex = 15;
             // 
-            // groupBox3
+            // GPDadosClicheAtual
             // 
-            groupBox3.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            groupBox3.Controls.Add(label42);
-            groupBox3.Controls.Add(CBxMaterial);
-            groupBox3.Controls.Add(label43);
-            groupBox3.Controls.Add(TxbRequerimentoAtual);
-            groupBox3.Controls.Add(label13);
-            groupBox3.Controls.Add(label48);
-            groupBox3.Controls.Add(TxbDescricao);
-            groupBox3.Controls.Add(TxbVersao);
-            groupBox3.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox3.Location = new Point(16, 26);
-            groupBox3.Name = "groupBox3";
-            groupBox3.Size = new Size(1104, 103);
-            groupBox3.TabIndex = 0;
-            groupBox3.TabStop = false;
-            groupBox3.Text = "DADOS DO CLICHÊ GRAVADO";
+            GPDadosClicheAtual.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            GPDadosClicheAtual.Controls.Add(label42);
+            GPDadosClicheAtual.Controls.Add(CBxMaterial);
+            GPDadosClicheAtual.Controls.Add(label43);
+            GPDadosClicheAtual.Controls.Add(TxbRequerimentoAtual);
+            GPDadosClicheAtual.Controls.Add(label13);
+            GPDadosClicheAtual.Controls.Add(label48);
+            GPDadosClicheAtual.Controls.Add(TxbDescricao);
+            GPDadosClicheAtual.Controls.Add(TxbVersao);
+            GPDadosClicheAtual.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            GPDadosClicheAtual.Location = new Point(16, 26);
+            GPDadosClicheAtual.Name = "GPDadosClicheAtual";
+            GPDadosClicheAtual.Size = new Size(1104, 103);
+            GPDadosClicheAtual.TabIndex = 0;
+            GPDadosClicheAtual.TabStop = false;
+            GPDadosClicheAtual.Text = "DADOS DO CLICHÊ GRAVADO";
             // 
             // label42
             // 
@@ -2432,8 +2433,8 @@
             ((System.ComponentModel.ISupportInitialize)PictureBoxThumbnail).EndInit();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
-            groupBox3.ResumeLayout(false);
-            groupBox3.PerformLayout();
+            GPDadosClicheAtual.ResumeLayout(false);
+            GPDadosClicheAtual.PerformLayout();
             groupBox6.ResumeLayout(false);
             groupBox6.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)NumUpDQtdePlacas).EndInit();
@@ -2591,7 +2592,7 @@
         private GroupBox groupBox1;
         private Label label38;
         private DateTimePicker DateTimeBoxCadastro;
-        private GroupBox groupBox3;
+        private GroupBox GPDadosClicheAtual;
         private Label label39;
         private Label label42;
         private Label label43;

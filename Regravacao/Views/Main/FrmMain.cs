@@ -44,7 +44,6 @@ namespace Regravacao
         private readonly IConfiguracoesCustoService _configuracoesCustoService;
         private readonly CalculadoraDeCusto _calculadora;
         private readonly ICoresService _coresService;
-
         private List<DetalhesDeErrosDto> _errosSelecionados = [];
         private decimal _margemCorte = 0m;
         private decimal _fatorCalculo = 0m;
@@ -182,7 +181,7 @@ namespace Regravacao
                 // Conexão dos eventos de CÁLCULO (Apenas Largura, Comprimento, CheckBox)
                 if (txbLargura != null) txbLargura.TextChanged += (sender, e) => CalcularCustoCores();
                 if (txbComprimento != null) txbComprimento.TextChanged += (sender, e) => CalcularCustoCores();
-                if (ckBox != null) ckBox.CheckedChanged += (sender, e) => CalcularCustoCores();                
+                if (ckBox != null) ckBox.CheckedChanged += (sender, e) => CalcularCustoCores();
             }
         }
 
@@ -205,8 +204,7 @@ namespace Regravacao
             }
         }
 
-        // FrmMain.cs
-
+        // Convertendo cores Hexadecimal para Color
         private System.Drawing.Color HexParaColor(string hexCode)
         {
             if (string.IsNullOrWhiteSpace(hexCode))
@@ -1343,27 +1341,27 @@ namespace Regravacao
         }
 
         private void TxbLarguraCor1_TextChanged(object sender, EventArgs e)
-        {                       
+        {
             CalcularCustoCores();
         }
 
         private void TxbComprimentoCor1_TextChanged(object sender, EventArgs e)
-        {            
+        {
             CalcularCustoCores();
         }
 
         private void TxbLarguraCor2_TextChanged(object sender, EventArgs e)
-        {            
+        {
             CalcularCustoCores();
         }
 
         private void TxbComprimentoCor2_TextChanged(object sender, EventArgs e)
-        {            
+        {
             CalcularCustoCores();
         }
 
         private void TxbLarguraCor3_TextChanged(object sender, EventArgs e)
-        {            
+        {
             CalcularCustoCores();
         }
 
@@ -1374,17 +1372,17 @@ namespace Regravacao
         }
 
         private void TxbLarguraCor4_TextChanged(object sender, EventArgs e)
-        {            
+        {
             CalcularCustoCores();
         }
 
         private void TxbComprimentoCor4_TextChanged(object sender, EventArgs e)
-        {           
+        {
             CalcularCustoCores();
         }
 
         private void TxbLarguraCor5_TextChanged(object sender, EventArgs e)
-        {           
+        {
             CalcularCustoCores();
         }
 
@@ -1463,5 +1461,59 @@ namespace Regravacao
             CalcularCustoCores();
         }
 
-    }
+        private void BtnLimparCamposCadastro_Click(object sender, EventArgs e)
+        {
+            LimparControlesPersonalizado();
+        }
+
+        private void LimparControlesPersonalizado()
+        {
+            // ... (Seu código existente para os outros controles) ...
+            TxbRequerimentoAtual.Text = string.Empty;
+            TxbDescricao.Text = string.Empty;
+            TxbReqNovo.Text = string.Empty;
+            TxbObservacao.Text = string.Empty;
+            PictureBoxThumbnail.ImageLocation = string.Empty;
+            DateTimeBoxCadastro.Value = DateTime.Now;
+            CBxConferidoPor.SelectedIndex = 0;
+            CBxEnviarPara.SelectedIndex = 0;
+            CBxFinalizadoPor.SelectedIndex = 0;
+            CBxMaterial.SelectedIndex = 0;
+            CBxMotivoPrincipal.SelectedIndex = 0;
+            CBxPrioridade.SelectedIndex = 0;
+            CBxSolicitante.SelectedIndex = 0;
+            CBxStatus.SelectedIndex = 0;
+            CBxCustoDeQuem.SelectedIndex = 0;
+            NumUpDQtdePlacas.Value = NumUpDQtdePlacas.Minimum;
+            CBxStatus.SelectedIndex = 0;
+
+            // 🎯 CORREÇÃO DO DATA GRID VIEW:
+            // 1. Limpa a lista privada que é a fonte de dados (DataSource)
+            if (_errosSelecionados != null)
+            {
+                _errosSelecionados.Clear();
+            }
+
+            // 2. Força o DGW a se atualizar com a lista vazia.
+            // O comando DGWDetalhesErros.Rows.Clear() deve ser removido!
+            DGWDetalhesErros.DataSource = null;
+            DGWDetalhesErros.DataSource = _errosSelecionados;
+
+            // Limpeza dos Controles Dinâmicos (Cores)
+            for (int i = 1; i <= MaxCores; i++)
+            {
+                var cbxCor = this.Controls.Find($"CBxCor{i}", true).FirstOrDefault() as ComboBox;
+                var txbNomeCor = this.Controls.Find($"TxbNomeCor{i}", true).FirstOrDefault() as TextBox;
+                var txbLargura = this.Controls.Find($"TxbLarguraCor{i}", true).FirstOrDefault() as TextBox;
+                var txbComprimento = this.Controls.Find($"TxbComprimentoCor{i}", true).FirstOrDefault() as TextBox;
+                var txbCustoEstimado = this.Controls.Find($"TxbCustoCor{i}", true).FirstOrDefault() as TextBox;
+
+                if (cbxCor != null) cbxCor.SelectedIndex = 0;
+                if (txbNomeCor != null) txbNomeCor.Text = string.Empty;
+                if (txbLargura != null) txbLargura.Text = string.Empty;
+                if (txbComprimento != null) txbComprimento.Text = string.Empty;
+                if (txbCustoEstimado != null) txbCustoEstimado.Text = string.Empty;
+            }
+        }
+    }    
 }
