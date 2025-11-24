@@ -1589,6 +1589,7 @@
             BtnDelThumbnail.Size = new Size(81, 34);
             BtnDelThumbnail.TabIndex = 50;
             BtnDelThumbnail.UseVisualStyleBackColor = true;
+            BtnDelThumbnail.Click += BtnDelThumbnail_Click;
             // 
             // BtnAddThumbnail
             // 
@@ -1600,6 +1601,7 @@
             BtnAddThumbnail.TabIndex = 49;
             BtnAddThumbnail.Text = "ADICIONAR PRINT";
             BtnAddThumbnail.UseVisualStyleBackColor = true;
+            BtnAddThumbnail.Click += BtnAddThumbnail_Click;
             // 
             // PictureBoxThumbnail
             // 
@@ -1613,6 +1615,7 @@
             PictureBoxThumbnail.SizeMode = PictureBoxSizeMode.Zoom;
             PictureBoxThumbnail.TabIndex = 0;
             PictureBoxThumbnail.TabStop = false;
+            PictureBoxThumbnail.DoubleClick += PictureBoxThumbnail_DoubleClick;
             // 
             // groupBox1
             // 

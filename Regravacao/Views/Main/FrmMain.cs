@@ -20,6 +20,8 @@ using Regravacao.Services.Status;
 using Regravacao.Views;
 using Supabase;
 using System.Globalization;
+using System.IO;
+using Regravacao.Services.Utils;
 
 namespace Regravacao
 {
@@ -48,6 +50,8 @@ namespace Regravacao
         private decimal _margemCorte = 0m;
         private decimal _fatorCalculo = 0m;
         private decimal? _maoObra = 0m;
+        private Image? _thumbnailImage;
+        private byte[]? _thumbnailBytes;
 
         private static readonly (string Chk, string NomeCor, string Largura, string Comprimento, string MedidaParcial, string CustoParcial, string Panel)[] _mapaCores =
      {
@@ -1410,7 +1414,7 @@ namespace Regravacao
         }
 
         private void TxbComprimentoCor3_TextChanged(object sender, EventArgs e)
-        {            
+        {
             CalcularCustoCores();
         }
 
@@ -1516,7 +1520,12 @@ namespace Regravacao
             TxbDescricao.Text = string.Empty;
             TxbReqNovo.Text = string.Empty;
             TxbObservacao.Text = string.Empty;
-            PictureBoxThumbnail.ImageLocation = string.Empty;
+
+            PictureBoxThumbnail.Image = null;
+            // 🎯 Limpar a referência da imagem (bytes) para o upload
+            // Isso garante que nenhum dado de imagem antigo seja salvo.
+            _thumbnailBytes = null;
+
             DateTimeBoxCadastro.Value = DateTime.Now;
             CBxConferidoPor.SelectedIndex = 0;
             CBxEnviarPara.SelectedIndex = 0;
@@ -1557,6 +1566,76 @@ namespace Regravacao
                 if (txbComprimento != null) txbComprimento.Text = string.Empty;
                 if (txbCustoEstimado != null) txbCustoEstimado.Text = string.Empty;
             }
+        }
+
+        private void BtnAddThumbnail_Click(object sender, EventArgs e)
+        {
+            ProcessAndSetThumbnail();
+        }
+
+        private void ProcessAndSetThumbnail()
+        {
+            // Limpa a variável de bytes e a imagem visual em caso de falha ou cancelamento anterior
+            _thumbnailBytes = null;
+            PictureBoxThumbnail.Image = null;
+
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                // Define o filtro para permitir apenas arquivos JPG
+                openFileDialog.Filter = "Arquivos de Imagem JPG (*.jpg)|*.jpg";
+                openFileDialog.Title = "Selecione a Imagem para a Thumbnail";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        // Carrega a imagem original do arquivo
+                        // Usamos Image.FromFile para carregar o arquivo sem travar o caminho
+                        using (Image originalImage = Image.FromFile(openFileDialog.FileName))
+                        {
+                            // 1. Processa a imagem para criar a thumbnail (Image)
+                            using (Image thumbnail = ImageProcessor.CreateThumbnail(originalImage))
+                            {
+                                // 2. Converte a thumbnail para array de bytes com compressão JPG (baixa qualidade)
+                                _thumbnailBytes = ImageProcessor.ImageToByteArray(thumbnail);
+
+                                // 3. Exibe a imagem processada no PictureBoxThumbnail
+                                using (var ms = new MemoryStream(_thumbnailBytes))
+                                {
+                                    // Cria uma nova Image a partir do array de bytes
+                                    PictureBoxThumbnail.Image = Image.FromStream(ms);
+                                }
+
+                                // Configura o PictureBox para preencher a área proporcionalmente (Zoom)
+                                PictureBoxThumbnail.SizeMode = PictureBoxSizeMode.Zoom;
+
+                                // MessageBox.Show("Thumbnail criada e pronta para o salvamento.", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Erro ao carregar, processar ou converter a imagem:\n{ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        _thumbnailBytes = null; // Limpa o estado
+                        PictureBoxThumbnail.Image = null; // Limpa o visual
+                    }
+                }
+                // Se o usuário cancelar (DialogResult.Cancel), não faz nada, 
+                // pois o _thumbnailBytes e o PictureBox já foram limpos no início.
+            }
+        }
+
+        private void BtnDelThumbnail_Click(object sender, EventArgs e)
+        {
+            PictureBoxThumbnail.Image = null;
+            // 🎯 Limpar a referência da imagem (bytes) para o upload
+            // Isso garante que nenhum dado de imagem antigo seja salvo.
+            _thumbnailBytes = null;
+        }
+
+        private void PictureBoxThumbnail_DoubleClick(object sender, EventArgs e)
+        {
+            ProcessAndSetThumbnail();
         }
     }
 }
