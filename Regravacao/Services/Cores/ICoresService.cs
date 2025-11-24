@@ -1,10 +1,10 @@
-﻿using Regravacao.Models;
-using System.Threading.Tasks;
+﻿// Regravacao.Services.Cores.ICoresService
 
-namespace Regravacao.Services.Cores
+using Regravacao.Models;
+
+public interface ICoresService
 {
-    public interface ICoresService
-    {
-        Task<CoresModel?> BuscarCorPorNomeParcialAsync(string termoPesquisa);
-    }
+    // Método que receberá o nome digitado, fará a limpeza (ignorar "PANTONE")
+    // e buscará o CoresModel correspondente exatamente no banco.
+    Task<CoresModel?> BuscarCorPorNomeExatoProcessadoAsync(string nomeDigitado);
 }

@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
+﻿using Regravacao.DTOs;
 using Regravacao.Models;
-using Regravacao.DTOs;
 
 namespace Regravacao.Repositories
 {
     public interface IRegravacaoRepository
     {
+        // 🎯 Função para inserção via RPC (Stored Procedure)
         Task<int> InserirRegravacao(InserirRegravacaoDto dados);
 
-        Task<List<Models.RegravacaoClicheModel>> ListarRegravacoes(
+        // Funções de listagem
+        Task<List<RegravacaoClicheModel>> ListarRegravacoes(
             string req = null,
             int? idSolicitante = null,
             int? idFinalizado = null,
@@ -26,6 +22,7 @@ namespace Regravacao.Repositories
             DateTime? dataIni = null,
             DateTime? dataFim = null);
 
+        // Função de estatísticas
         Task<EstatisticasRegravacaoModel> ObterEstatisticas(
             string req = null,
             int? idSolicitante = null,

@@ -143,6 +143,7 @@
             Excluir = new ToolStripMenuItem();
             RotacionarHorario = new ToolStripMenuItem();
             rotacionarAntiHorárioToolStripMenuItem = new ToolStripMenuItem();
+            resetarZoomToolStripMenuItem = new ToolStripMenuItem();
             groupBox1 = new GroupBox();
             label38 = new Label();
             DateTimeBoxCadastro = new DateTimePicker();
@@ -205,7 +206,6 @@
             Lbl_versao = new Label();
             LblUserName = new Label();
             label30 = new Label();
-            resetarZoomToolStripMenuItem = new ToolStripMenuItem();
             panel1.SuspendLayout();
             panel6.SuspendLayout();
             groupBox2.SuspendLayout();
@@ -1643,19 +1643,23 @@
             PictureBoxThumbnail.BackColor = Color.WhiteSmoke;
             PictureBoxThumbnail.BorderStyle = BorderStyle.FixedSingle;
             PictureBoxThumbnail.ContextMenuStrip = CmsThumbnail;
+            PictureBoxThumbnail.Cursor = Cursors.Hand;
             PictureBoxThumbnail.Image = Properties.Resources.no_imagem;
             PictureBoxThumbnail.Location = new Point(10, 65);
             PictureBoxThumbnail.Name = "PictureBoxThumbnail";
             PictureBoxThumbnail.Size = new Size(313, 472);
             PictureBoxThumbnail.TabIndex = 0;
             PictureBoxThumbnail.TabStop = false;
+            PictureBoxThumbnail.DragDrop += PictureBoxThumbnail_DragDrop;
+            PictureBoxThumbnail.DragEnter += PictureBoxThumbnail_DragEnter;
             PictureBoxThumbnail.DoubleClick += PictureBoxThumbnail_DoubleClick;
             // 
             // CmsThumbnail
             // 
+            CmsThumbnail.AllowDrop = true;
             CmsThumbnail.Items.AddRange(new ToolStripItem[] { AlterarImagem, Excluir, RotacionarHorario, rotacionarAntiHorárioToolStripMenuItem, resetarZoomToolStripMenuItem });
             CmsThumbnail.Name = "CmsThumbnail";
-            CmsThumbnail.Size = new Size(202, 136);
+            CmsThumbnail.Size = new Size(202, 114);
             // 
             // AlterarImagem
             // 
@@ -1684,6 +1688,13 @@
             rotacionarAntiHorárioToolStripMenuItem.Size = new Size(201, 22);
             rotacionarAntiHorárioToolStripMenuItem.Text = "Rotacionar Anti-Horário";
             rotacionarAntiHorárioToolStripMenuItem.Click += rotacionarAntiHorárioToolStripMenuItem_Click;
+            // 
+            // resetarZoomToolStripMenuItem
+            // 
+            resetarZoomToolStripMenuItem.Name = "resetarZoomToolStripMenuItem";
+            resetarZoomToolStripMenuItem.Size = new Size(201, 22);
+            resetarZoomToolStripMenuItem.Text = "Resetar Zoom";
+            resetarZoomToolStripMenuItem.Click += ResetarZoomToolStripMenuItem_Click;
             // 
             // groupBox1
             // 
@@ -2476,13 +2487,6 @@
             label30.Size = new Size(60, 12);
             label30.TabIndex = 8;
             label30.Text = "USUÁRIO:";
-            // 
-            // resetarZoomToolStripMenuItem
-            // 
-            resetarZoomToolStripMenuItem.Name = "resetarZoomToolStripMenuItem";
-            resetarZoomToolStripMenuItem.Size = new Size(201, 22);
-            resetarZoomToolStripMenuItem.Text = "Resetar Zoom";
-            resetarZoomToolStripMenuItem.Click += ResetarZoomToolStripMenuItem_Click;
             // 
             // FrmMain
             // 

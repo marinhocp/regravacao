@@ -17,11 +17,13 @@ using Regravacao.Services.Prioridade;
 using Regravacao.Services.Regravacao;
 using Regravacao.Services.Solicitante;
 using Regravacao.Services.Status;
-using Regravacao.Views;
+
 using Supabase;
+using Regravacao.Views;
 using System.Globalization;
 using System.IO;
 using Regravacao.Services.Utils;
+using System.Text.Json;
 
 namespace Regravacao
 {
@@ -30,7 +32,7 @@ namespace Regravacao
         private Panel? overlayPanel;
         private LoginControl? loginControl;
         private readonly int MaxCores = 8;
-        private readonly IRegravacaoService _regravacaoService;
+        
         private readonly IDetalhesDeErrosService _detalhesDeErrosService;
         private readonly Client _supabase;
         private System.Windows.Forms.Timer? sessaoTimer;
@@ -51,15 +53,24 @@ namespace Regravacao
         private decimal _fatorCalculo = 0m;
         private decimal? _maoObra = 0m;
         private byte[]? _thumbnailBytes;
+        private readonly Client _supabaseClient;
+
         // Variáveis para as informações do Tooltip
         private string? _originalFileName;
         private ToolTip _thumbnailToolTip = new ToolTip();
+        
         // Zoom
         private float _currentZoom = 1.0f;
         private const float ZoomStep = 0.1f;
         private bool _isDragging = false;
         private Point _lastMousePosition;
         private Point _imageOffset = new Point(0, 0);
+
+        // Injeção de Dependência no construtor (Exemplo)       
+        private readonly IRegravacaoService _regravacaoService; 
+        private const string BUCKET_NAME = "thumbnails";
+
+        // private readonly Supabase.Client _supabaseClient; // Cliente Supabase injetado
 
 
         private static readonly (string Chk, string NomeCor, string Largura, string Comprimento, string MedidaParcial, string CustoParcial, string Panel)[] _mapaCores =
@@ -90,6 +101,7 @@ namespace Regravacao
           IStatusService statusService,
           CalculadoraDeCusto calculadora,
           ICoresService coresService,
+          Client supabaseClient,
 
           Client supabase)
         {
@@ -102,6 +114,7 @@ namespace Regravacao
             PictureBoxThumbnail.MouseMove += PictureBoxThumbnail_MouseMove;
             PictureBoxThumbnail.MouseUp += PictureBoxThumbnail_MouseUp;
 
+
             // habilita a seleção do item do DropDownList para todos os ComboBoxes ao digitar uma letra
             CBxMaterial.DropDownStyle = ComboBoxStyle.DropDownList;
             CBxFinalizadoPor.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -113,8 +126,7 @@ namespace Regravacao
             CBxStatus.DropDownStyle = ComboBoxStyle.DropDownList;
             CBxCustoDeQuem.DropDownStyle = ComboBoxStyle.DropDownList;
             CBxSolicitante.DropDownStyle = ComboBoxStyle.DropDownList;
-
-            _regravacaoService = regravacaoService;
+            
             _detalhesDeErrosService = detalhesDeErrosService;
             _materialService = materialService;
             _finalizadorService = finalizadorService;
@@ -128,7 +140,8 @@ namespace Regravacao
             _configuracoesCustoService = configuracoesCustoService;
             _calculadora = calculadora;
             _coresService = coresService;
-
+            _regravacaoService = regravacaoService;
+            _supabaseClient = supabaseClient;
             _supabase = supabase;
 
             // TAMANHO FIXO DO LOGIN
@@ -146,6 +159,67 @@ namespace Regravacao
             ConfigurarBotoes();
             _ = InicializarSessaoAsync();
 
+            // 🎯 Habilita o Drag and Drop no controle PictureBoxThumbnail
+            PictureBoxThumbnail.AllowDrop = true;
+        }
+
+
+        // <summary>
+        /// Envia os bytes da imagem para o Supabase Storage.
+        /// </summary>
+        private async Task<string?> UploadThumbnailAsync()
+        {
+            // Verifica se há dados para upload
+            if (_thumbnailBytes == null || _thumbnailBytes.Length == 0) return null;
+
+            // Gera um nome de arquivo único para evitar colisões
+            string fileName = $"VERSAO_{Guid.NewGuid()}.jpg";
+
+            try
+            {
+                // 1. Executa o Upload no BUCKET_NAME ("thumbnails")
+                await _supabaseClient.Storage
+                    .From(BUCKET_NAME)
+                    .Upload(_thumbnailBytes, fileName, new Supabase.Storage.FileOptions
+                    {
+                        ContentType = "image/jpeg",
+                        Upsert = false // Não deve sobrescrever se já existir (usamos Guid para evitar)
+                    });
+
+                // 2. Obtém a URL pública (usada para salvar no campo 'thumbnail' da TblRegravacao)
+                return _supabaseClient.Storage
+                    .From(BUCKET_NAME)
+                    .GetPublicUrl(fileName);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao realizar o upload da thumbnail para o bucket '{BUCKET_NAME}'. {ex.Message}", "Erro de Upload", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Deleta o arquivo do Storage se a inserção no banco de dados falhar (rollback).
+        /// </summary>
+        /// <param name="thumbnailUrl">A URL pública do arquivo a ser excluído.</param>
+        private async Task DeleteThumbnailAsync(string thumbnailUrl)
+        {
+            try
+            {
+                // Extrai o nome do arquivo da URL pública
+                string fileName = new Uri(thumbnailUrl).Segments.Last();
+
+                // Remove o arquivo do bucket 'thumbnails'
+                await _supabaseClient.Storage
+                    .From(BUCKET_NAME)
+                    .Remove(new List<string> { fileName });
+
+            }
+            catch
+            {
+                // Em um rollback, podemos ignorar erros de exclusão, mas é bom logar.
+                Console.WriteLine($"Aviso: Falha ao tentar remover o arquivo {thumbnailUrl} do Storage. Pode ser necessário limpeza manual.");
+            }
         }
 
         private void PictureBoxThumbnail_MouseDown(object sender, MouseEventArgs e)
@@ -895,33 +969,35 @@ namespace Regravacao
 
             for (int i = 1; i <= MaxCores; i++)
             {
-                // 1. Buscando controles (Presumindo ComboBox, TextBoxes)
-                // Ex: CBxCor1
+                // 1. Buscando controles
+                var cbxCor = this.Controls.Find($"CBxCor{i}", true).FirstOrDefault() as ComboBox;
                 var txbLargura = this.Controls.Find($"TxbLarguraCor{i}", true).FirstOrDefault() as TextBox;
                 var txbComprimento = this.Controls.Find($"TxbComprimentoCor{i}", true).FirstOrDefault() as TextBox;
-                var txbCustoEstimado = this.Controls.Find($"TxbCustoCor{i}", true).FirstOrDefault() as TextBox; // Novo campo de custo
+                var txbCustoEstimado = this.Controls.Find($"TxbCustoCor{i}", true).FirstOrDefault() as TextBox;
 
-                // Se a cor não foi selecionada ou campos numéricos estão vazios, ignora a linha.
-                if (this.Controls.Find($"CBxCor{i}", true).FirstOrDefault() is not ComboBox cbxCor || cbxCor.SelectedValue == null || string.IsNullOrWhiteSpace(txbLargura?.Text))
+                // Condição de Continuação: Se o ComboBox não existir OU não tiver valor selecionado, pula.
+                if (cbxCor == null || cbxCor.SelectedValue == null)
                     continue;
 
-                // 2. Conversão Segura de Dados
+                // 2. Conversão Segura de Dados (Validações estritas)
 
-                // IdCor (Assumindo que SelectedValue é o Id)
-                if (!int.TryParse(cbxCor.SelectedValue.ToString(), out int idCor))
+                // IdCor
+                if (!int.TryParse(cbxCor.SelectedValue.ToString(), out int idCor) || idCor <= 0)
                 {
-                    throw new ArgumentException($"O ID da Cor selecionada na linha {i} está em formato inválido.");
+                    // O ID deve ser válido e positivo
+                    throw new ArgumentException($"ID da Cor selecionada na linha {i} ('{cbxCor.SelectedValue}') está inválido.");
                 }
 
-                // Largura, Comprimento, Custo Estimado (Todos como decimal)
-                if (!decimal.TryParse(txbLargura?.Text, out decimal largura))
+                // Largura, Comprimento, Custo Estimado
+                // Note: Se o campo não existir (txb?.Text é null), o TryParse falhará.
+                if (!decimal.TryParse(txbLargura?.Text, out decimal largura))
                 {
-                    throw new ArgumentException($"Largura da Cor {i} ('{txbLargura?.Text}') está em formato inválido.");
+                    throw new ArgumentException($"Largura da Cor {i} ('{txbLargura?.Text}') está em formato inválido ou vazio.");
                 }
 
                 if (!decimal.TryParse(txbComprimento?.Text, out decimal comprimento))
                 {
-                    throw new ArgumentException($"Comprimento da Cor {i} ('{txbComprimento?.Text}') está em formato inválido.");
+                    throw new ArgumentException($"Comprimento da Cor {i} ('{txbComprimento?.Text}') está em formato inválido ou vazio.");
                 }
 
                 if (!decimal.TryParse(txbCustoEstimado?.Text, out decimal custoEstimado))
@@ -929,8 +1005,8 @@ namespace Regravacao
                     throw new ArgumentException($"Custo Estimado da Cor {i} ('{txbCustoEstimado?.Text}') está em formato inválido ou vazio.");
                 }
 
-                // 3. Adiciona a Cor ao DTO CORRETO (CoresInserirDto)
-                cores.Add(new CoresInserirDto
+                // 3. Adiciona a Cor
+                cores.Add(new CoresInserirDto
                 {
                     IdCor = idCor,
                     Largura = largura,
@@ -939,13 +1015,34 @@ namespace Regravacao
                 });
             }
 
+            // 4. Validação Final (Garantindo que pelo menos 1 cor foi processada)
             if (cores.Count == 0)
             {
                 throw new ArgumentException("Pelo menos uma cor deve ser preenchida para o cadastro.");
             }
 
-            // MUDANÇA 2: Retorna a lista correta
-            return cores;
+            return cores;
+        }
+
+        private bool IsFormValid()
+        {
+            // Verificações essenciais de campos (Combox, Textbox, etc.)
+            if (string.IsNullOrWhiteSpace(TxbRequerimentoAtual.Text) ||
+                string.IsNullOrWhiteSpace(TxbDescricao.Text) ||
+                (CBxStatus.SelectedValue == null || (int)CBxStatus.SelectedValue <= 0) ||
+                (CBxMaterial.SelectedValue == null || (short)CBxMaterial.SelectedValue <= 0) ||
+                (CBxFinalizadoPor.SelectedValue == null || (int)CBxFinalizadoPor.SelectedValue <= 0) ||
+                (CBxSolicitante.SelectedValue == null || (int)CBxSolicitante.SelectedValue <= 0) ||
+                (CBxMotivoPrincipal.SelectedValue == null || (int)CBxMotivoPrincipal.SelectedValue <= 0) ||
+                (CBxPrioridade.SelectedValue == null || (int)CBxPrioridade.SelectedValue <= 0))
+            {
+                return false;
+            }
+
+            // REMOVIDA A VALIDAÇÃO DE CORES AQUI.
+            // Ela será feita pelo método ColetarDadosDasCoresDoFormulario()
+            // que lança ArgumentException se estiver vazio ou inválido.
+            return true;
         }
 
         private async Task InicializarSessaoAsync()
@@ -1307,117 +1404,82 @@ namespace Regravacao
 
         private async void BtnSalvarCadastro_Click_1(object sender, EventArgs e)
         {
-            // 1. Obter o valor selecionado
-            if (CBxFinalizadoPor.SelectedValue is not int idFinalizadorSelecionado)
-            {
-                MessageBox.Show("Por favor, selecione o funcionário que finalizou o registro.",
-                                "Campo Obrigatório",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Warning);
-                CBxFinalizadoPor.Focus(); // Volta o foco para o campo
-                return; // Aborta o processo de salvamento
-            }
-
-            // 3. Se a validação passou, continue com o salvamento
-            // ... chame o serviço para salvar ...
-
-            // Validação básica
-            if (string.IsNullOrWhiteSpace(TxbRequerimentoAtual.Text))
-            {
-                MessageBox.Show("O campo 'Requerimento Atual' é obrigatório.", "Validação", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            // ⚠️ Coleta dos SelectedValues (Presumindo que são inteiros/shorts válidos)
-            if (CBxMaterial.SelectedValue == null || CBxFinalizadoPor.SelectedValue == null || CBxConferidoPor.SelectedValue == null ||
-        CBxSolicitante.SelectedValue == null || CBxEnviarPara.SelectedValue == null || CBxMotivoPrincipal.SelectedValue == null ||
-        CBxPrioridade.SelectedValue == null || CBxStatus.SelectedValue == null)
-            {
-                MessageBox.Show("Preencha todos os campos obrigatórios selecionados (Comboboxes).", "Validação", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            // Coleta dos dados
-            List<CoresInserirDto> cores;
-            short versao;
-            short qtdePlacas;
+            string? thumbnailUrl = null;
+            List<CoresInserirDto> coresParaRegravacao;
 
             try
             {
-                cores = ColetarDadosDasCoresDoFormulario(); // Agora retorna o tipo correto
-                versao = short.Parse(TxbVersao.Text);
-                qtdePlacas = (short)NumUpDQtdePlacas.Value; // Usando o valor do NumericUpDown
-            }
-            catch (ArgumentException ex)
-            {
-                MessageBox.Show($"Erro de Validação: {ex.Message}", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                // 1. Validação de campos obrigatórios (apenas ComboBoxes/TextBoxes principais)
+                if (!IsFormValid())
+                {
+                    MessageBox.Show("Preencha todos os campos obrigatórios (exceto os dados de cor).", "Validação", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // 2. Coleta e validação das cores (Este método lança ArgumentException se vazio/inválido)
+                coresParaRegravacao = ColetarDadosDasCoresDoFormulario(); // <-- USAMOS O MÉTODO ROBUSTO AQUI
+
+                // 3. Upload da Thumbnail (Só ocorre se a validação das cores foi bem-sucedida)
+                if (_thumbnailBytes != null && _thumbnailBytes.Length > 0)
+                {
+                    thumbnailUrl = await UploadThumbnailAsync();
+                    if (thumbnailUrl == null) return;
+                }
+
+                // 4. Criação do DTO
+                var motivosErros = _errosSelecionados.Select(e => e.IdDetalhesErros).ToList();
+
+                var dadosRegravacao = new InserirRegravacaoDto
+                {
+                    RequerimentoAtual = TxbRequerimentoAtual.Text,
+                    RequerimentoNovo = TxbReqNovo.Text,
+                    DescricaoArte = TxbDescricao.Text,
+                    Versao = (short)1, // Exemplo
+                    IdQuemFinalizou = (int)CBxFinalizadoPor.SelectedValue,
+                    IdConferente = (int)CBxConferidoPor.SelectedValue,
+                    IdSolicitante = (int)CBxSolicitante.SelectedValue,
+                    IdEnviarPara = (int)CBxEnviarPara.SelectedValue,
+                    IdCobrarDeQuem = CBxCustoDeQuem.SelectedValue as int?, // Assumindo cast para int?
+                    IdMotivoPrincipal = (int)CBxMotivoPrincipal.SelectedValue,
+                    QtdePlacas = (short)NumUpDQtdePlacas.Value,
+                    IdPrioridade = (int)CBxPrioridade.SelectedValue,
+                    IdStatus = (int)CBxStatus.SelectedValue,
+                    DataCadastro = DateTimeBoxCadastro.Value,
+                    Thumbnail = thumbnailUrl, // URL do Storage
+                    Observacoes = TxbObservacao.Text,
+                    IdMaterial = (short)CBxMaterial.SelectedValue,
+
+                    // Tratamento da lista de motivos: NULL se vazia
+                    MotivosErrosIds = (motivosErros.Count > 0) ? motivosErros : null,
+
+                    // Dados das Cores (já no DTO simplificado)
+                    Cores = coresParaRegravacao
+                };
+
+                // 4. Inserção (RPC) via Service/Repository
+                int newId = await _regravacaoService.CriarRegravacao(dadosRegravacao);
+
+                // 5. Sucesso
+                MessageBox.Show($"Regravação #{newId} salva com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // ResetarControlesPersonalizado(); // Chame sua função de limpeza
             }
-            catch (Exception ex) when (ex is FormatException || ex is OverflowException)
+            catch (ArgumentException argEx)
             {
-                MessageBox.Show($"Erro de formato: Certifique-se de que Versão e Quantidade de Placas são números válidos e pequenos. {ex.Message}", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                MessageBox.Show($"Erro de preenchimento ou falta de cor: {argEx.Message}", "Erro de Validação de Dados", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-            // =========================================================================
-            // ✅ INICIALIZAÇÃO DO DTO com os Controles Reais
-            // =========================================================================
-            var dados = new InserirRegravacaoDto
-            {
-                // --- CAMPOS REQUIRED ---
-                RequerimentoAtual = TxbRequerimentoAtual.Text,
-                DescricaoArte = TxbDescricao.Text,
-                Versao = versao,
-                IdQuemFinalizou = (int)CBxFinalizadoPor.SelectedValue,
-                IdConferente = (int)CBxConferidoPor.SelectedValue,
-                IdSolicitante = (int)CBxSolicitante.SelectedValue,
-                IdEnviarPara = (int)CBxEnviarPara.SelectedValue,
-                IdMotivoPrincipal = (int)CBxMotivoPrincipal.SelectedValue,
-                QtdePlacas = qtdePlacas,
-                IdPrioridade = (int)CBxPrioridade.SelectedValue,
-                IdStatus = (int)CBxStatus.SelectedValue,
-                IdMaterial = (short)CBxMaterial.SelectedValue,
-                Cores = cores, // Lista de DTOs de cores coletada
-
-                // --- CAMPOS OPCIONAIS ---
-                RequerimentoNovo = TxbReqNovo.Text, // Pode ser string.Empty se não houver TxbReqNovo
-                IdCobrarDeQuem = CBxCustoDeQuem.SelectedValue as int?, // Assume que SelectedValue pode ser int ou null
-                Observacoes = TxbObservacao.Text,
-                Thumbnail = PictureBoxThumbnail.ImageLocation, // URL da imagem, se houver
-                DataCadastro = DateTimeBoxCadastro.Value, // Valor do seu DateTimePicker/TextBox
-            };
-
-            // 1. Anexar os IDs de erro coletados (MotivosErrosIds é opcional no DTO)
-            if (_errosSelecionados.Count != 0)
-            {
-                dados.MotivosErrosIds = _errosSelecionados.Select(e => e.IdDetalhesErros).ToList();
-            }
-            else
-            {
-                dados.MotivosErrosIds = null;
-            }
-
-            try
-            {
-                // 2. Chama o serviço para salvar TUDO
-                int idNovaRegravacao = await _regravacaoService.CriarRegravacao(dados);
-
-                MessageBox.Show($"Regravação salva com sucesso! ID: {idNovaRegravacao}", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                // 3. Limpa o estado e o formulário
-                _errosSelecionados.Clear();
-                DGWDetalhesErros.DataSource = null;
-                // BtnLimparCamposCadastro_Click(null, null); // Chama a função de limpeza
-            }
-            catch (ArgumentException ex)
-            {
-                MessageBox.Show($"Erro de Validação: {ex.Message}", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
+            // 7. Captura de outros erros e Rollback
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao salvar no banco: {ex.Message}", "Erro Crítico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (thumbnailUrl != null)
+                {
+                    await DeleteThumbnailAsync(thumbnailUrl);
+                    MessageBox.Show($"Falha grave na inserção do DB. O arquivo de thumbnail foi removido do Storage. Erro: {ex.Message}", "Erro de Transação", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    MessageBox.Show($"Falha ao salvar a Regravação: {ex.Message}", "Erro de Salvamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
-
         }
 
         private async void FrmMain_Load(object sender, EventArgs e)
@@ -1793,34 +1855,6 @@ namespace Regravacao
             PictureBoxThumbnail.Invalidate();
         }
 
-        private void PictureBoxThumbnail_DragEnter(object sender, DragEventArgs e)
-        {
-            // Verifica se o item arrastado é um arquivo e se é uma imagem JPG
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                if (files.Length > 0 && files[0].EndsWith(".jpg", StringComparison.OrdinalIgnoreCase))
-                {
-                    e.Effect = DragDropEffects.Copy; // Sinaliza que o arquivo pode ser copiado
-                }
-                else
-                {
-                    e.Effect = DragDropEffects.None;
-                }
-            }
-        }
-
-        private void PictureBoxThumbnail_DragDrop(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                if (files.Length > 0)
-                {
-                    ProcessAndSetThumbnail(files[0]); // Chama a função de processamento
-                }
-            }
-        }
 
         private void AlterarImagem_Click(object sender, EventArgs e)
         {
@@ -1960,5 +1994,40 @@ namespace Regravacao
         {
             ResetZoomState();
         }
+
+        private void PictureBoxThumbnail_DragEnter(object sender, DragEventArgs e)
+        {
+            // Verifica se o item arrastado é uma coleção de arquivos
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                // Verifica se há pelo menos um arquivo e se ele tem a extensão JPG
+                if (files.Length > 0 && files[0].EndsWith(".jpg", StringComparison.OrdinalIgnoreCase))
+                {
+                    e.Effect = DragDropEffects.Copy; // Sinaliza que pode ser solto (copiado)
+                }
+                else
+                {
+                    e.Effect = DragDropEffects.None; // Arquivo não aceito
+                }
+            }
+        }
+
+        private void PictureBoxThumbnail_DragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                if (files.Length > 0)
+                {
+                    // Chama a função de processamento com o caminho do primeiro arquivo solto
+                    ProcessAndSetThumbnail(files[0]);
+                }
+            }
+
+        }
+        
     }
 }

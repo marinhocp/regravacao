@@ -1,11 +1,10 @@
-﻿using Regravacao.DTOs; 
+﻿using Regravacao.DTOs;
 using Regravacao.Models;
 
 namespace Regravacao.Services.Regravacao
 {
     public interface IRegravacaoService
     {
-
         /// Cria uma nova solicitação de regravação no banco de dados.
         Task<int> CriarRegravacao(InserirRegravacaoDto dados);
 
