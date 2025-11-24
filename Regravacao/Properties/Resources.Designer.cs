@@ -453,6 +453,26 @@ namespace Regravacao.Properties {
         /// <summary>
         ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap rotacionar_antihorario {
+            get {
+                object obj = ResourceManager.GetObject("rotacionar_antihorario", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap rotacionar_horario {
+            get {
+                object obj = ResourceManager.GetObject("rotacionar_horario", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap save_32px {
             get {
                 object obj = ResourceManager.GetObject("save_32px", resourceCulture);

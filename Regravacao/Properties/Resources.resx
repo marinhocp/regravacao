@@ -124,11 +124,11 @@
   <data name="erase_32px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\erase_32px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="shutdown_30p" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\shutdown_30p.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="edit_property_64px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\edit_property_64px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Genealogy_48px" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Genealogy_48px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="no_image_200_200" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\no_image_200_200.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -145,8 +145,8 @@
   <data name="window_tools_24px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\window_tools_24px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="logo_studio" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\logo_studio.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="High Priority_48px" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\High Priority_48px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="perfil" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\perfil.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -160,17 +160,20 @@
   <data name="ENGSOFT LOGO NOVA" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ENGSOFT LOGO NOVA.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Quest_48px" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Quest_48px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="shutdown_48px" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\shutdown_48px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Paper Money_48px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Paper Money_48px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="user_80pxd" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\user_80pxd.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="export_pdf_24px45" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\export_pdf_24px45.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="ProductDefault" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ProductDefault.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="graf" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\graf.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="document_new-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\document_new-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -178,17 +181,17 @@
   <data name="no_imagem" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\no_imagem.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="user_40px" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\user_40px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="borracha1_32x32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\borracha1_32x32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="plus_24 azul" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\plus_24 azul.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="database_restore_50px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\database_restore_50px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="pdf_48pxtyut" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pdf_48pxtyut.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="save_64pxuio" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\save_64pxuio.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Filled Filter_48px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Filled Filter_48px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -202,14 +205,11 @@
   <data name="user_80px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\user_80px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="save_64pxuio" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\save_64pxuio.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Genealogy_48px" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Genealogy_48px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="pdf_48pxtyut" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\pdf_48pxtyut.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="save_close_48pxoip" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\save_close_48pxoip.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="plus_24 azul" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\plus_24 azul.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="microsoft_excel_24px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\microsoft_excel_24px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -226,6 +226,9 @@
   <data name="hq720" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\hq720.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="full_tool_storage_box_32px" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\full_tool_storage_box_32px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="excel-2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\excel-2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -238,23 +241,23 @@
   <data name="Urgent Property_48px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Urgent Property_48px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="user_80pxd" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\user_80pxd.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="save_close_48pxoip" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\save_close_48pxoip.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="High Priority_48px" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\High Priority_48px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="user_40px" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\user_40px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="edit_property_26px" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\edit_property_26px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="logo_studio" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\logo_studio.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="edit_property_40px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\edit_property_40px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="shutdown_48px" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\shutdown_48px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Quest_48px" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Quest_48px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="export_pdf_24px45" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\export_pdf_24px45.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="graf" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\graf.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="save_32px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\save_32px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -265,10 +268,13 @@
   <data name="pdf_30pxe" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pdf_30pxe.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="full_tool_storage_box_32px" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\full_tool_storage_box_32px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="edit_property_26px" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\edit_property_26px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="shutdown_30p" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\shutdown_30p.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="rotacionar_antihorario" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\rotacionar_antihorario.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="rotacionar_horario" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\rotacionar_horario.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

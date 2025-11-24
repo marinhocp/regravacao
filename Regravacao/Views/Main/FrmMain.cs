@@ -50,8 +50,17 @@ namespace Regravacao
         private decimal _margemCorte = 0m;
         private decimal _fatorCalculo = 0m;
         private decimal? _maoObra = 0m;
-        private Image? _thumbnailImage;
         private byte[]? _thumbnailBytes;
+        // Variáveis para as informações do Tooltip
+        private string? _originalFileName;
+        private ToolTip _thumbnailToolTip = new ToolTip();
+        // Zoom
+        private float _currentZoom = 1.0f;
+        private const float ZoomStep = 0.1f;
+        private bool _isDragging = false;
+        private Point _lastMousePosition;
+        private Point _imageOffset = new Point(0, 0);
+
 
         private static readonly (string Chk, string NomeCor, string Largura, string Comprimento, string MedidaParcial, string CustoParcial, string Panel)[] _mapaCores =
      {
@@ -87,6 +96,11 @@ namespace Regravacao
             InitializeComponent();
 
             NumUpDQtdePlacas.ValueChanged += NumUpDQtdePlacas_ValueChanged;
+            PictureBoxThumbnail.Paint += PictureBoxThumbnail_Paint; // Assina o evento de desenho
+            PictureBoxThumbnail.MouseWheel += PictureBoxThumbnail_MouseWheel;
+            PictureBoxThumbnail.MouseDown += PictureBoxThumbnail_MouseDown;
+            PictureBoxThumbnail.MouseMove += PictureBoxThumbnail_MouseMove;
+            PictureBoxThumbnail.MouseUp += PictureBoxThumbnail_MouseUp;
 
             // habilita a seleção do item do DropDownList para todos os ComboBoxes ao digitar uma letra
             CBxMaterial.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -134,7 +148,48 @@ namespace Regravacao
 
         }
 
-        private void NumUpDQtdePlacas_ValueChanged(object sender, EventArgs e)
+        private void PictureBoxThumbnail_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (PictureBoxThumbnail.Image == null) return;
+
+            // 🎯 Começa o arrasto apenas com o botão esquerdo e se houver zoom ativo
+            if (e.Button == MouseButtons.Left && _currentZoom > 1.0f)
+            {
+                _isDragging = true;
+                _lastMousePosition = e.Location;
+                PictureBoxThumbnail.Cursor = Cursors.Hand; // Muda o cursor
+            }
+        }
+
+        private void PictureBoxThumbnail_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (!_isDragging || PictureBoxThumbnail.Image == null) return;
+
+            // Calcula a diferença do movimento do mouse
+            int deltaX = e.X - _lastMousePosition.X;
+            int deltaY = e.Y - _lastMousePosition.Y;
+
+            // Atualiza o deslocamento da imagem
+            _imageOffset.X += deltaX;
+            _imageOffset.Y += deltaY;
+
+            // Atualiza a última posição para o próximo movimento
+            _lastMousePosition = e.Location;
+
+            // Força o redesenho do PictureBox com o novo offset
+            PictureBoxThumbnail.Invalidate();
+        }
+
+        private void PictureBoxThumbnail_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (_isDragging)
+            {
+                _isDragging = false;
+                PictureBoxThumbnail.Cursor = Cursors.Default; // Volta ao cursor padrão
+            }
+        }
+
+        private void NumUpDQtdePlacas_ValueChanged(object? sender, EventArgs e)
         {
             AtualizarControlesCores((int)NumUpDQtdePlacas.Value);
         }
@@ -1250,8 +1305,6 @@ namespace Regravacao
             await Task.CompletedTask;
         }
 
-
-
         private async void BtnSalvarCadastro_Click_1(object sender, EventArgs e)
         {
             // 1. Obter o valor selecionado
@@ -1510,16 +1563,29 @@ namespace Regravacao
 
         private void BtnLimparCamposCadastro_Click(object sender, EventArgs e)
         {
-            LimparControlesPersonalizado();
+            ResetarControlesPersonalizado();
         }
 
-        private void LimparControlesPersonalizado()
+        private void ResetarControlesPersonalizado()
         {
             // ... (Seu código existente para os outros controles) ...
+            _thumbnailBytes = null;
+            _originalFileName = null;
+            PictureBoxThumbnail.Image = null;
+
+            // 🎯 NOVO: Limpar o offset da imagem
+            _imageOffset = new Point(0, 0);
             TxbRequerimentoAtual.Text = string.Empty;
             TxbDescricao.Text = string.Empty;
             TxbReqNovo.Text = string.Empty;
             TxbObservacao.Text = string.Empty;
+
+            _thumbnailBytes = null;
+            _originalFileName = null;
+            _currentZoom = 1.0f;
+
+            // 🎯 Limpar o Tooltip
+            UpdateImageInfoTooltip();
 
             PictureBoxThumbnail.Image = null;
             // 🎯 Limpar a referência da imagem (bytes) para o upload
@@ -1570,58 +1636,78 @@ namespace Regravacao
 
         private void BtnAddThumbnail_Click(object sender, EventArgs e)
         {
-            ProcessAndSetThumbnail();
+            HandleImageSelection();
         }
 
-        private void ProcessAndSetThumbnail()
+        // 🎯 ATENÇÃO: Mudança na assinatura para receber o caminho do arquivo
+        private void ProcessAndSetThumbnail(string filePath)
         {
-            // Limpa a variável de bytes e a imagem visual em caso de falha ou cancelamento anterior
+            // Limpa o estado no início para garantir que o processamento comece do zero
             _thumbnailBytes = null;
+            _originalFileName = null;
             PictureBoxThumbnail.Image = null;
+            _currentZoom = 1.0f; // Valor de reset, será recalculado
+            // 🎯 NOVO: Reseta o deslocamento ao carregar uma nova imagem
+            _imageOffset = new Point(0, 0);
 
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+
+            try
             {
-                // Define o filtro para permitir apenas arquivos JPG
-                openFileDialog.Filter = "Arquivos de Imagem JPG (*.jpg)|*.jpg";
-                openFileDialog.Title = "Selecione a Imagem para a Thumbnail";
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                // Carrega a imagem original do arquivo
+                // Usamos Image.FromFile para carregar o arquivo sem travar o caminho
+                using (Image originalImage = Image.FromFile(filePath))
                 {
-                    try
+                    // 1. Processa a imagem para criar a thumbnail (Image)
+                    using (Image thumbnail = ImageProcessor.CreateThumbnail(originalImage))
                     {
-                        // Carrega a imagem original do arquivo
-                        // Usamos Image.FromFile para carregar o arquivo sem travar o caminho
-                        using (Image originalImage = Image.FromFile(openFileDialog.FileName))
-                        {
-                            // 1. Processa a imagem para criar a thumbnail (Image)
-                            using (Image thumbnail = ImageProcessor.CreateThumbnail(originalImage))
-                            {
-                                // 2. Converte a thumbnail para array de bytes com compressão JPG (baixa qualidade)
-                                _thumbnailBytes = ImageProcessor.ImageToByteArray(thumbnail);
+                        // 2. Converte a thumbnail para array de bytes com compressão JPG (baixa qualidade)
+                        _thumbnailBytes = ImageProcessor.ImageToByteArray(thumbnail);
 
-                                // 3. Exibe a imagem processada no PictureBoxThumbnail
-                                using (var ms = new MemoryStream(_thumbnailBytes))
-                                {
-                                    // Cria uma nova Image a partir do array de bytes
-                                    PictureBoxThumbnail.Image = Image.FromStream(ms);
-                                }
-
-                                // Configura o PictureBox para preencher a área proporcionalmente (Zoom)
-                                PictureBoxThumbnail.SizeMode = PictureBoxSizeMode.Zoom;
-
-                                // MessageBox.Show("Thumbnail criada e pronta para o salvamento.", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Erro ao carregar, processar ou converter a imagem:\n{ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        _thumbnailBytes = null; // Limpa o estado
-                        PictureBoxThumbnail.Image = null; // Limpa o visual
+                        // 3. Capturar e armazenar o nome do arquivo para o Tooltip
+                        FileInfo fi = new FileInfo(filePath);
+                        _originalFileName = fi.Name;
                     }
                 }
-                // Se o usuário cancelar (DialogResult.Cancel), não faz nada, 
-                // pois o _thumbnailBytes e o PictureBox já foram limpos no início.
+
+                // 4. Exibe a imagem processada no PictureBoxThumbnail
+                using (var ms = new MemoryStream(_thumbnailBytes))
+                {
+                    PictureBoxThumbnail.Image = Image.FromStream(ms);
+                }
+
+                // 5. CÁLCULO DE ZOOM INICIAL (Simula o Mode.Zoom)
+                if (PictureBoxThumbnail.Image != null)
+                {
+                    float imageWidth = PictureBoxThumbnail.Image.Width;
+                    float imageHeight = PictureBoxThumbnail.Image.Height;
+                    float boxWidth = PictureBoxThumbnail.Width;
+                    float boxHeight = PictureBoxThumbnail.Height;
+
+                    // Calcula o fator de escala necessário para caber na largura e na altura
+                    float ratioX = boxWidth / imageWidth;
+                    float ratioY = boxHeight / imageHeight;
+
+                    // Define o zoom inicial como o menor fator (garante que a imagem caiba inteira)
+                    _currentZoom = Math.Min(ratioX, ratioY);
+                }
+
+                // 6. Configuração Visual
+                // Usar Normal é ESSENCIAL para que o evento Paint desenhe a imagem com o zoom.
+                PictureBoxThumbnail.SizeMode = PictureBoxSizeMode.Normal;
+
+                // 7. Atualizar o Tooltip e forçar o desenho
+                UpdateImageInfoTooltip();
+                PictureBoxThumbnail.Invalidate(); // Força o evento Paint a redesenhar com o novo zoom
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao carregar, processar ou converter a imagem:\n{ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                // Limpeza em caso de falha
+                _thumbnailBytes = null;
+                _originalFileName = null;
+                PictureBoxThumbnail.Image = null;
+                UpdateImageInfoTooltip();
             }
         }
 
@@ -1635,7 +1721,244 @@ namespace Regravacao
 
         private void PictureBoxThumbnail_DoubleClick(object sender, EventArgs e)
         {
-            ProcessAndSetThumbnail();
+            HandleImageSelection();
+        }
+
+        private void RotateThumbnail(RotateFlipType flipType)
+        {
+            if (_thumbnailBytes == null)
+            {
+                MessageBox.Show("Não há imagem para rotacionar.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                // 1. Recria a Image a partir dos bytes atuais
+                using (var ms = new MemoryStream(_thumbnailBytes))
+                using (var image = Image.FromStream(ms))
+                {
+                    // 2. Executa a rotação
+                    image.RotateFlip(flipType);
+
+                    // 3. Converte a imagem rotacionada de volta para bytes (Persistência)
+                    _thumbnailBytes = ImageProcessor.ImageToByteArray(image);
+
+                    // 4. Atualiza o PictureBox
+                    using (var newMs = new MemoryStream(_thumbnailBytes))
+                    {
+                        PictureBoxThumbnail.Image = Image.FromStream(newMs);
+                    }
+
+                    // 5. Atualiza o Tooltip (as dimensões podem ter sido trocadas, ex: 128x80 vira 80x128)
+                    UpdateImageInfoTooltip();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao rotacionar a imagem:\n{ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnRotacionarAntihorario_Click(object sender, EventArgs e)
+        {
+            RotateThumbnail(RotateFlipType.Rotate270FlipNone);
+        }
+
+        private void BtnRotacionarHorario_Click(object sender, EventArgs e)
+        {
+            RotateThumbnail(RotateFlipType.Rotate90FlipNone);
+        }
+
+
+        private void PictureBoxThumbnail_MouseWheel(object sender, MouseEventArgs e)
+        {
+            if (PictureBoxThumbnail.Image == null) return;
+
+            // Garante que o modo seja Normal para que o PaintHandler funcione corretamente
+            PictureBoxThumbnail.SizeMode = PictureBoxSizeMode.Normal;
+
+            // Aumenta o zoom se a roda girar para cima (e.Delta > 0)
+            if (e.Delta > 0)
+            {
+                _currentZoom += ZoomStep;
+            }
+            // Diminui o zoom, mas com um limite mínimo
+            else if (_currentZoom > ZoomStep * 2)
+            {
+                _currentZoom -= ZoomStep;
+            }
+
+            // Força o PictureBox a redesenhar a imagem com o novo zoom
+            PictureBoxThumbnail.Invalidate();
+        }
+
+        private void PictureBoxThumbnail_DragEnter(object sender, DragEventArgs e)
+        {
+            // Verifica se o item arrastado é um arquivo e se é uma imagem JPG
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                if (files.Length > 0 && files[0].EndsWith(".jpg", StringComparison.OrdinalIgnoreCase))
+                {
+                    e.Effect = DragDropEffects.Copy; // Sinaliza que o arquivo pode ser copiado
+                }
+                else
+                {
+                    e.Effect = DragDropEffects.None;
+                }
+            }
+        }
+
+        private void PictureBoxThumbnail_DragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                if (files.Length > 0)
+                {
+                    ProcessAndSetThumbnail(files[0]); // Chama a função de processamento
+                }
+            }
+        }
+
+        private void AlterarImagem_Click(object sender, EventArgs e)
+        {
+            // Simula o clique no botão para abrir o OpenFileDialog
+            BtnAddThumbnail_Click(null, null);
+        }
+
+        private void Excluir_Click(object sender, EventArgs e)
+        {
+            // Chama a lógica de limpeza de imagem
+            LimparThumbnail();
+        }
+
+        private void RotacionarHorario_Click(object sender, EventArgs e)
+        {
+            RotateThumbnail(RotateFlipType.Rotate90FlipNone);
+        }
+
+        private void rotacionarAntiHorárioToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RotateThumbnail(RotateFlipType.Rotate270FlipNone);
+        }
+
+        private void LimparThumbnail()
+        {
+            _thumbnailBytes = null;
+            _originalFileName = null;
+            PictureBoxThumbnail.Image = null;
+
+            // Reseta o zoom e o Tooltip
+            _currentZoom = 1.0f;
+            UpdateImageInfoTooltip();
+
+            MessageBox.Show("Imagem removida com sucesso.", "Limpeza", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void UpdateImageInfoTooltip()
+        {
+            if (_thumbnailBytes == null || _originalFileName == null)
+            {
+                _thumbnailToolTip.SetToolTip(PictureBoxThumbnail, "Clique duas vezes ou arraste uma imagem JPG.");
+                return;
+            }
+
+            try
+            {
+                // Re-cria a Image a partir dos bytes para obter as dimensões atuais
+                using (var ms = new MemoryStream(_thumbnailBytes))
+                using (var image = Image.FromStream(ms))
+                {
+                    // O ImageProcessor já garante que o tamanho em pixels é pequeno (ex: 128xN)
+                    string info = $"Nome: {_originalFileName}\n" +
+                                  $"Medidas (px): {image.Width}x{image.Height}\n" +
+                                  $"Tamanho (KB): {(_thumbnailBytes.Length / 1024.0):N2} KB";
+
+                    _thumbnailToolTip.SetToolTip(PictureBoxThumbnail, info);
+                }
+            }
+            catch (Exception)
+            {
+                _thumbnailToolTip.SetToolTip(PictureBoxThumbnail, "Informações da imagem indisponíveis.");
+            }
+        }
+
+        private void HandleImageSelection()
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Arquivos de Imagem JPG (*.jpg)|*.jpg";
+                openFileDialog.Title = "Selecione a Imagem para a Thumbnail";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    // 🎯 CORREÇÃO: Chama ProcessAndSetThumbnail passando o caminho do arquivo selecionado.
+                    ProcessAndSetThumbnail(openFileDialog.FileName);
+                }
+                else
+                {
+                    // Opcional: Limpar o estado se o usuário cancelar, 
+                    // embora ProcessAndSetThumbnail já faça uma limpeza inicial.
+                    // _thumbnailBytes = null;
+                    // PictureBoxThumbnail.Image = null;
+                    // UpdateImageInfoTooltip();
+                }
+            }
+        }
+        private void PictureBoxThumbnail_Paint(object sender, PaintEventArgs e)
+        {
+            if (PictureBoxThumbnail.Image == null) return;
+
+            Image img = PictureBoxThumbnail.Image;
+
+            // Limpa o fundo do PictureBox para evitar artefatos
+            e.Graphics.Clear(PictureBoxThumbnail.BackColor);
+
+            // Calcula as dimensões com o zoom atual
+            int zoomedWidth = (int)(img.Width * _currentZoom);
+            int zoomedHeight = (int)(img.Height * _currentZoom);
+
+            // Centraliza a imagem no PictureBox
+            int x = (PictureBoxThumbnail.Width - zoomedWidth) / 2;
+            int y = (PictureBoxThumbnail.Height - zoomedHeight) / 2;
+
+            // 🎯 NOVO: Aplica o deslocamento (Pan/Drag)
+            x += _imageOffset.X;
+            y += _imageOffset.Y;
+
+            // Desenha a imagem com o fator de zoom e o novo offset
+            e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            e.Graphics.DrawImage(img, x, y, zoomedWidth, zoomedHeight);
+        }
+
+        private void ResetZoomState()
+        {
+            // 1. Verifica se há uma imagem para resetar
+            if (PictureBoxThumbnail.Image == null) return;
+
+            // 2. Calcula o fator de zoom inicial (para preencher o PictureBox)
+            float imageWidth = PictureBoxThumbnail.Image.Width;
+            float imageHeight = PictureBoxThumbnail.Image.Height;
+            float boxWidth = PictureBoxThumbnail.Width;
+            float boxHeight = PictureBoxThumbnail.Height;
+
+            // Calcula o menor fator de escala para que a imagem caiba
+            float ratioX = boxWidth / imageWidth;
+            float ratioY = boxHeight / imageHeight;
+
+            // 3. Reseta as variáveis de estado de zoom e pan
+            _currentZoom = Math.Min(ratioX, ratioY);
+            _imageOffset = new Point(0, 0); // Reseta o pan/arrasto
+
+            // 4. Força o redesenho do PictureBox com o novo zoom e offset
+            PictureBoxThumbnail.Invalidate();
+        }
+
+        private void ResetarZoomToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ResetZoomState();
         }
     }
 }

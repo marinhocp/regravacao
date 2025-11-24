@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
             panel1 = new Panel();
             panel6 = new Panel();
@@ -132,9 +133,16 @@
             groupBox8 = new GroupBox();
             DGWDetalhesErros = new DataGridView();
             GPPrint = new GroupBox();
+            BtnRotacionarHorario = new Button();
+            BtnRotacionarAntihorario = new Button();
             BtnDelThumbnail = new Button();
             BtnAddThumbnail = new Button();
             PictureBoxThumbnail = new PictureBox();
+            CmsThumbnail = new ContextMenuStrip(components);
+            AlterarImagem = new ToolStripMenuItem();
+            Excluir = new ToolStripMenuItem();
+            RotacionarHorario = new ToolStripMenuItem();
+            rotacionarAntiHorárioToolStripMenuItem = new ToolStripMenuItem();
             groupBox1 = new GroupBox();
             label38 = new Label();
             DateTimeBoxCadastro = new DateTimePicker();
@@ -197,6 +205,7 @@
             Lbl_versao = new Label();
             LblUserName = new Label();
             label30 = new Label();
+            resetarZoomToolStripMenuItem = new ToolStripMenuItem();
             panel1.SuspendLayout();
             panel6.SuspendLayout();
             groupBox2.SuspendLayout();
@@ -206,6 +215,7 @@
             ((System.ComponentModel.ISupportInitialize)DGWDetalhesErros).BeginInit();
             GPPrint.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)PictureBoxThumbnail).BeginInit();
+            CmsThumbnail.SuspendLayout();
             groupBox1.SuspendLayout();
             GPDadosClicheAtual.SuspendLayout();
             groupBox6.SuspendLayout();
@@ -1569,6 +1579,8 @@
             // GPPrint
             // 
             GPPrint.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            GPPrint.Controls.Add(BtnRotacionarHorario);
+            GPPrint.Controls.Add(BtnRotacionarAntihorario);
             GPPrint.Controls.Add(BtnDelThumbnail);
             GPPrint.Controls.Add(BtnAddThumbnail);
             GPPrint.Controls.Add(PictureBoxThumbnail);
@@ -1580,13 +1592,35 @@
             GPPrint.TabStop = false;
             GPPrint.Text = "PRINT DA ARTE";
             // 
+            // BtnRotacionarHorario
+            // 
+            BtnRotacionarHorario.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            BtnRotacionarHorario.Image = Properties.Resources.rotacionar_horario;
+            BtnRotacionarHorario.Location = new Point(219, 22);
+            BtnRotacionarHorario.Name = "BtnRotacionarHorario";
+            BtnRotacionarHorario.Size = new Size(49, 34);
+            BtnRotacionarHorario.TabIndex = 51;
+            BtnRotacionarHorario.UseVisualStyleBackColor = true;
+            BtnRotacionarHorario.Click += BtnRotacionarHorario_Click;
+            // 
+            // BtnRotacionarAntihorario
+            // 
+            BtnRotacionarAntihorario.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            BtnRotacionarAntihorario.Image = Properties.Resources.rotacionar_antihorario;
+            BtnRotacionarAntihorario.Location = new Point(164, 22);
+            BtnRotacionarAntihorario.Name = "BtnRotacionarAntihorario";
+            BtnRotacionarAntihorario.Size = new Size(49, 34);
+            BtnRotacionarAntihorario.TabIndex = 51;
+            BtnRotacionarAntihorario.UseVisualStyleBackColor = true;
+            BtnRotacionarAntihorario.Click += BtnRotacionarAntihorario_Click;
+            // 
             // BtnDelThumbnail
             // 
             BtnDelThumbnail.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             BtnDelThumbnail.Image = Properties.Resources.borracha1_32x32;
-            BtnDelThumbnail.Location = new Point(242, 22);
+            BtnDelThumbnail.Location = new Point(274, 22);
             BtnDelThumbnail.Name = "BtnDelThumbnail";
-            BtnDelThumbnail.Size = new Size(81, 34);
+            BtnDelThumbnail.Size = new Size(49, 34);
             BtnDelThumbnail.TabIndex = 50;
             BtnDelThumbnail.UseVisualStyleBackColor = true;
             BtnDelThumbnail.Click += BtnDelThumbnail_Click;
@@ -1597,7 +1631,7 @@
             BtnAddThumbnail.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             BtnAddThumbnail.Location = new Point(10, 22);
             BtnAddThumbnail.Name = "BtnAddThumbnail";
-            BtnAddThumbnail.Size = new Size(225, 34);
+            BtnAddThumbnail.Size = new Size(149, 34);
             BtnAddThumbnail.TabIndex = 49;
             BtnAddThumbnail.Text = "ADICIONAR PRINT";
             BtnAddThumbnail.UseVisualStyleBackColor = true;
@@ -1608,14 +1642,48 @@
             PictureBoxThumbnail.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             PictureBoxThumbnail.BackColor = Color.WhiteSmoke;
             PictureBoxThumbnail.BorderStyle = BorderStyle.FixedSingle;
+            PictureBoxThumbnail.ContextMenuStrip = CmsThumbnail;
             PictureBoxThumbnail.Image = Properties.Resources.no_imagem;
-            PictureBoxThumbnail.Location = new Point(10, 62);
+            PictureBoxThumbnail.Location = new Point(10, 65);
             PictureBoxThumbnail.Name = "PictureBoxThumbnail";
-            PictureBoxThumbnail.Size = new Size(313, 479);
-            PictureBoxThumbnail.SizeMode = PictureBoxSizeMode.Zoom;
+            PictureBoxThumbnail.Size = new Size(313, 472);
             PictureBoxThumbnail.TabIndex = 0;
             PictureBoxThumbnail.TabStop = false;
             PictureBoxThumbnail.DoubleClick += PictureBoxThumbnail_DoubleClick;
+            // 
+            // CmsThumbnail
+            // 
+            CmsThumbnail.Items.AddRange(new ToolStripItem[] { AlterarImagem, Excluir, RotacionarHorario, rotacionarAntiHorárioToolStripMenuItem, resetarZoomToolStripMenuItem });
+            CmsThumbnail.Name = "CmsThumbnail";
+            CmsThumbnail.Size = new Size(202, 136);
+            // 
+            // AlterarImagem
+            // 
+            AlterarImagem.Name = "AlterarImagem";
+            AlterarImagem.Size = new Size(201, 22);
+            AlterarImagem.Text = "Alterar Imagem";
+            AlterarImagem.Click += AlterarImagem_Click;
+            // 
+            // Excluir
+            // 
+            Excluir.Name = "Excluir";
+            Excluir.Size = new Size(201, 22);
+            Excluir.Text = "Excluir";
+            Excluir.Click += Excluir_Click;
+            // 
+            // RotacionarHorario
+            // 
+            RotacionarHorario.Name = "RotacionarHorario";
+            RotacionarHorario.Size = new Size(201, 22);
+            RotacionarHorario.Text = "Rotacionar Horário";
+            RotacionarHorario.Click += RotacionarHorario_Click;
+            // 
+            // rotacionarAntiHorárioToolStripMenuItem
+            // 
+            rotacionarAntiHorárioToolStripMenuItem.Name = "rotacionarAntiHorárioToolStripMenuItem";
+            rotacionarAntiHorárioToolStripMenuItem.Size = new Size(201, 22);
+            rotacionarAntiHorárioToolStripMenuItem.Text = "Rotacionar Anti-Horário";
+            rotacionarAntiHorárioToolStripMenuItem.Click += rotacionarAntiHorárioToolStripMenuItem_Click;
             // 
             // groupBox1
             // 
@@ -2409,6 +2477,13 @@
             label30.TabIndex = 8;
             label30.Text = "USUÁRIO:";
             // 
+            // resetarZoomToolStripMenuItem
+            // 
+            resetarZoomToolStripMenuItem.Name = "resetarZoomToolStripMenuItem";
+            resetarZoomToolStripMenuItem.Size = new Size(201, 22);
+            resetarZoomToolStripMenuItem.Text = "Resetar Zoom";
+            resetarZoomToolStripMenuItem.Click += ResetarZoomToolStripMenuItem_Click;
+            // 
             // FrmMain
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -2434,6 +2509,7 @@
             ((System.ComponentModel.ISupportInitialize)DGWDetalhesErros).EndInit();
             GPPrint.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)PictureBoxThumbnail).EndInit();
+            CmsThumbnail.ResumeLayout(false);
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             GPDadosClicheAtual.ResumeLayout(false);
@@ -2629,5 +2705,13 @@
         private Label label13;
         private Label label54;
         private Button BtnLogout;
+        private Button BtnRotacionarAntihorario;
+        private Button BtnRotacionarHorario;
+        private ContextMenuStrip CmsThumbnail;
+        private ToolStripMenuItem AlterarImagem;
+        private ToolStripMenuItem Excluir;
+        private ToolStripMenuItem RotacionarHorario;
+        private ToolStripMenuItem rotacionarAntiHorárioToolStripMenuItem;
+        private ToolStripMenuItem resetarZoomToolStripMenuItem;
     }
 }
