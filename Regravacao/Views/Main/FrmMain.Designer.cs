@@ -53,6 +53,14 @@
             PanelCor2 = new Panel();
             PanelCor1 = new Panel();
             label19 = new Label();
+            CBxNomeCor8 = new ComboBox();
+            CBxNomeCor7 = new ComboBox();
+            CBxNomeCor6 = new ComboBox();
+            CBxNomeCor5 = new ComboBox();
+            CBxNomeCor4 = new ComboBox();
+            CBxNomeCor3 = new ComboBox();
+            CBxNomeCor2 = new ComboBox();
+            CBxNomeCor1 = new ComboBox();
             CkBCor8 = new CheckBox();
             CkBCor7 = new CheckBox();
             CkBCor6 = new CheckBox();
@@ -105,25 +113,17 @@
             TxbComprimentoCor3 = new TextBox();
             TxbComprimentoCor2 = new TextBox();
             TxbComprimentoCor1 = new TextBox();
-            TxbNomeCor8 = new TextBox();
             TxbLarguraCor8 = new TextBox();
-            TxbNomeCor7 = new TextBox();
             TxbLarguraCor7 = new TextBox();
-            TxbNomeCor6 = new TextBox();
             TxbLarguraCor6 = new TextBox();
-            TxbNomeCor5 = new TextBox();
             TxbLarguraCor5 = new TextBox();
-            TxbNomeCor4 = new TextBox();
             TxbLarguraCor4 = new TextBox();
-            TxbNomeCor3 = new TextBox();
             TxbLarguraCor3 = new TextBox();
-            TxbNomeCor2 = new TextBox();
             label22 = new Label();
             label24 = new Label();
             label27 = new Label();
             label46 = new Label();
             TxbLarguraCor2 = new TextBox();
-            TxbNomeCor1 = new TextBox();
             TxbLarguraCor1 = new TextBox();
             label31 = new Label();
             label37 = new Label();
@@ -393,6 +393,14 @@
             groupBox4.Controls.Add(PanelCor2);
             groupBox4.Controls.Add(PanelCor1);
             groupBox4.Controls.Add(label19);
+            groupBox4.Controls.Add(CBxNomeCor8);
+            groupBox4.Controls.Add(CBxNomeCor7);
+            groupBox4.Controls.Add(CBxNomeCor6);
+            groupBox4.Controls.Add(CBxNomeCor5);
+            groupBox4.Controls.Add(CBxNomeCor4);
+            groupBox4.Controls.Add(CBxNomeCor3);
+            groupBox4.Controls.Add(CBxNomeCor2);
+            groupBox4.Controls.Add(CBxNomeCor1);
             groupBox4.Controls.Add(CkBCor8);
             groupBox4.Controls.Add(CkBCor7);
             groupBox4.Controls.Add(CkBCor6);
@@ -445,25 +453,17 @@
             groupBox4.Controls.Add(TxbComprimentoCor3);
             groupBox4.Controls.Add(TxbComprimentoCor2);
             groupBox4.Controls.Add(TxbComprimentoCor1);
-            groupBox4.Controls.Add(TxbNomeCor8);
             groupBox4.Controls.Add(TxbLarguraCor8);
-            groupBox4.Controls.Add(TxbNomeCor7);
             groupBox4.Controls.Add(TxbLarguraCor7);
-            groupBox4.Controls.Add(TxbNomeCor6);
             groupBox4.Controls.Add(TxbLarguraCor6);
-            groupBox4.Controls.Add(TxbNomeCor5);
             groupBox4.Controls.Add(TxbLarguraCor5);
-            groupBox4.Controls.Add(TxbNomeCor4);
             groupBox4.Controls.Add(TxbLarguraCor4);
-            groupBox4.Controls.Add(TxbNomeCor3);
             groupBox4.Controls.Add(TxbLarguraCor3);
-            groupBox4.Controls.Add(TxbNomeCor2);
             groupBox4.Controls.Add(label22);
             groupBox4.Controls.Add(label24);
             groupBox4.Controls.Add(label27);
             groupBox4.Controls.Add(label46);
             groupBox4.Controls.Add(TxbLarguraCor2);
-            groupBox4.Controls.Add(TxbNomeCor1);
             groupBox4.Controls.Add(TxbLarguraCor1);
             groupBox4.Controls.Add(label31);
             groupBox4.Controls.Add(label37);
@@ -569,6 +569,87 @@
             label19.Size = new Size(828, 13);
             label19.TabIndex = 81;
             label19.Text = "As medidas devem ser informadas em centímetros. Somente serão adicionadas ao custo final as cores que estiverem com o checkbox marcados.";
+            // 
+            // CBxNomeCor8
+            // 
+            CBxNomeCor8.AutoCompleteMode = AutoCompleteMode.Append;
+            CBxNomeCor8.Font = new Font("Segoe UI", 12F);
+            CBxNomeCor8.FormattingEnabled = true;
+            CBxNomeCor8.Location = new Point(116, 352);
+            CBxNomeCor8.Name = "CBxNomeCor8";
+            CBxNomeCor8.Size = new Size(321, 29);
+            CBxNomeCor8.TabIndex = 45;
+            // 
+            // CBxNomeCor7
+            // 
+            CBxNomeCor7.AutoCompleteMode = AutoCompleteMode.Append;
+            CBxNomeCor7.Font = new Font("Segoe UI", 12F);
+            CBxNomeCor7.FormattingEnabled = true;
+            CBxNomeCor7.Location = new Point(116, 313);
+            CBxNomeCor7.Name = "CBxNomeCor7";
+            CBxNomeCor7.Size = new Size(321, 29);
+            CBxNomeCor7.TabIndex = 41;
+            // 
+            // CBxNomeCor6
+            // 
+            CBxNomeCor6.AutoCompleteMode = AutoCompleteMode.Append;
+            CBxNomeCor6.Font = new Font("Segoe UI", 12F);
+            CBxNomeCor6.FormattingEnabled = true;
+            CBxNomeCor6.Location = new Point(116, 273);
+            CBxNomeCor6.Name = "CBxNomeCor6";
+            CBxNomeCor6.Size = new Size(321, 29);
+            CBxNomeCor6.TabIndex = 37;
+            // 
+            // CBxNomeCor5
+            // 
+            CBxNomeCor5.AutoCompleteMode = AutoCompleteMode.Append;
+            CBxNomeCor5.Font = new Font("Segoe UI", 12F);
+            CBxNomeCor5.FormattingEnabled = true;
+            CBxNomeCor5.Location = new Point(116, 233);
+            CBxNomeCor5.Name = "CBxNomeCor5";
+            CBxNomeCor5.Size = new Size(321, 29);
+            CBxNomeCor5.TabIndex = 33;
+            // 
+            // CBxNomeCor4
+            // 
+            CBxNomeCor4.AutoCompleteMode = AutoCompleteMode.Append;
+            CBxNomeCor4.Font = new Font("Segoe UI", 12F);
+            CBxNomeCor4.FormattingEnabled = true;
+            CBxNomeCor4.Location = new Point(116, 193);
+            CBxNomeCor4.MaxDropDownItems = 29;
+            CBxNomeCor4.Name = "CBxNomeCor4";
+            CBxNomeCor4.Size = new Size(321, 29);
+            CBxNomeCor4.TabIndex = 7;
+            // 
+            // CBxNomeCor3
+            // 
+            CBxNomeCor3.AutoCompleteMode = AutoCompleteMode.Append;
+            CBxNomeCor3.Font = new Font("Segoe UI", 12F);
+            CBxNomeCor3.FormattingEnabled = true;
+            CBxNomeCor3.Location = new Point(119, 153);
+            CBxNomeCor3.Name = "CBxNomeCor3";
+            CBxNomeCor3.Size = new Size(321, 29);
+            CBxNomeCor3.TabIndex = 25;
+            // 
+            // CBxNomeCor2
+            // 
+            CBxNomeCor2.AutoCompleteMode = AutoCompleteMode.Append;
+            CBxNomeCor2.Font = new Font("Segoe UI", 12F);
+            CBxNomeCor2.FormattingEnabled = true;
+            CBxNomeCor2.Location = new Point(116, 111);
+            CBxNomeCor2.Name = "CBxNomeCor2";
+            CBxNomeCor2.Size = new Size(321, 29);
+            CBxNomeCor2.TabIndex = 21;
+            // 
+            // CBxNomeCor1
+            // 
+            CBxNomeCor1.AutoCompleteMode = AutoCompleteMode.Append;
+            CBxNomeCor1.Font = new Font("Segoe UI", 12F);
+            CBxNomeCor1.FormattingEnabled = true;
+            CBxNomeCor1.Location = new Point(116, 74);
+            CBxNomeCor1.Name = "CBxNomeCor1";
+            CBxNomeCor1.Size = new Size(321, 29);
+            CBxNomeCor1.TabIndex = 17;
             // 
             // CkBCor8
             // 
@@ -1242,18 +1323,6 @@
             TxbComprimentoCor1.TextAlign = HorizontalAlignment.Right;
             TxbComprimentoCor1.TextChanged += TxbComprimentoCor1_TextChanged;
             // 
-            // TxbNomeCor8
-            // 
-            TxbNomeCor8.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            TxbNomeCor8.AutoCompleteMode = AutoCompleteMode.Append;
-            TxbNomeCor8.BackColor = SystemColors.Control;
-            TxbNomeCor8.CharacterCasing = CharacterCasing.Upper;
-            TxbNomeCor8.Font = new Font("Segoe UI", 12F);
-            TxbNomeCor8.Location = new Point(116, 353);
-            TxbNomeCor8.Name = "TxbNomeCor8";
-            TxbNomeCor8.Size = new Size(321, 29);
-            TxbNomeCor8.TabIndex = 45;
-            // 
             // TxbLarguraCor8
             // 
             TxbLarguraCor8.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
@@ -1266,18 +1335,6 @@
             TxbLarguraCor8.TabIndex = 46;
             TxbLarguraCor8.TextAlign = HorizontalAlignment.Right;
             TxbLarguraCor8.TextChanged += TxbLarguraCor8_TextChanged;
-            // 
-            // TxbNomeCor7
-            // 
-            TxbNomeCor7.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            TxbNomeCor7.AutoCompleteMode = AutoCompleteMode.Append;
-            TxbNomeCor7.BackColor = SystemColors.Control;
-            TxbNomeCor7.CharacterCasing = CharacterCasing.Upper;
-            TxbNomeCor7.Font = new Font("Segoe UI", 12F);
-            TxbNomeCor7.Location = new Point(116, 313);
-            TxbNomeCor7.Name = "TxbNomeCor7";
-            TxbNomeCor7.Size = new Size(321, 29);
-            TxbNomeCor7.TabIndex = 41;
             // 
             // TxbLarguraCor7
             // 
@@ -1292,18 +1349,6 @@
             TxbLarguraCor7.TextAlign = HorizontalAlignment.Right;
             TxbLarguraCor7.TextChanged += TxbLarguraCor7_TextChanged;
             // 
-            // TxbNomeCor6
-            // 
-            TxbNomeCor6.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            TxbNomeCor6.AutoCompleteMode = AutoCompleteMode.Append;
-            TxbNomeCor6.BackColor = SystemColors.Control;
-            TxbNomeCor6.CharacterCasing = CharacterCasing.Upper;
-            TxbNomeCor6.Font = new Font("Segoe UI", 12F);
-            TxbNomeCor6.Location = new Point(116, 273);
-            TxbNomeCor6.Name = "TxbNomeCor6";
-            TxbNomeCor6.Size = new Size(321, 29);
-            TxbNomeCor6.TabIndex = 37;
-            // 
             // TxbLarguraCor6
             // 
             TxbLarguraCor6.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
@@ -1316,18 +1361,6 @@
             TxbLarguraCor6.TabIndex = 38;
             TxbLarguraCor6.TextAlign = HorizontalAlignment.Right;
             TxbLarguraCor6.TextChanged += TxbLarguraCor6_TextChanged;
-            // 
-            // TxbNomeCor5
-            // 
-            TxbNomeCor5.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            TxbNomeCor5.AutoCompleteMode = AutoCompleteMode.Append;
-            TxbNomeCor5.BackColor = SystemColors.Control;
-            TxbNomeCor5.CharacterCasing = CharacterCasing.Upper;
-            TxbNomeCor5.Font = new Font("Segoe UI", 12F);
-            TxbNomeCor5.Location = new Point(116, 233);
-            TxbNomeCor5.Name = "TxbNomeCor5";
-            TxbNomeCor5.Size = new Size(321, 29);
-            TxbNomeCor5.TabIndex = 33;
             // 
             // TxbLarguraCor5
             // 
@@ -1342,18 +1375,6 @@
             TxbLarguraCor5.TextAlign = HorizontalAlignment.Right;
             TxbLarguraCor5.TextChanged += TxbLarguraCor5_TextChanged;
             // 
-            // TxbNomeCor4
-            // 
-            TxbNomeCor4.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            TxbNomeCor4.AutoCompleteMode = AutoCompleteMode.Append;
-            TxbNomeCor4.BackColor = SystemColors.Control;
-            TxbNomeCor4.CharacterCasing = CharacterCasing.Upper;
-            TxbNomeCor4.Font = new Font("Segoe UI", 12F);
-            TxbNomeCor4.Location = new Point(116, 193);
-            TxbNomeCor4.Name = "TxbNomeCor4";
-            TxbNomeCor4.Size = new Size(321, 29);
-            TxbNomeCor4.TabIndex = 29;
-            // 
             // TxbLarguraCor4
             // 
             TxbLarguraCor4.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
@@ -1367,17 +1388,6 @@
             TxbLarguraCor4.TextAlign = HorizontalAlignment.Right;
             TxbLarguraCor4.TextChanged += TxbLarguraCor4_TextChanged;
             // 
-            // TxbNomeCor3
-            // 
-            TxbNomeCor3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            TxbNomeCor3.BackColor = SystemColors.Control;
-            TxbNomeCor3.CharacterCasing = CharacterCasing.Upper;
-            TxbNomeCor3.Font = new Font("Segoe UI", 12F);
-            TxbNomeCor3.Location = new Point(116, 153);
-            TxbNomeCor3.Name = "TxbNomeCor3";
-            TxbNomeCor3.Size = new Size(321, 29);
-            TxbNomeCor3.TabIndex = 25;
-            // 
             // TxbLarguraCor3
             // 
             TxbLarguraCor3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
@@ -1390,17 +1400,6 @@
             TxbLarguraCor3.TabIndex = 26;
             TxbLarguraCor3.TextAlign = HorizontalAlignment.Right;
             TxbLarguraCor3.TextChanged += TxbLarguraCor3_TextChanged;
-            // 
-            // TxbNomeCor2
-            // 
-            TxbNomeCor2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            TxbNomeCor2.BackColor = SystemColors.Control;
-            TxbNomeCor2.CharacterCasing = CharacterCasing.Upper;
-            TxbNomeCor2.Font = new Font("Segoe UI", 12F);
-            TxbNomeCor2.Location = new Point(116, 113);
-            TxbNomeCor2.Name = "TxbNomeCor2";
-            TxbNomeCor2.Size = new Size(321, 29);
-            TxbNomeCor2.TabIndex = 21;
             // 
             // label22
             // 
@@ -1458,18 +1457,6 @@
             TxbLarguraCor2.TabIndex = 22;
             TxbLarguraCor2.TextAlign = HorizontalAlignment.Right;
             TxbLarguraCor2.TextChanged += TxbLarguraCor2_TextChanged;
-            // 
-            // TxbNomeCor1
-            // 
-            TxbNomeCor1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            TxbNomeCor1.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
-            TxbNomeCor1.BackColor = SystemColors.Control;
-            TxbNomeCor1.CharacterCasing = CharacterCasing.Upper;
-            TxbNomeCor1.Font = new Font("Segoe UI", 12F);
-            TxbNomeCor1.Location = new Point(116, 74);
-            TxbNomeCor1.Name = "TxbNomeCor1";
-            TxbNomeCor1.Size = new Size(321, 29);
-            TxbNomeCor1.TabIndex = 17;
             // 
             // TxbLarguraCor1
             // 
@@ -2642,25 +2629,17 @@
         private TextBox TxbComprimentoCor3;
         private TextBox TxbComprimentoCor2;
         private TextBox TxbComprimentoCor1;
-        private TextBox TxbNomeCor8;
         private TextBox TxbLarguraCor8;
-        private TextBox TxbNomeCor7;
         private TextBox TxbLarguraCor7;
-        private TextBox TxbNomeCor6;
         private TextBox TxbLarguraCor6;
-        private TextBox TxbNomeCor5;
         private TextBox TxbLarguraCor5;
-        private TextBox TxbNomeCor4;
         private TextBox TxbLarguraCor4;
-        private TextBox TxbNomeCor3;
         private TextBox TxbLarguraCor3;
-        private TextBox TxbNomeCor2;
         private Label label22;
         private Label label24;
         private Label label27;
         private Label label46;
         private TextBox TxbLarguraCor2;
-        private TextBox TxbNomeCor1;
         private TextBox TxbLarguraCor1;
         private Label label31;
         private Label label37;
@@ -2717,5 +2696,13 @@
         private ToolStripMenuItem RotacionarHorario;
         private ToolStripMenuItem rotacionarAntiHorárioToolStripMenuItem;
         private ToolStripMenuItem resetarZoomToolStripMenuItem;
+        private ComboBox CBxNomeCor8;
+        private ComboBox CBxNomeCor7;
+        private ComboBox CBxNomeCor6;
+        private ComboBox CBxNomeCor5;
+        private ComboBox CBxNomeCor4;
+        private ComboBox CBxNomeCor3;
+        private ComboBox CBxNomeCor2;
+        private ComboBox CBxNomeCor1;
     }
 }

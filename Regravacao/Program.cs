@@ -27,8 +27,6 @@ using Regravacao.Services.Prioridade;
 using Regravacao.Services.Regravacao;
 using Regravacao.Services.Solicitante;
 using Regravacao.Services.Status;
-using Regravacao.Services.Cores;
-using Regravacao.Repositories.Cores;
 using Regravacao.Views;
 using Supabase;
 
@@ -75,7 +73,6 @@ namespace Regravacao
                     services.AddScoped<ICustoDeQuemRepository, CustoDeQuemRepository>();
                     services.AddScoped<IPrioridadeRepository, PrioridadeRepository>();
                     services.AddScoped<IStatusRepository, StatusRepository>();
-                    services.AddScoped<ICoresRepository, CoresRepository>();
 
                     // --- SERVIÇOS ---
                     services.AddScoped<IRegravacaoService, RegravacaoService>();
@@ -92,7 +89,7 @@ namespace Regravacao
                     services.AddScoped<ICustoDeQuemService, CustoDeQuemService>();
                     services.AddScoped<IPrioridadeService, PrioridadeService>();
                     services.AddScoped<IStatusService, StatusService>();
-                    services.AddScoped<ICoresService, CoresService>();
+
 
                     // ✅ Forms
                     services.AddTransient<FrmMain>();

@@ -7,7 +7,6 @@ using Regravacao.Services.Auth;
 using Regravacao.Services.Calculo;
 using Regravacao.Services.Conferente;
 using Regravacao.Services.Configuracoes;
-using Regravacao.Services.Cores;
 using Regravacao.Services.CustoDeQuem;
 using Regravacao.Services.DetalhesDeErros;
 using Regravacao.Services.Empresa;
@@ -47,7 +46,6 @@ namespace Regravacao
         private readonly IStatusService _statusService;
         private readonly IConfiguracoesCustoService _configuracoesCustoService;
         private readonly CalculadoraDeCusto _calculadora;
-        private readonly ICoresService _coresService;
         private List<DetalhesDeErrosDto> _errosSelecionados = [];
         private decimal _margemCorte = 0m;
         private decimal _fatorCalculo = 0m;
@@ -100,7 +98,6 @@ namespace Regravacao
           IConfiguracoesCustoService configuracoesCustoService,
           IStatusService statusService,
           CalculadoraDeCusto calculadora,
-          ICoresService coresService,
           Client supabaseClient,
 
           Client supabase)
@@ -139,7 +136,6 @@ namespace Regravacao
             _statusService = statusService;
             _configuracoesCustoService = configuracoesCustoService;
             _calculadora = calculadora;
-            _coresService = coresService;
             _regravacaoService = regravacaoService;
             _supabaseClient = supabaseClient;
             _supabase = supabase;
@@ -154,7 +150,6 @@ namespace Regravacao
             NumUpDQtdePlacas.ValueChanged += NumUpDQtdePlacas_ValueChanged;
             this.Load += FrmMain_Load;
             ConectarEventosCalculo();
-            ConectarEventosCores();
 
             ConfigurarBotoes();
             _ = InicializarSessaoAsync();
@@ -164,9 +159,8 @@ namespace Regravacao
         }
 
 
-        // <summary>
+
         /// Envia os bytes da imagem para o Supabase Storage.
-        /// </summary>
         private async Task<string?> UploadThumbnailAsync()
         {
             // Verifica se há dados para upload
@@ -198,9 +192,7 @@ namespace Regravacao
             }
         }
 
-        /// <summary>
         /// Deleta o arquivo do Storage se a inserção no banco de dados falhar (rollback).
-        /// </summary>
         /// <param name="thumbnailUrl">A URL pública do arquivo a ser excluído.</param>
         private async Task DeleteThumbnailAsync(string thumbnailUrl)
         {
@@ -213,7 +205,6 @@ namespace Regravacao
                 await _supabaseClient.Storage
                     .From(BUCKET_NAME)
                     .Remove(new List<string> { fileName });
-
             }
             catch
             {
@@ -315,26 +306,7 @@ namespace Regravacao
                 if (txbComprimento != null) txbComprimento.TextChanged += (sender, e) => CalcularCustoCores();
                 if (ckBox != null) ckBox.CheckedChanged += (sender, e) => CalcularCustoCores();
             }
-        }
-
-        // Conecta APENAS eventos que disparam a BUSCA DE COR
-        private void ConectarEventosCores()
-        {
-            foreach (var mapa in _mapaCores)
-            {
-                TextBox txbNomeCor = this.Controls.Find(mapa.NomeCor, true).FirstOrDefault() as TextBox;
-
-                if (txbNomeCor != null)
-                {
-                    // (Lógica para extrair o numeroCor 1-8)
-                    // ...
-                    int numeroCor = int.Parse(new string(mapa.NomeCor.Where(char.IsDigit).ToArray()));
-
-                    // ✅ Esta é a função que é chamada quando o texto muda:
-                    txbNomeCor.TextChanged += (sender, e) => BuscarEPreencherCorAsync(txbNomeCor.Text, numeroCor);
-                }
-            }
-        }
+        }        
 
         // Convertendo cores Hexadecimal para Color
         private System.Drawing.Color HexParaColor(string hexCode)
@@ -373,41 +345,7 @@ namespace Regravacao
                 // Falha na conversão
                 return System.Drawing.Color.Transparent;
             }
-        }
-
-
-        public async void BuscarEPreencherCorAsync(string termoDigitado, int numeroCor)
-        {
-            // 1. Condição de busca (pode estar impedindo a execução)
-            if (termoDigitado.Length < 3)
-            {
-                // Se o termo for muito curto, garantimos que o painel esteja limpo.
-                Panel? panel = this.Controls.Find($"PanelCor{numeroCor}", true).FirstOrDefault() as Panel;
-                if (panel != null) panel.BackColor = System.Drawing.Color.Transparent;
-                return;
-            }
-
-            // 2. Busca no Serviço (Assumimos que está retornando o modelo correto)
-            Models.CoresModel? corEncontrada = await _coresService.BuscarCorPorNomeParcialAsync(termoDigitado);
-
-            // 3. Busca e atribuição ao Painel
-            Panel? panelCor = this.Controls.Find($"PanelCor{numeroCor}", true).FirstOrDefault() as Panel;
-
-            if (panelCor != null)
-            {
-                if (corEncontrada != null)
-                {
-                    // ✅ Atribui a cor convertida do código Hexa do banco
-                    panelCor.BackColor = HexParaColor(corEncontrada.CodigoHexadecimal);
-                }
-                else
-                {
-                    // Limpa se não encontrou (útil para feedback visual)
-                    panelCor.BackColor = System.Drawing.Color.Transparent;
-                }
-            }
-            // NOTA: Se o painel for nulo (PanelCor# não existe), nada acontece.
-        }
+        }        
 
         #region
         private void CalcularCustoCores()
