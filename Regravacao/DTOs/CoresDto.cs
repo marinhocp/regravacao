@@ -1,24 +1,31 @@
-﻿using Supabase.Postgrest.Attributes;
+﻿// Em: Regravacao.DTOs
+using Supabase.Postgrest.Attributes;
 using Supabase.Postgrest.Models;
+using System.Text.Json.Serialization;
 
 namespace Regravacao.DTOs
 {
     [Table("TblCores")]
-    public class CoresDto
+    public class CoresDto : BaseModel
     {
-        [Column("id_cor")]
+        [PrimaryKey("id_cor", false)]
+        [JsonPropertyName("id_cor")]
         public int IdCor { get; set; }
 
         [Column("nome_cor")]
-        public required string NomeCor { get; set; }
+        [JsonPropertyName("nome_cor")]
+        public string NomeCor { get; set; } = string.Empty;
 
-        [Column("codigo_hexadecimal")] // ✅ CORRIGIDO: Nome da coluna
-        public required string CodigoHexadecimal { get; set; }
+        [Column("codigo_hexadecimal")]
+        [JsonPropertyName("codigo_hexadecimal")]
+        public string CodigoHexadecimal { get; set; } = string.Empty;
 
-        [Column("codigo_rgb")] // ✅ NOVO CAMPO
-        public required string CodigoRgb { get; set; }
+        [Column("codigo_rgb")]
+        [JsonPropertyName("codigo_rgb")]
+        public string CodigoRgb { get; set; } = string.Empty;
 
-        [Column("codigo_cmyk")] // ✅ NOVO CAMPO
-        public required string CodigoCmyk { get; set; }
+        [Column("codigo_cmyk")]
+        [JsonPropertyName("codigo_cmyk")]
+        public string CodigoCmyk { get; set; } = string.Empty;
     }
 }

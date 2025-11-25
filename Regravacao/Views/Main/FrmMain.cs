@@ -31,7 +31,7 @@ namespace Regravacao
         private Panel? overlayPanel;
         private LoginControl? loginControl;
         private readonly int MaxCores = 8;
-        
+
         private readonly IDetalhesDeErrosService _detalhesDeErrosService;
         private readonly Client _supabase;
         private System.Windows.Forms.Timer? sessaoTimer;
@@ -45,6 +45,7 @@ namespace Regravacao
         private readonly IPrioridadeService _prioridadeService;
         private readonly IStatusService _statusService;
         private readonly IConfiguracoesCustoService _configuracoesCustoService;
+        private readonly ICoresService _coresService;
         private readonly CalculadoraDeCusto _calculadora;
         private List<DetalhesDeErrosDto> _errosSelecionados = [];
         private decimal _margemCorte = 0m;
@@ -56,7 +57,7 @@ namespace Regravacao
         // Variáveis para as informações do Tooltip
         private string? _originalFileName;
         private ToolTip _thumbnailToolTip = new ToolTip();
-        
+
         // Zoom
         private float _currentZoom = 1.0f;
         private const float ZoomStep = 0.1f;
@@ -65,22 +66,22 @@ namespace Regravacao
         private Point _imageOffset = new Point(0, 0);
 
         // Injeção de Dependência no construtor (Exemplo)       
-        private readonly IRegravacaoService _regravacaoService; 
+        private readonly IRegravacaoService _regravacaoService;
         private const string BUCKET_NAME = "thumbnails";
 
         // private readonly Supabase.Client _supabaseClient; // Cliente Supabase injetado
 
 
-        private static readonly (string Chk, string NomeCor, string Largura, string Comprimento, string MedidaParcial, string CustoParcial, string Panel)[] _mapaCores =
+        private static readonly (string Chk, string CBxNomeCor, string Largura, string Comprimento, string MedidaParcial, string CustoParcial, string Panel)[] _mapaCores =
      {
-        ("CkBCor1", "TxbNomeCor1", "TxbLarguraCor1", "TxbComprimentoCor1", "TxbMedidaPlacaCor1", "TxbCustoParcialPlacaCor1", "PanelCor1"),
-        ("CkBCor2", "TxbNomeCor2", "TxbLarguraCor2", "TxbComprimentoCor2", "TxbMedidaPlacaCor2", "TxbCustoParcialPlacaCor2", "PanelCor2"),
-        ("CkBCor3", "TxbNomeCor3", "TxbLarguraCor3", "TxbComprimentoCor3", "TxbMedidaPlacaCor3", "TxbCustoParcialPlacaCor3", "PanelCor3"),
-        ("CkBCor4", "TxbNomeCor4", "TxbLarguraCor4", "TxbComprimentoCor4", "TxbMedidaPlacaCor4", "TxbCustoParcialPlacaCor4", "PanelCor4"),
-        ("CkBCor5", "TxbNomeCor5", "TxbLarguraCor5", "TxbComprimentoCor5", "TxbMedidaPlacaCor5", "TxbCustoParcialPlacaCor5", "PanelCor5"),
-        ("CkBCor6", "TxbNomeCor6", "TxbLarguraCor6", "TxbComprimentoCor6", "TxbMedidaPlacaCor6", "TxbCustoParcialPlacaCor6", "PanelCor6"),
-        ("CkBCor7", "TxbNomeCor7", "TxbLarguraCor7", "TxbComprimentoCor7", "TxbMedidaPlacaCor7", "TxbCustoParcialPlacaCor7", "PanelCor7"),
-        ("CkBCor8", "TxbNomeCor8", "TxbLarguraCor8", "TxbComprimentoCor8", "TxbMedidaPlacaCor8", "TxbCustoParcialPlacaCor8", "PanelCor8"),
+        ("CkBCor1", "CBxNomeCor1", "TxbLarguraCor1", "TxbComprimentoCor1", "TxbMedidaPlacaCor1", "TxbCustoParcialPlacaCor1", "PanelCor1"),
+        ("CkBCor2", "CBxNomeCor2", "TxbLarguraCor2", "TxbComprimentoCor2", "TxbMedidaPlacaCor2", "TxbCustoParcialPlacaCor2", "PanelCor2"),
+        ("CkBCor3", "CBxNomeCor3", "TxbLarguraCor3", "TxbComprimentoCor3", "TxbMedidaPlacaCor3", "TxbCustoParcialPlacaCor3", "PanelCor3"),
+        ("CkBCor4", "CBxNomeCor4", "TxbLarguraCor4", "TxbComprimentoCor4", "TxbMedidaPlacaCor4", "TxbCustoParcialPlacaCor4", "PanelCor4"),
+        ("CkBCor5", "CBxNomeCor5", "TxbLarguraCor5", "TxbComprimentoCor5", "TxbMedidaPlacaCor5", "TxbCustoParcialPlacaCor5", "PanelCor5"),
+        ("CkBCor6", "CBxNomeCor6", "TxbLarguraCor6", "TxbComprimentoCor6", "TxbMedidaPlacaCor6", "TxbCustoParcialPlacaCor6", "PanelCor6"),
+        ("CkBCor7", "CBxNomeCor7", "TxbLarguraCor7", "TxbComprimentoCor7", "TxbMedidaPlacaCor7", "TxbCustoParcialPlacaCor7", "PanelCor7"),
+        ("CkBCor8", "CBxNomeCor8", "TxbLarguraCor8", "TxbComprimentoCor8", "TxbMedidaPlacaCor8", "TxbCustoParcialPlacaCor8", "PanelCor8"),
     };
 
         public FrmMain(
@@ -95,6 +96,7 @@ namespace Regravacao
           ICustoDeQuemService custoDeQuemService,
           IPrioridadeService prioridadeService,
           IMotivosPrincipaisService motivosService,
+          ICoresService coresService,
           IConfiguracoesCustoService configuracoesCustoService,
           IStatusService statusService,
           CalculadoraDeCusto calculadora,
@@ -123,7 +125,7 @@ namespace Regravacao
             CBxStatus.DropDownStyle = ComboBoxStyle.DropDownList;
             CBxCustoDeQuem.DropDownStyle = ComboBoxStyle.DropDownList;
             CBxSolicitante.DropDownStyle = ComboBoxStyle.DropDownList;
-            
+
             _detalhesDeErrosService = detalhesDeErrosService;
             _materialService = materialService;
             _finalizadorService = finalizadorService;
@@ -137,6 +139,8 @@ namespace Regravacao
             _configuracoesCustoService = configuracoesCustoService;
             _calculadora = calculadora;
             _regravacaoService = regravacaoService;
+            _coresService = coresService;
+
             _supabaseClient = supabaseClient;
             _supabase = supabase;
 
@@ -291,8 +295,6 @@ namespace Regravacao
             DGWDetalhesErros.DefaultCellStyle.SelectionForeColor = Color.Black; // Texto branco ao selecionar
         }
 
-        // FrmMain.cs
-
         private void ConectarEventosCalculo()
         {
             foreach (var mapa in _mapaCores)
@@ -306,7 +308,7 @@ namespace Regravacao
                 if (txbComprimento != null) txbComprimento.TextChanged += (sender, e) => CalcularCustoCores();
                 if (ckBox != null) ckBox.CheckedChanged += (sender, e) => CalcularCustoCores();
             }
-        }        
+        }
 
         // Convertendo cores Hexadecimal para Color
         private System.Drawing.Color HexParaColor(string hexCode)
@@ -345,7 +347,7 @@ namespace Regravacao
                 // Falha na conversão
                 return System.Drawing.Color.Transparent;
             }
-        }        
+        }
 
         #region
         private void CalcularCustoCores()
@@ -436,7 +438,7 @@ namespace Regravacao
 
                 // 1. Busca os controles essenciais para esta linha
                 CheckBox ckBox = this.Controls.Find(mapa.Chk, true).FirstOrDefault() as CheckBox;
-                TextBox txbNome = this.Controls.Find(mapa.NomeCor, true).FirstOrDefault() as TextBox;
+                ComboBox cbxNome = this.Controls.Find(mapa.CBxNomeCor, true).FirstOrDefault() as ComboBox;
                 TextBox txbLargura = this.Controls.Find(mapa.Largura, true).FirstOrDefault() as TextBox;
                 TextBox txbComprimento = this.Controls.Find(mapa.Comprimento, true).FirstOrDefault() as TextBox;
 
@@ -445,7 +447,7 @@ namespace Regravacao
                 TextBox txbCustoParcial = this.Controls.Find(mapa.CustoParcial, true).FirstOrDefault() as TextBox;
 
                 // Itera sobre todos os controles e aplica a lógica
-                Control[] controlesDaLinha = { ckBox, txbNome, txbLargura, txbComprimento, txbMedidaParcial, txbCustoParcial };
+                Control[] controlesDaLinha = { ckBox, cbxNome, txbLargura, txbComprimento, txbMedidaParcial, txbCustoParcial };
 
                 foreach (var ctrl in controlesDaLinha)
                 {
@@ -857,6 +859,85 @@ namespace Regravacao
             catch (Exception ex)
             {
                 MessageBox.Show($"Erro ao carregar lista de Status:\n{ex.Message}", "Erro de Carregamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async Task CarregarCoresParaComboBoxAsync()
+        {
+            List<ComboBox> comboBoxes = new List<ComboBox>
+    {
+        CBxNomeCor1, CBxNomeCor2, CBxNomeCor3, CBxNomeCor4,
+        CBxNomeCor5, CBxNomeCor6, CBxNomeCor7, CBxNomeCor8
+    };
+
+            List<CoresDto> coresOriginais = new List<CoresDto>();
+
+            try
+            {
+                // 1. BUSCA ASSÍNCRONA DOS DADOS (Chamada ÚNICA)
+                coresOriginais = await _coresService.ListarCoresAsync();
+
+                // 2. CRIA E INSERE O ITEM EM BRANCO (Placeholder)
+                // Isso força a seleção automática no índice 0 (vazio), eliminando o flicker.
+                var itemEmBranco = new CoresDto
+                {
+                    IdCor = 0, // ID usado para validação
+                    NomeCor = "" // Exibe vazio
+                };
+                coresOriginais.Insert(0, itemEmBranco);
+
+                // 3. ATRIBUIÇÃO E CONFIGURAÇÃO (Usando Loop e Clonagem)
+                foreach (var cmb in comboBoxes)
+                {
+                    cmb.DataSource = null;
+
+                    // Configuração dos Membros
+                    cmb.DisplayMember = "NomeCor";
+                    cmb.ValueMember = "IdCor";
+
+                    // ✅ CLONAGEM CHAVE: Atribui uma NOVA CÓPIA da lista para cada ComboBox, 
+                    // garantindo que a seleção em um não afete o outro.
+                    cmb.DataSource = coresOriginais.ToList();
+
+                    // O ComboBox seleciona o índice 0 (o item em branco).
+                    cmb.SelectedIndex = 0;
+
+                    // Configuração do Autocompletar
+                    cmb.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+                    cmb.AutoCompleteSource = AutoCompleteSource.ListItems;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao carregar lista de cores: {ex.Message}", "Erro de Carregamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
+        private void AssociarManipuladorCores()
+        {
+            // Filtra todos os ComboBoxes que começam com "CBxNomeCor" e possuem o formato correto (#)
+            var comboBoxesDeCor = this.Controls.FindAllControls<ComboBox>()
+                .Where(cmb => cmb.Name.StartsWith("CBxNomeCor") && cmb.Name.Length == "CBxNomeCor#".Length)
+                .ToList();
+
+            foreach (var cmb in comboBoxesDeCor)
+            {
+                // Associa o mesmo manipulador de eventos a todos os ComboBoxes encontrados
+                cmb.SelectedIndexChanged += CbxNomeCor_SelectedIndexChanged;
+            }
+        }
+
+        /// <summary>
+        /// Manipulador de evento ÚNICO para o SelectedIndexChanged de todos os ComboBoxes de cor.
+        /// Apenas delega a chamada ao método helper.
+        /// </summary>
+        private void CbxNomeCor_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (sender is ComboBox cmb)
+            {
+                // Delega a lógica de aplicação de cor ao helper
+                AplicarCorAoPanel(cmb);
             }
         }
 
@@ -1434,6 +1515,7 @@ namespace Regravacao
             await CarregarStatusAsync();
             await CarregarConfiguracoesCustoAsync();
             AtualizarControlesCores((int)NumUpDQtdePlacas.Value);
+            await CarregarCoresParaComboBoxAsync();
         }
 
         private async void DGWDetalhesErros_DoubleClick(object sender, EventArgs e)
@@ -1714,8 +1796,6 @@ namespace Regravacao
         private void BtnDelThumbnail_Click(object sender, EventArgs e)
         {
             PictureBoxThumbnail.Image = null;
-            // 🎯 Limpar a referência da imagem (bytes) para o upload
-            // Isso garante que nenhum dado de imagem antigo seja salvo.
             _thumbnailBytes = null;
         }
 
@@ -1866,16 +1946,15 @@ namespace Regravacao
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    // 🎯 CORREÇÃO: Chama ProcessAndSetThumbnail passando o caminho do arquivo selecionado.
                     ProcessAndSetThumbnail(openFileDialog.FileName);
                 }
                 else
                 {
                     // Opcional: Limpar o estado se o usuário cancelar, 
                     // embora ProcessAndSetThumbnail já faça uma limpeza inicial.
-                    // _thumbnailBytes = null;
-                    // PictureBoxThumbnail.Image = null;
-                    // UpdateImageInfoTooltip();
+                    _thumbnailBytes = null;
+                    PictureBoxThumbnail.Image = null;
+                    UpdateImageInfoTooltip();
                 }
             }
         }
@@ -1966,6 +2045,101 @@ namespace Regravacao
             }
 
         }
-        
+
+        private void CBxNomeCor1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (sender is ComboBox cmb)
+            {
+                // Chama a função auxiliar que contém toda a lógica de aplicação da cor
+                AplicarCorAoPanel(cmb);
+            }
+        }
+
+
+
+        private void AplicarCorAoPanel(ComboBox cmb)
+        {
+            // Obtém o objeto CoresDto selecionado.
+            CoresDto corSelecionada = cmb.SelectedItem as CoresDto;
+
+            // Define o nome do Panel alvo substituindo 'CBxNomeCor' por 'PanelCor'.
+            string nomePanel = cmb.Name.Replace("CBxNomeCor", "PanelCor");
+
+            // Busca o Panel na coleção de controles do Form
+            Panel panelAlvo = this.Controls.Find(nomePanel, true).FirstOrDefault() as Panel;
+
+            if (panelAlvo != null)
+            {
+                // Verifica se é uma cor válida (não é o item em branco com IdCor = 0)
+                if (corSelecionada != null && corSelecionada.IdCor != 0)
+                {
+                    string hexCode = corSelecionada.CodigoHexadecimal;
+
+                    // Converte e aplica a cor
+                    panelAlvo.BackColor = HexParaColor(hexCode);
+                }
+                else
+                {
+                    // Limpa o Panel para Transparente se for o item em branco
+                    panelAlvo.BackColor = System.Drawing.Color.Transparent;
+                }
+            }
+        }
+
+        private void CBxNomeCor2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (sender is ComboBox cmb)
+            {
+                AplicarCorAoPanel(cmb);
+            }
+        }
+
+        private void CBxNomeCor3_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (sender is ComboBox cmb)
+            {
+                AplicarCorAoPanel(cmb);
+            }
+        }
+
+        private void CBxNomeCor4_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (sender is ComboBox cmb)
+            {
+                AplicarCorAoPanel(cmb);
+            }
+        }
+
+        private void CBxNomeCor5_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (sender is ComboBox cmb)
+            {
+                AplicarCorAoPanel(cmb);
+            }
+        }
+
+        private void CBxNomeCor6_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (sender is ComboBox cmb)
+            {
+                AplicarCorAoPanel(cmb);
+            }
+        }
+
+        private void CBxNomeCor7_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (sender is ComboBox cmb)
+            {
+                AplicarCorAoPanel(cmb);
+            }
+        }
+
+        private void CBxNomeCor8_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (sender is ComboBox cmb)
+            {
+                AplicarCorAoPanel(cmb);
+            }
+        }
     }
 }

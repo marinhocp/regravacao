@@ -18,6 +18,7 @@ using Regravacao.Services.Auth;
 using Regravacao.Services.Calculo;
 using Regravacao.Services.Conferente;
 using Regravacao.Services.Configuracoes;
+using Regravacao.Services.Cores;
 using Regravacao.Services.CustoDeQuem;
 using Regravacao.Services.DetalhesDeErros;
 using Regravacao.Services.Empresa;
@@ -73,6 +74,8 @@ namespace Regravacao
                     services.AddScoped<ICustoDeQuemRepository, CustoDeQuemRepository>();
                     services.AddScoped<IPrioridadeRepository, PrioridadeRepository>();
                     services.AddScoped<IStatusRepository, StatusRepository>();
+                    services.AddScoped<ICoresRepository, CoresRepository>();                 
+
 
                     // --- SERVIÇOS ---
                     services.AddScoped<IRegravacaoService, RegravacaoService>();
@@ -89,6 +92,8 @@ namespace Regravacao
                     services.AddScoped<ICustoDeQuemService, CustoDeQuemService>();
                     services.AddScoped<IPrioridadeService, PrioridadeService>();
                     services.AddScoped<IStatusService, StatusService>();
+                    services.AddScoped<ICoresService, CoresService>();
+
 
 
                     // ✅ Forms

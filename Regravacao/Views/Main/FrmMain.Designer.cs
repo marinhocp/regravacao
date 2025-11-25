@@ -579,6 +579,7 @@
             CBxNomeCor8.Name = "CBxNomeCor8";
             CBxNomeCor8.Size = new Size(321, 29);
             CBxNomeCor8.TabIndex = 45;
+            CBxNomeCor8.SelectedIndexChanged += CBxNomeCor8_SelectedIndexChanged;
             // 
             // CBxNomeCor7
             // 
@@ -589,6 +590,7 @@
             CBxNomeCor7.Name = "CBxNomeCor7";
             CBxNomeCor7.Size = new Size(321, 29);
             CBxNomeCor7.TabIndex = 41;
+            CBxNomeCor7.SelectedIndexChanged += CBxNomeCor7_SelectedIndexChanged;
             // 
             // CBxNomeCor6
             // 
@@ -599,6 +601,7 @@
             CBxNomeCor6.Name = "CBxNomeCor6";
             CBxNomeCor6.Size = new Size(321, 29);
             CBxNomeCor6.TabIndex = 37;
+            CBxNomeCor6.SelectedIndexChanged += CBxNomeCor6_SelectedIndexChanged;
             // 
             // CBxNomeCor5
             // 
@@ -609,6 +612,7 @@
             CBxNomeCor5.Name = "CBxNomeCor5";
             CBxNomeCor5.Size = new Size(321, 29);
             CBxNomeCor5.TabIndex = 33;
+            CBxNomeCor5.SelectedIndexChanged += CBxNomeCor5_SelectedIndexChanged;
             // 
             // CBxNomeCor4
             // 
@@ -620,26 +624,29 @@
             CBxNomeCor4.Name = "CBxNomeCor4";
             CBxNomeCor4.Size = new Size(321, 29);
             CBxNomeCor4.TabIndex = 7;
+            CBxNomeCor4.SelectedIndexChanged += CBxNomeCor4_SelectedIndexChanged;
             // 
             // CBxNomeCor3
             // 
             CBxNomeCor3.AutoCompleteMode = AutoCompleteMode.Append;
             CBxNomeCor3.Font = new Font("Segoe UI", 12F);
             CBxNomeCor3.FormattingEnabled = true;
-            CBxNomeCor3.Location = new Point(119, 153);
+            CBxNomeCor3.Location = new Point(116, 153);
             CBxNomeCor3.Name = "CBxNomeCor3";
             CBxNomeCor3.Size = new Size(321, 29);
             CBxNomeCor3.TabIndex = 25;
+            CBxNomeCor3.SelectedIndexChanged += CBxNomeCor3_SelectedIndexChanged;
             // 
             // CBxNomeCor2
             // 
             CBxNomeCor2.AutoCompleteMode = AutoCompleteMode.Append;
             CBxNomeCor2.Font = new Font("Segoe UI", 12F);
             CBxNomeCor2.FormattingEnabled = true;
-            CBxNomeCor2.Location = new Point(116, 111);
+            CBxNomeCor2.Location = new Point(116, 113);
             CBxNomeCor2.Name = "CBxNomeCor2";
             CBxNomeCor2.Size = new Size(321, 29);
             CBxNomeCor2.TabIndex = 21;
+            CBxNomeCor2.SelectedIndexChanged += CBxNomeCor2_SelectedIndexChanged;
             // 
             // CBxNomeCor1
             // 
@@ -650,6 +657,7 @@
             CBxNomeCor1.Name = "CBxNomeCor1";
             CBxNomeCor1.Size = new Size(321, 29);
             CBxNomeCor1.TabIndex = 17;
+            CBxNomeCor1.SelectedIndexChanged += CBxNomeCor1_SelectedIndexChanged;
             // 
             // CkBCor8
             // 
@@ -1582,23 +1590,25 @@
             // BtnRotacionarHorario
             // 
             BtnRotacionarHorario.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            BtnRotacionarHorario.BackColor = Color.Transparent;
             BtnRotacionarHorario.Image = Properties.Resources.rotacionar_horario;
-            BtnRotacionarHorario.Location = new Point(219, 22);
+            BtnRotacionarHorario.Location = new Point(234, 22);
             BtnRotacionarHorario.Name = "BtnRotacionarHorario";
-            BtnRotacionarHorario.Size = new Size(49, 34);
+            BtnRotacionarHorario.Size = new Size(36, 34);
             BtnRotacionarHorario.TabIndex = 51;
-            BtnRotacionarHorario.UseVisualStyleBackColor = true;
+            BtnRotacionarHorario.UseVisualStyleBackColor = false;
             BtnRotacionarHorario.Click += BtnRotacionarHorario_Click;
             // 
             // BtnRotacionarAntihorario
             // 
             BtnRotacionarAntihorario.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            BtnRotacionarAntihorario.BackColor = Color.Transparent;
             BtnRotacionarAntihorario.Image = Properties.Resources.rotacionar_antihorario;
-            BtnRotacionarAntihorario.Location = new Point(164, 22);
+            BtnRotacionarAntihorario.Location = new Point(194, 22);
             BtnRotacionarAntihorario.Name = "BtnRotacionarAntihorario";
-            BtnRotacionarAntihorario.Size = new Size(49, 34);
+            BtnRotacionarAntihorario.Size = new Size(36, 34);
             BtnRotacionarAntihorario.TabIndex = 51;
-            BtnRotacionarAntihorario.UseVisualStyleBackColor = true;
+            BtnRotacionarAntihorario.UseVisualStyleBackColor = false;
             BtnRotacionarAntihorario.Click += BtnRotacionarAntihorario_Click;
             // 
             // BtnDelThumbnail
@@ -1618,7 +1628,7 @@
             BtnAddThumbnail.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             BtnAddThumbnail.Location = new Point(10, 22);
             BtnAddThumbnail.Name = "BtnAddThumbnail";
-            BtnAddThumbnail.Size = new Size(149, 34);
+            BtnAddThumbnail.Size = new Size(178, 34);
             BtnAddThumbnail.TabIndex = 49;
             BtnAddThumbnail.Text = "ADICIONAR PRINT";
             BtnAddThumbnail.UseVisualStyleBackColor = true;
