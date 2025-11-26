@@ -301,7 +301,7 @@
             BtnLimparCamposCadastro.Location = new Point(1493, 816);
             BtnLimparCamposCadastro.Name = "BtnLimparCamposCadastro";
             BtnLimparCamposCadastro.Size = new Size(93, 65);
-            BtnLimparCamposCadastro.TabIndex = 52;
+            BtnLimparCamposCadastro.TabIndex = 54;
             BtnLimparCamposCadastro.Text = "NOVO";
             BtnLimparCamposCadastro.UseVisualStyleBackColor = false;
             BtnLimparCamposCadastro.Click += BtnLimparCamposCadastro_Click;
@@ -375,7 +375,7 @@
             BtnSalvarCadastro.Location = new Point(1251, 818);
             BtnSalvarCadastro.Name = "BtnSalvarCadastro";
             BtnSalvarCadastro.Size = new Size(235, 63);
-            BtnSalvarCadastro.TabIndex = 51;
+            BtnSalvarCadastro.TabIndex = 53;
             BtnSalvarCadastro.Text = "SALVAR O CADASTRO";
             BtnSalvarCadastro.UseVisualStyleBackColor = false;
             BtnSalvarCadastro.Click += BtnSalvarCadastro_Click_1;
@@ -1607,7 +1607,7 @@
             BtnRotacionarAntihorario.Location = new Point(194, 22);
             BtnRotacionarAntihorario.Name = "BtnRotacionarAntihorario";
             BtnRotacionarAntihorario.Size = new Size(36, 34);
-            BtnRotacionarAntihorario.TabIndex = 51;
+            BtnRotacionarAntihorario.TabIndex = 50;
             BtnRotacionarAntihorario.UseVisualStyleBackColor = false;
             BtnRotacionarAntihorario.Click += BtnRotacionarAntihorario_Click;
             // 
@@ -1618,7 +1618,7 @@
             BtnDelThumbnail.Location = new Point(274, 22);
             BtnDelThumbnail.Name = "BtnDelThumbnail";
             BtnDelThumbnail.Size = new Size(49, 34);
-            BtnDelThumbnail.TabIndex = 50;
+            BtnDelThumbnail.TabIndex = 52;
             BtnDelThumbnail.UseVisualStyleBackColor = true;
             BtnDelThumbnail.Click += BtnDelThumbnail_Click;
             // 
@@ -2175,7 +2175,7 @@
             BtnBackup.Location = new Point(9, 807);
             BtnBackup.Name = "BtnBackup";
             BtnBackup.Size = new Size(165, 44);
-            BtnBackup.TabIndex = 55;
+            BtnBackup.TabIndex = 57;
             BtnBackup.Text = "  Backup";
             BtnBackup.TextAlign = ContentAlignment.MiddleLeft;
             BtnBackup.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -2194,7 +2194,7 @@
             BtnRelatorios.Location = new Point(8, 157);
             BtnRelatorios.Name = "BtnRelatorios";
             BtnRelatorios.Size = new Size(165, 44);
-            BtnRelatorios.TabIndex = 54;
+            BtnRelatorios.TabIndex = 56;
             BtnRelatorios.Text = "  Relatórios";
             BtnRelatorios.TextAlign = ContentAlignment.MiddleLeft;
             BtnRelatorios.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -2213,7 +2213,7 @@
             BtnGraficos.Location = new Point(9, 95);
             BtnGraficos.Name = "BtnGraficos";
             BtnGraficos.Size = new Size(165, 44);
-            BtnGraficos.TabIndex = 53;
+            BtnGraficos.TabIndex = 55;
             BtnGraficos.Text = "  Gráficos";
             BtnGraficos.TextAlign = ContentAlignment.MiddleLeft;
             BtnGraficos.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -2263,7 +2263,7 @@
             BtnLogout.Location = new Point(0, 937);
             BtnLogout.Name = "BtnLogout";
             BtnLogout.Size = new Size(183, 44);
-            BtnLogout.TabIndex = 57;
+            BtnLogout.TabIndex = 59;
             BtnLogout.Text = "  Logout";
             BtnLogout.TextImageRelation = TextImageRelation.ImageBeforeText;
             BtnLogout.UseVisualStyleBackColor = true;
@@ -2281,7 +2281,7 @@
             BtnConfiguracoes.Location = new Point(8, 861);
             BtnConfiguracoes.Name = "BtnConfiguracoes";
             BtnConfiguracoes.Size = new Size(166, 44);
-            BtnConfiguracoes.TabIndex = 56;
+            BtnConfiguracoes.TabIndex = 58;
             BtnConfiguracoes.Text = "  Configurações";
             BtnConfiguracoes.TextImageRelation = TextImageRelation.ImageBeforeText;
             BtnConfiguracoes.UseVisualStyleBackColor = true;

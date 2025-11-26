@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor Pantone para Hex/RGB/CMYK</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            color: #333;
+        }
+        input[type="file"], button {
+            margin-right: 10px;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button {
+            background-color: #007bff; /* Azul padrão para Exportação Completa */
+            color: white;
+            border: none;
+        }
+        #exportReducedButton {
+            background-color: #dc3545; /* Vermelho para Exportação Reduzida */
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+            text-transform: uppercase;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .color-box {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #333;
+            display: inline-block;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🎨 Conversor de Cores Pantone (XML)</h1>
+    <input type="file" id="xmlFile" accept=".xml">
+    <button id="exportFullButton" disabled>Exportar CSV Completo</button>
+    <button id="exportReducedButton" disabled>Exportar CSV Reduzido</button>
+
+    <div id="output">
+        </div>
+
+    <script>
+        document.getElementById('xmlFile').addEventListener('change', handleFileSelect, false);
+        document.getElementById('exportFullButton').addEventListener('click', () => exportToCSV('full'), false);
+        document.getElementById('exportReducedButton').addEventListener('click', () => exportToCSV('reduced'), false);
+        
+        let processedColorData = [];
+        let fullPaletteName = 'N/A'; // Nome completo da paleta (ex: PANTONE+ Solid Coated-V5)
+        
+        // --- Funções de Conversão (Inalteradas) ---
+
+        function rgbToHex(tintsString) {
+            const rgb = tintsString.split(',').map(s => parseFloat(s.trim()));
+            if (rgb.length !== 3 || rgb.some(isNaN)) return "Inválido";
+
+            const hex = rgb.map(val => {
+                const intVal = Math.round(val * 255);
+                return intVal.toString(16).padStart(2, '0');
+            }).join('');
+
+            return '#' + hex.toUpperCase();
+        }
+
+        function rgbToIntegerString(tintsString) {
+            const rgb = tintsString.split(',').map(s => parseFloat(s.trim()));
+            if (rgb.length !== 3 || rgb.some(isNaN)) return "Inválido";
+
+            const rgbInt = rgb.map(val => Math.round(val * 255));
+            return rgbInt.join(',');
+        }
+
+        function rgbToCmyk(rgbString) {
+            const [R, G, B] = rgbString.split(',').map(s => parseInt(s.trim(), 10));
+            
+            if (isNaN(R) || isNaN(G) || isNaN(B)) return "Inválido";
+
+            const r = R / 255;
+            const g = G / 255;
+            const b = B / 255;
+
+            const k = 1 - Math.max(r, g, b);
+
+            if (k === 1) return "0,0,0,100";
+
+            const c = (1 - r - k) / (1 - k);
+            const m = (1 - g - k) / (1 - k);
+            const y = (1 - b - k) / (1 - k);
+
+            const C = Math.round(c * 100);
+            const M = Math.round(m * 100);
+            const Y = Math.round(y * 100);
+            const K = Math.round(k * 100);
+
+            return `${C},${M},${Y},${K}`;
+        }
+        
+        // --- Lógica de Arquivo e Processamento ---
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            const exportFullButton = document.getElementById('exportFullButton');
+            const exportReducedButton = document.getElementById('exportReducedButton');
+            
+            if (!file) {
+                exportFullButton.disabled = true;
+                exportReducedButton.disabled = true;
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const xmlText = e.target.result;
+                processXML(xmlText);
+                const isDisabled = processedColorData.length === 0;
+                exportFullButton.disabled = isDisabled;
+                exportReducedButton.disabled = isDisabled;
+            };
+            reader.readAsText(file);
+        }
+
+        function processXML(xmlText) {
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+            
+            const paletteElement = xmlDoc.getElementsByTagName('palette')[0];
+            fullPaletteName = paletteElement ? paletteElement.getAttribute('name') : 'PALETA DESCONHECIDA';
+
+            const colorSpaces = xmlDoc.getElementsByTagName('cs');
+            const results = [];
+
+            for (let i = 0; i < colorSpaces.length; i++) {
+                const colorSpace = colorSpaces[i];
+                const pantoneName = colorSpace.getAttribute('name');
+                
+                const rgbColorElements = colorSpace.querySelectorAll('color[cs="RGB"]');
+                
+                if (rgbColorElements.length > 0) {
+                    const rgbTints = rgbColorElements[0].getAttribute('tints');
+                    
+                    const hexColor = rgbToHex(rgbTints);
+                    const rgbInteger = rgbToIntegerString(rgbTints);
+                    const cmykColor = rgbToCmyk(rgbInteger);
+
+                    results.push({
+                        palette: fullPaletteName,
+                        name: pantoneName,
+                        hexColor: hexColor,
+                        rgbInteger: rgbInteger,
+                        cmykColor: cmykColor
+                    });
+                }
+                // Cores sem RGB são incluídas com "N/A" para não perder o registro.
+            }
+
+            processedColorData = results; 
+            displayTable(results);
+        }
+
+        function displayTable(data) {
+            const outputDiv = document.getElementById('output');
+            
+            if (data.length === 0) {
+                outputDiv.innerHTML = '<p>Nenhuma cor Pantone encontrada com o espaço de cor RGB.</p>';
+                return;
+            }
+
+            let html = '<table>';
+            html += '<thead><tr><th>Cor Pantone</th><th>Hexadecimal</th><th>RGB (0-255)</th><th>CMYK (0-100)</th><th>Visualização</th></tr></thead>';
+            html += '<tbody>';
+
+            data.forEach(item => {
+                const colorBlock = item.hexColor.startsWith('#') 
+                    ? `<span class="color-box" style="background-color: ${item.hexColor};"></span>`
+                    : 'N/A';
+                
+                html += `
+                    <tr>
+                        <td>${item.name}</td>
+                        <td>${item.hexColor}</td>
+                        <td>${item.rgbInteger}</td>
+                        <td>${item.cmykColor}</td>
+                        <td>${colorBlock}</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            outputDiv.innerHTML = html;
+        }
+
+        // --- Lógica de Exportação CSV ---
+
+        /**
+         * Exporta os dados processados para CSV.
+         * @param {string} mode - 'full' para exportação completa ou 'reduced' para reduzida.
+         */
+        function exportToCSV(mode) {
+            if (processedColorData.length === 0) {
+                alert('Nenhum dado processado para exportar.');
+                return;
+            }
+
+            const header = ['paleta', 'nome_cor', 'codigo_hexadecimal', 'codigo_rgb', 'codigo_cmyk'];
+            const separator = ';';
+            
+            let csvContent = header.join(separator) + '\n';
+            const fileNameSuffix = mode === 'reduced' ? '_reduzido' : '_completo';
+
+            processedColorData.forEach(item => {
+                let currentPaletteName = item.palette;
+                let currentCorName = item.name;
+
+                if (mode === 'reduced') {
+                    // 1. Redução da Paleta: Retira informações extras. Ex: "PANTONE+ Solid Coated-V5" -> "PANTONE"
+                    currentPaletteName = currentPaletteName.split(' ')[0].replace('+', '');
+                    // 2. Redução do Nome da Cor: Retira o prefixo "PANTONE "
+                    currentCorName = currentCorName.replace(/^PANTONE\s+/, '');
+                }
+
+                const row = [
+                    currentPaletteName,
+                    currentCorName,
+                    item.hexColor,
+                    item.rgbInteger,
+                    item.cmykColor
+                ].map(field => `"${field.replace(/"/g, '""')}"`)
+                 .join(separator);
+                 
+                csvContent += row + '\n';
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            
+            if (link.download !== undefined) { 
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', `${fullPaletteName.replace(/[^a-z0-9]/gi, '_')}${fileNameSuffix}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } else {
+                alert('Seu navegador não suporta download automático. Por favor, copie o conteúdo.');
+            }
+        }
+    </script>
+</body>
+</html>
