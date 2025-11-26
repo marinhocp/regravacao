@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor Pantone | Web Moderno</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300,400,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --light-bg: #f8f9fa;
+            --dark-text: #343a40;
+            --border-color: #dee2e6;
+            --font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            margin: 0;
+            padding: 30px;
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        /* --- Estilos de Controles e Botões --- */
+        .controls-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: #f1f1f1;
+        }
+        
+        .file-upload-group, .search-group, .export-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="file"], input[type="text"], button {
+            padding: 12px 18px;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+            border: 1px solid var(--border-color);
+        }
+
+        input[type="file"] {
+            background-color: #e9ecef;
+            cursor: pointer;
+            flex-grow: 1;
+        }
+
+        input[type="text"] {
+            flex-grow: 1;
+            max-width: 300px;
+            border: 1px solid #ced4da;
+        }
+        
+        button {
+            cursor: pointer;
+            color: white;
+            font-weight: 500;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        button:disabled {
+            background-color: #6c757d !important;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        
+        /* Estilos específicos dos botões */
+        #searchButton { background-color: var(--warning-color); color: var(--dark-text); }
+        #exportFullButton { background-color: var(--primary-color); }
+        #exportReducedButton { background-color: var(--danger-color); }
+
+        button:not(:disabled):hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        /* --- Estilos da Tabela --- */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden; /* Garante que bordas arredondadas funcionem */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+        }
+
+        th:last-child, td:last-child {
+            border-right: none;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        tr:hover {
+            background-color: #e9ecef;
+        }
+
+        /* Estilo da caixa de cor (visualização) */
+        .color-box {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #333;
+            border-radius: 4px;
+            display: inline-block;
+            vertical-align: middle;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Mensagem de estado inicial */
+        #output p {
+            padding: 20px;
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🎨 Conversor de Cores Pantone</h1>
+        
+        <div class="controls-section">
+            <div class="file-upload-group">
+                <label for="xmlFile" style="font-weight: 700;">1. Selecione o Arquivo XML:</label>
+                <input type="file" id="xmlFile" accept=".xml">
+            </div>
+
+            <div class="search-group">
+                <input type="text" id="searchColor" placeholder="2. Pesquisar por Nome Pantone (ex: Yellow C)">
+                <button id="searchButton" disabled>Buscar</button>
+            </div>
+            
+            <div class="export-group">
+                <label style="font-weight: 700;">3. Exportar Dados:</label>
+                <button id="exportFullButton" disabled>CSV Completo</button>
+                <button id="exportReducedButton" disabled>CSV Reduzido</button>
+            </div>
+        </div>
+
+        <div id="output">
+            <p>Selecione um arquivo XML de paleta de cores para carregar e visualizar os dados convertidos.</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('xmlFile').addEventListener('change', handleFileSelect, false);
+        document.getElementById('searchButton').addEventListener('click', filterColors, false);
+        document.getElementById('exportFullButton').addEventListener('click', () => exportToCSV('full'), false);
+        document.getElementById('exportReducedButton').addEventListener('click', () => exportToCSV('reduced'), false);
+        
+        document.getElementById('searchColor').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                filterColors();
+            }
+        });
+
+        // Armazenamento
+        let processedColorData = []; 
+        let fullPaletteName = 'N/A';
+        
+        // --- Funções de Conversão (Inalteradas) ---
+
+        function rgbToHex(tintsString) {
+            const rgb = tintsString.split(',').map(s => parseFloat(s.trim()));
+            if (rgb.length !== 3 || rgb.some(isNaN)) return "Inválido";
+            const hex = rgb.map(val => {
+                const intVal = Math.round(val * 255);
+                return intVal.toString(16).padStart(2, '0');
+            }).join('');
+            return '#' + hex.toUpperCase();
+        }
+
+        function rgbToIntegerString(tintsString) {
+            const rgb = tintsString.split(',').map(s => parseFloat(s.trim()));
+            if (rgb.length !== 3 || rgb.some(isNaN)) return "Inválido";
+            const rgbInt = rgb.map(val => Math.round(val * 255));
+            return rgbInt.join(',');
+        }
+
+        function rgbToCmyk(rgbString) {
+            const [R, G, B] = rgbString.split(',').map(s => parseInt(s.trim(), 10));
+            if (isNaN(R) || isNaN(G) || isNaN(B)) return "Inválido";
+            const r = R / 255;
+            const g = G / 255;
+            const b = B / 255;
+            const k = 1 - Math.max(r, g, b);
+            if (k === 1) return "0,0,0,100";
+            const c = (1 - r - k) / (1 - k);
+            const m = (1 - g - k) / (1 - k);
+            const y = (1 - b - k) / (1 - k);
+            const C = Math.round(c * 100);
+            const M = Math.round(m * 100);
+            const Y = Math.round(y * 100);
+            const K = Math.round(k * 100);
+            return `${C},${M},${Y},${K}`;
+        }
+        
+        // --- Lógica de Arquivo e Processamento ---
+
+        function setControlsDisabled(isDisabled) {
+            document.getElementById('exportFullButton').disabled = isDisabled;
+            document.getElementById('exportReducedButton').disabled = isDisabled;
+            document.getElementById('searchButton').disabled = isDisabled;
+            document.getElementById('searchColor').disabled = isDisabled;
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            
+            setControlsDisabled(true); 
+            
+            if (!file) {
+                document.getElementById('output').innerHTML = '<p>Selecione um arquivo XML de paleta de cores para carregar e visualizar os dados convertidos.</p>';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const xmlText = e.target.result;
+                processXML(xmlText);
+                setControlsDisabled(processedColorData.length === 0); 
+            };
+            reader.readAsText(file);
+        }
+
+        function processXML(xmlText) {
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+            
+            const paletteElement = xmlDoc.getElementsByTagName('palette')[0];
+            fullPaletteName = paletteElement ? paletteElement.getAttribute('name') : 'PALETA DESCONHECIDA';
+
+            const colorSpaces = xmlDoc.getElementsByTagName('cs');
+            const results = [];
+
+            for (let i = 0; i < colorSpaces.length; i++) {
+                const colorSpace = colorSpaces[i];
+                const pantoneName = colorSpace.getAttribute('name');
+                const rgbColorElements = colorSpace.querySelectorAll('color[cs="RGB"]');
+                
+                if (rgbColorElements.length > 0) {
+                    const rgbTints = rgbColorElements[0].getAttribute('tints');
+                    
+                    const hexColor = rgbToHex(rgbTints);
+                    const rgbInteger = rgbToIntegerString(rgbTints);
+                    const cmykColor = rgbToCmyk(rgbInteger);
+
+                    results.push({
+                        palette: fullPaletteName,
+                        name: pantoneName,
+                        hexColor: hexColor,
+                        rgbInteger: rgbInteger,
+                        cmykColor: cmykColor
+                    });
+                }
+            }
+
+            processedColorData = results; 
+            displayTable(results); 
+        }
+
+        // --- Lógica de Pesquisa e Tabela ---
+
+        function filterColors() {
+            const searchInput = document.getElementById('searchColor').value.trim().toLowerCase();
+            
+            if (!searchInput) {
+                displayTable(processedColorData);
+                return;
+            }
+
+            const filteredData = processedColorData.filter(item => {
+                return item.name.toLowerCase().includes(searchInput);
+            });
+
+            displayTable(filteredData);
+            
+            if (filteredData.length === 0) {
+                 document.getElementById('output').innerHTML += `<p style="margin-top: 10px; background-color: #f8d7da; border-color: #f5c6cb; color: #721c24;">Nenhuma cor encontrada com o termo: "${searchInput}"</p>`;
+            }
+        }
+
+
+        function displayTable(data) {
+            const outputDiv = document.getElementById('output');
+            
+            outputDiv.innerHTML = ''; // Limpa o conteúdo anterior
+            
+            if (data.length === 0 && document.getElementById('searchColor').value.trim() === '') {
+                outputDiv.innerHTML = '<p>Nenhuma cor Pantone encontrada com o espaço de cor RGB no arquivo.</p>';
+                return;
+            }
+            
+            if (data.length === 0) {
+                // Deixa a função filterColors adicionar a mensagem de erro
+                return;
+            }
+
+            let html = '<table>';
+            html += '<thead><tr><th>Cor Pantone</th><th>Hexadecimal</th><th>RGB (0-255)</th><th>CMYK (0-100)</th><th>Visualização</th></tr></thead>';
+            html += '<tbody>';
+
+            data.forEach(item => {
+                const colorBlock = item.hexColor.startsWith('#') 
+                    ? `<span class="color-box" style="background-color: ${item.hexColor};"></span>`
+                    : 'N/A';
+                
+                html += `
+                    <tr>
+                        <td>${item.name}</td>
+                        <td>${item.hexColor}</td>
+                        <td>${item.rgbInteger}</td>
+                        <td>${item.cmykColor}</td>
+                        <td>${colorBlock}</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            outputDiv.innerHTML = html;
+        }
+
+        // --- Lógica de Exportação CSV (Inalterada) ---
+        
+        function exportToCSV(mode) {
+            if (processedColorData.length === 0) {
+                alert('Nenhum dado processado para exportar.');
+                return;
+            }
+
+            const header = ['paleta', 'nome_cor', 'codigo_exadecimal', 'codigo_rgb', 'codigo_cmyk'];
+            const separator = ';';
+            
+            let csvContent = header.join(separator) + '\n';
+            const fileNameSuffix = mode === 'reduced' ? '_reduzido' : '_completo';
+
+            processedColorData.forEach(item => {
+                let currentPaletteName = item.palette;
+                let currentCorName = item.name;
+
+                if (mode === 'reduced') {
+                    currentPaletteName = currentPaletteName.split(' ')[0].replace('+', '');
+                    currentCorName = currentCorName.replace(/^PANTONE\s+/, '');
+                }
+
+                const row = [
+                    currentPaletteName,
+                    currentCorName,
+                    item.hexColor,
+                    item.rgbInteger,
+                    item.cmykColor
+                ].map(field => `"${field.replace(/"/g, '""')}"`)
+                 .join(separator);
+                 
+                csvContent += row + '\n';
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            
+            if (link.download !== undefined) { 
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', `${fullPaletteName.replace(/[^a-z0-9]/gi, '_')}${fileNameSuffix}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } else {
+                alert('Seu navegador não suporta download automático. Por favor, copie o conteúdo.');
+            }
+        }
+    </script>
+</body>
+</html>

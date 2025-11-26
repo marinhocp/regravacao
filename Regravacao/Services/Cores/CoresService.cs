@@ -1,20 +1,20 @@
 ﻿using Regravacao.DTOs;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Regravacao.Services.Cores
 {
     public class CoresService : ICoresService
     {
-        private readonly ICoresRepository _repository;
-
-        public CoresService(ICoresRepository repository)
+        private readonly ICoresCacheService _cacheService;
+        public CoresService(ICoresCacheService cacheService)
         {
-            _repository = repository;
+            _cacheService = cacheService;
         }
 
         public async Task<List<CoresDto>> ListarCoresAsync()
         {
-            // Aqui, você pode adicionar lógica de cache ou validação antes de chamar o Repositório
-            return await _repository.ListarTodasAsync();
+            return await _cacheService.GetCoresCachedAsync();
         }
     }
 }

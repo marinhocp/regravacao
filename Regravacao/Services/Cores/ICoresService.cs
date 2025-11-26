@@ -1,6 +1,11 @@
 ﻿using Regravacao.DTOs;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-public interface ICoresService
+namespace Regravacao.Services.Cores
 {
-    Task<List<CoresDto>> ListarCoresAsync();
+    public interface ICoresService
+    {
+        Task<List<CoresDto>> ListarCoresAsync();
+    }
 }

@@ -23,6 +23,7 @@ using System.Globalization;
 using System.IO;
 using Regravacao.Services.Utils;
 using System.Text.Json;
+using Regravacao.Services.Cores;
 
 namespace Regravacao
 {
@@ -1504,18 +1505,29 @@ namespace Regravacao
         private async void FrmMain_Load(object sender, EventArgs e)
         {
             EstilizarDGWDetalhesErros();
-            await CarregarMateriais();
-            await CarregarFinalizadores();
-            await CarregarConferentes();
-            await CarregarSolicitante();
-            await CarregarEnviarParaAsync();
-            await CarregarMotivosAsync();
-            await CarregarPrioridadesAsync();
-            await CarregarCustoDeQuemAsync();
-            await CarregarStatusAsync();
-            await CarregarConfiguracoesCustoAsync();
-            AtualizarControlesCores((int)NumUpDQtdePlacas.Value);
-            await CarregarCoresParaComboBoxAsync();
+
+            // carrega cores primeiro
+            var tarefaCores = CarregarCoresParaComboBoxAsync();
+
+            // carrega o resto paralelamente
+            var tarefas = new[]
+            {
+        CarregarMateriais(),
+        CarregarFinalizadores(),
+        CarregarConferentes(),
+        CarregarSolicitante(),
+        CarregarEnviarParaAsync(),
+        CarregarMotivosAsync(),
+        CarregarPrioridadesAsync(),
+        CarregarCustoDeQuemAsync(),
+        CarregarStatusAsync(),
+        CarregarConfiguracoesCustoAsync()
+    };
+
+            await Task.WhenAll(tarefas);
+
+            await tarefaCores;
+
         }
 
         private async void DGWDetalhesErros_DoubleClick(object sender, EventArgs e)
