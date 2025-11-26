@@ -623,7 +623,7 @@
             CBxNomeCor4.MaxDropDownItems = 29;
             CBxNomeCor4.Name = "CBxNomeCor4";
             CBxNomeCor4.Size = new Size(321, 29);
-            CBxNomeCor4.TabIndex = 7;
+            CBxNomeCor4.TabIndex = 29;
             CBxNomeCor4.SelectedIndexChanged += CBxNomeCor4_SelectedIndexChanged;
             // 
             // CBxNomeCor3

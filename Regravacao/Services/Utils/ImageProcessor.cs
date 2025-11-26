@@ -7,7 +7,7 @@ namespace Regravacao.Services.Utils
 {
     public static class ImageProcessor
     {
-        private const int ThumbnailSize = 128;
+        private const int ThumbnailSize = 256;
         // 🎯 Fator de qualidade JPEG (0 a 100). Um valor de 80 é um bom equilíbrio entre qualidade visual aceitável e tamanho de arquivo pequeno.
         private const long JpegQuality = 80;
 
@@ -25,9 +25,6 @@ namespace Regravacao.Services.Utils
             return null;
         }
 
-        /// <summary>
-        /// Redimensiona uma imagem para um tamanho fixo (thumbnail) usando configurações de renderização padrão.
-        /// </summary>
         public static Image CreateThumbnail(Image image)
         {
             int width, height;
@@ -64,11 +61,9 @@ namespace Regravacao.Services.Utils
             if (jpegCodec == null)
             {
                 // Fallback: se o encoder não for encontrado, salva com a qualidade padrão do sistema
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    image.Save(ms, ImageFormat.Jpeg);
-                    return ms.ToArray();
-                }
+                using MemoryStream ms = new();
+                image.Save(ms, ImageFormat.Jpeg);
+                return ms.ToArray();
             }
 
             using (EncoderParameters encoderParameters = new EncoderParameters(1))

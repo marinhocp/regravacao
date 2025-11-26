@@ -15,19 +15,21 @@ namespace Regravacao.Repositories
 
         public async Task<List<CoresDto>> ListarTodasAsync()
         {
-            // Busca todos os campos da tabela TblCores (mapeando para CoresDto)
+            // String de seleção com apenas as colunas necessárias
+            string colunas = "id_cor, nome_cor, codigo_hexadecimal";
+
             var resposta = await _supabase
                 .From<CoresDto>()
-                .Select("*") // Seleciona todos os campos definidos no DTO
+                // ✅ Seleciona somente as colunas listadas
+                .Select(colunas)
+                .Limit(2000)
                 .Get();
 
             if (!resposta.ResponseMessage.IsSuccessStatusCode)
             {
                 throw new Exception($"Erro de API no repositório de cores: {resposta.ResponseMessage.ReasonPhrase}");
             }
-
-            // Os 2300 itens são retornados aqui
-            return resposta.Models;
+            return resposta.Models.ToList();
         }
     }
 }

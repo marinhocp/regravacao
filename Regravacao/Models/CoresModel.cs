@@ -11,6 +11,10 @@ namespace Regravacao.Models
         [JsonPropertyName("id_cor")]
         public int IdCor { get; set; }
 
+        [Column("paleta")]
+        [JsonPropertyName("paleta")]
+        public string Paleta { get; set; } = string.Empty;
+
         [Column("nome_cor")]
         [JsonPropertyName("nome_cor")]
         public string NomeCor { get; set; } = string.Empty;
