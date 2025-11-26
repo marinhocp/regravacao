@@ -1,6 +1,7 @@
 ﻿using Regravacao.DTOs;
 using Regravacao.Repositories;
 using Regravacao.Services.Utils;
+using Regravacao.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,7 +25,6 @@ namespace Regravacao.Services.Cores
         public CoresCacheService(ICoresRepository coresRepository)
         {
             _coresRepository = coresRepository ?? throw new ArgumentNullException(nameof(coresRepository));
-
             var appFolder = CacheFileHelper.GetAppCacheFolder();
             _cacheFilePath = Path.Combine(appFolder, "cores.cache.json");
             _cacheMetaFilePath = Path.Combine(appFolder, "cores.cache.meta.json");
@@ -32,7 +32,7 @@ namespace Regravacao.Services.Cores
 
         public async Task<List<CoresDto>> GetCoresCachedAsync()
         {
-            // 1) Tenta carregar cache JSON local
+            // 1) tenta cache JSON local
             var local = await LoadCacheLocalAsync();
             if (local != null && local.Any())
             {
@@ -41,7 +41,7 @@ namespace Regravacao.Services.Cores
                 return CloneList(local);
             }
 
-            // 2) Tenta carregar CSV local, converte e salva como JSON
+            // 2) tenta CSV local (se existir), converte e salva como JSON
             var csv = await LoadCsvIfExistsAsync();
             if (csv != null && csv.Any())
             {
@@ -51,9 +51,9 @@ namespace Regravacao.Services.Cores
                 return CloneList(csv);
             }
 
-            // 3) fallback: obtém do remoto
+            // 3) fallback -> fetch remoto e salva cache
             var remote = await SafeFetchRemoteAsync();
-            if (remote != null)
+            if (remote != null && remote.Any())
             {
                 await SaveCacheLocalInternalAsync(remote);
                 lock (_lock) _memCache = remote;
@@ -73,11 +73,14 @@ namespace Regravacao.Services.Cores
             return CloneList(remote);
         }
 
-        // Método público em pt-br para compatibilidade (p.ex. se outras partes chamam SalvarCacheLocalAsync)
         public async Task SalvarCacheLocalAsync(List<CoresDto> lista)
         {
+            if (lista == null) throw new ArgumentNullException(nameof(lista));
             await SaveCacheLocalInternalAsync(lista);
+            lock (_lock) _memCache = CloneList(lista);
         }
+
+        // ----------------- helpers -----------------
 
         private async Task BackgroundSyncIfNeeded()
         {
@@ -95,7 +98,7 @@ namespace Regravacao.Services.Cores
             }
             catch
             {
-                // swallow
+                // não propaga exceções de sync em background
             }
         }
 
@@ -166,7 +169,6 @@ namespace Regravacao.Services.Cores
                 if (lines.Length == 0) return null;
 
                 var list = new List<CoresDto>();
-                // assume header; tenta inferir se tem cabeçalho
                 int start = 0;
                 if (lines[0].ToLower().Contains("id") || lines[0].ToLower().Contains("paleta")) start = 1;
 
@@ -174,9 +176,7 @@ namespace Regravacao.Services.Cores
                 {
                     var line = lines[i];
                     if (string.IsNullOrWhiteSpace(line)) continue;
-                    // suporta separador ; ou ,
                     var parts = line.Split(new[] { ';', ',' });
-                    // garantir existência de colunas: id;paleta;nome;hex;rgb;cmyk
                     if (parts.Length < 4) continue;
                     int.TryParse(parts[0], out int id);
                     var dto = new CoresDto

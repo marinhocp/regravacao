@@ -17,7 +17,7 @@ namespace Regravacao.Services.Cores
         Task<List<CoresDto>> RefreshFromRemoteAsync();
 
         /// <summary>
-        /// Expondo um atalho em português caso outras partes do projeto chamem esse nome.
+        /// Método público em português compatível com usos antigos.
         /// </summary>
         Task SalvarCacheLocalAsync(List<CoresDto> lista);
     }

@@ -1,10 +1,14 @@
-﻿// Em: Regravacao.Repositories
-using Regravacao.DTOs;
+﻿using Regravacao.DTOs;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-public interface ICoresRepository
+namespace Regravacao.Repositories
 {
-    /// <summary>
-    /// Retorna todas as cores da tabela TblCores de forma assíncrona.
-    /// </summary>
-    Task<List<CoresDto>> ListarTodasAsync();
+    public interface ICoresRepository
+    {
+        /// <summary>
+        /// Retorna todas as cores da tabela TblCores de forma assíncrona.
+        /// </summary>
+        Task<List<CoresDto>> ListarTodasAsync();
+    }
 }

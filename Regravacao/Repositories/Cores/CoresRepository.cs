@@ -1,34 +1,37 @@
-﻿// Em: Regravacao.Repositories.Impl
-using Regravacao.DTOs;
+﻿using Regravacao.DTOs;
 using Supabase;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Regravacao.Repositories
 {
     public class CoresRepository : ICoresRepository
     {
-        private readonly Supabase.Client _supabase;
+        private readonly Client _supabase;
 
-        public CoresRepository(Supabase.Client supabase)
+        public CoresRepository(Client supabase)
         {
-            _supabase = supabase;
+            _supabase = supabase ?? throw new ArgumentNullException(nameof(supabase));
         }
 
         public async Task<List<CoresDto>> ListarTodasAsync()
         {
-            // String de seleção com apenas as colunas necessárias
-            string colunas = "id_cor, nome_cor, codigo_hexadecimal";
+            // Seleciona apenas as colunas que você usa para a UI (pode adicionar paleta, rgb, cmyk se quiser)
+            string colunas = "id_cor, paleta, nome_cor, codigo_hexadecimal, codigo_rgb, codigo_cmyk";
 
             var resposta = await _supabase
                 .From<CoresDto>()
-                // ✅ Seleciona somente as colunas listadas
                 .Select(colunas)
-                .Limit(2000)
+                .Limit(4000) // limite seguro
                 .Get();
 
             if (!resposta.ResponseMessage.IsSuccessStatusCode)
             {
-                throw new Exception($"Erro de API no repositório de cores: {resposta.ResponseMessage.ReasonPhrase}");
+                throw new Exception($"Erro na API Supabase (cores): {resposta.ResponseMessage.ReasonPhrase}");
             }
+
             return resposta.Models.ToList();
         }
     }

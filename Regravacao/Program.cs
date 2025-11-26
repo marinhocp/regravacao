@@ -75,7 +75,7 @@ namespace Regravacao
                     services.AddScoped<ICustoDeQuemRepository, CustoDeQuemRepository>();
                     services.AddScoped<IPrioridadeRepository, PrioridadeRepository>();
                     services.AddScoped<IStatusRepository, StatusRepository>();
-                    services.AddScoped<ICoresRepository, CoresRepository>();                      
+                    services.AddScoped<ICoresRepository, CoresRepository>();                    
 
 
                     // --- SERVIÇOS ---
