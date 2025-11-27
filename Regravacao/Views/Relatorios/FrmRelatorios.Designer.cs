@@ -36,6 +36,7 @@
             BtnExportarRelatorioExcel = new Button();
             BtnExportarRelatorioPDF = new Button();
             BtnCancelarRelatorio = new Button();
+            BtnGerarRelatorio = new Button();
             BtnImprimirRelatorio = new Button();
             groupBox1 = new GroupBox();
             DTPDataFinalRelatorio = new DateTimePicker();
@@ -124,6 +125,7 @@
             panel3.Controls.Add(BtnExportarRelatorioExcel);
             panel3.Controls.Add(BtnExportarRelatorioPDF);
             panel3.Controls.Add(BtnCancelarRelatorio);
+            panel3.Controls.Add(BtnGerarRelatorio);
             panel3.Controls.Add(BtnImprimirRelatorio);
             panel3.Controls.Add(groupBox1);
             panel3.Controls.Add(groupBox4);
@@ -176,6 +178,19 @@
             BtnCancelarRelatorio.Text = "CANCELAR";
             BtnCancelarRelatorio.UseVisualStyleBackColor = false;
             BtnCancelarRelatorio.Click += BtnCancelarRelatorio_Click;
+            // 
+            // BtnGerarRelatorio
+            // 
+            BtnGerarRelatorio.BackColor = Color.RosyBrown;
+            BtnGerarRelatorio.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            BtnGerarRelatorio.ForeColor = SystemColors.ButtonHighlight;
+            BtnGerarRelatorio.ImeMode = ImeMode.NoControl;
+            BtnGerarRelatorio.Location = new Point(17, 764);
+            BtnGerarRelatorio.Name = "BtnGerarRelatorio";
+            BtnGerarRelatorio.Size = new Size(277, 41);
+            BtnGerarRelatorio.TabIndex = 4;
+            BtnGerarRelatorio.Text = "GERAR RELATORIO";
+            BtnGerarRelatorio.UseVisualStyleBackColor = false;
             // 
             // BtnImprimirRelatorio
             // 
@@ -420,7 +435,7 @@
             groupBox4.Controls.Add(RbMaisBarato);
             groupBox4.Controls.Add(RbMaisRecente);
             groupBox4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox4.Location = new Point(17, 669);
+            groupBox4.Location = new Point(17, 658);
             groupBox4.Name = "groupBox4";
             groupBox4.Size = new Size(276, 83);
             groupBox4.TabIndex = 2;
@@ -544,7 +559,7 @@
             groupBox2.BackColor = Color.Transparent;
             groupBox2.Controls.Add(PbcPrintRelatorio);
             groupBox2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox2.Location = new Point(14, 784);
+            groupBox2.Location = new Point(14, 830);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new Size(293, 218);
             groupBox2.TabIndex = 105;
@@ -668,5 +683,6 @@
         private Label label11;
         private Label label12;
         private ComboBox CbxMaterialRelatorio;
+        private Button BtnGerarRelatorio;
     }
 }

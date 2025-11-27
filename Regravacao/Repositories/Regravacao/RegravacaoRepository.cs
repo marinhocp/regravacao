@@ -22,11 +22,6 @@ namespace Regravacao.Repositories.Regravacao
 
             // motivos = int[]?
             var motivos = dto.IdsErrosSelecionados?.ToArray();
-
-            // ✅ Está correto usar JsonSerializer.Serialize para obter uma string JSON
-            var coresJsonString = JsonSerializer.Serialize(dto.Cores);
-            Console.WriteLine(coresJsonString); // Verifique o output
-
             var parametros = new Dictionary<string, object?>
             {
                 { "p_requerimento_atual", dto.RequerimentoAtual },
@@ -55,7 +50,7 @@ namespace Regravacao.Repositories.Regravacao
 
                 { "p_motivos", motivos },
                 // ✅ Enviando como string JSON
-                { "p_cores", coresJsonString }
+                { "p_cores", dto.Cores }
             };
 
             var rpc = await _client.Rpc("sp_inserir_regravacao", parametros);

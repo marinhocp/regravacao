@@ -1402,12 +1402,13 @@ namespace Regravacao
 
                 int novoId = await _regravacaoService.InserirAsync(dto);
 
-                MessageBox.Show($"Regravação salva com sucesso! ID: {novoId}");
+                MessageBox.Show($"Regravação concluída com sucesso!");
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Erro ao salvar regravação:\n{ex.Message}");
             }
+            finally { ResetarControlesPersonalizado(); }
         }
 
         private List<CoresInserirDto> ColetarDadosDasCoresDoFormulario()
