@@ -31,6 +31,7 @@ using Regravacao.Services.Status;
 
 using Regravacao.Views;
 using Supabase;
+using System.Net.Http.Headers;
 
 namespace Regravacao
 {
@@ -61,6 +62,15 @@ namespace Regravacao
                     var supabase = new Client(supabaseUrl, supabaseKey);
                     services.AddSingleton(supabase);
 
+                    services.AddHttpClient("supabase", client =>
+                    {
+                        client.BaseAddress = new Uri(supabaseUrl); // ex: https://xxxxx.supabase.co/
+                        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                        // Cabeçalhos necessários pelo Supabase REST
+                        client.DefaultRequestHeaders.Add("apikey", supabaseKey);
+                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", supabaseKey);
+                    });
+
                     // --- REPOSITÓRIOS ---
                     services.AddScoped<IRegravacaoRepository, RegravacaoRepository>();
                     services.AddScoped<IDetalhesDeErrosRepository, DetalhesDeErrosRepository>();
@@ -75,7 +85,9 @@ namespace Regravacao
                     services.AddScoped<ICustoDeQuemRepository, CustoDeQuemRepository>();
                     services.AddScoped<IPrioridadeRepository, PrioridadeRepository>();
                     services.AddScoped<IStatusRepository, StatusRepository>();
-                    services.AddScoped<ICoresRepository, CoresRepository>();                    
+                    services.AddScoped<ICoresRepository, CoresRepository>();       
+                    
+                   
 
 
                     // --- SERVIÇOS ---
@@ -95,6 +107,8 @@ namespace Regravacao
                     services.AddScoped<IStatusService, StatusService>();
                     services.AddScoped<ICoresCacheService, CoresCacheService>();
                     services.AddScoped<ICoresService, CoresService>();
+
+
 
 
                     // ✅ Forms

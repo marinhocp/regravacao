@@ -983,66 +983,7 @@ namespace Regravacao
 
         #endregion
 
-        private List<CoresInserirDto> ColetarDadosDasCoresDoFormulario()
-        {
-            var cores = new List<CoresInserirDto>();
-
-            for (int i = 1; i <= MaxCores; i++)
-            {
-                // 1. Buscando controles
-                var cbxCor = this.Controls.Find($"CBxCor{i}", true).FirstOrDefault() as ComboBox;
-                var txbLargura = this.Controls.Find($"TxbLarguraCor{i}", true).FirstOrDefault() as TextBox;
-                var txbComprimento = this.Controls.Find($"TxbComprimentoCor{i}", true).FirstOrDefault() as TextBox;
-                var txbCustoEstimado = this.Controls.Find($"TxbCustoCor{i}", true).FirstOrDefault() as TextBox;
-
-                // Condição de Continuação: Se o ComboBox não existir OU não tiver valor selecionado, pula.
-                if (cbxCor == null || cbxCor.SelectedValue == null)
-                    continue;
-
-                // 2. Conversão Segura de Dados (Validações estritas)
-
-                // IdCor
-                if (!int.TryParse(cbxCor.SelectedValue.ToString(), out int idCor) || idCor <= 0)
-                {
-                    // O ID deve ser válido e positivo
-                    throw new ArgumentException($"ID da Cor selecionada na linha {i} ('{cbxCor.SelectedValue}') está inválido.");
-                }
-
-                // Largura, Comprimento, Custo Estimado
-                // Note: Se o campo não existir (txb?.Text é null), o TryParse falhará.
-                if (!decimal.TryParse(txbLargura?.Text, out decimal largura))
-                {
-                    throw new ArgumentException($"Largura da Cor {i} ('{txbLargura?.Text}') está em formato inválido ou vazio.");
-                }
-
-                if (!decimal.TryParse(txbComprimento?.Text, out decimal comprimento))
-                {
-                    throw new ArgumentException($"Comprimento da Cor {i} ('{txbComprimento?.Text}') está em formato inválido ou vazio.");
-                }
-
-                if (!decimal.TryParse(txbCustoEstimado?.Text, out decimal custoEstimado))
-                {
-                    throw new ArgumentException($"Custo Estimado da Cor {i} ('{txbCustoEstimado?.Text}') está em formato inválido ou vazio.");
-                }
-
-                // 3. Adiciona a Cor
-                cores.Add(new CoresInserirDto
-                {
-                    IdCor = idCor,
-                    Largura = largura,
-                    Comprimento = comprimento,
-                    CustoEstimado = custoEstimado
-                });
-            }
-
-            // 4. Validação Final (Garantindo que pelo menos 1 cor foi processada)
-            if (cores.Count == 0)
-            {
-                throw new ArgumentException("Pelo menos uma cor deve ser preenchida para o cadastro.");
-            }
-
-            return cores;
-        }
+        
 
         private bool IsFormValid()
         {
@@ -1209,6 +1150,93 @@ namespace Regravacao
                 Console.WriteLine($"Erro ao mostrar usuário: {ex.Message}");
             }
         }
+
+        private async void BtnLogout_Click(object? sender, EventArgs e)
+        {
+            if (MessageBox.Show("Deseja realmente sair do sistema?",
+              "Logout", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                try
+                {
+                    sessaoTimer?.Stop();
+                    if (Program.ServiceProvider is null)
+                    {
+                        MessageBox.Show("Serviço de dependências não está disponível.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    var service = Program.ServiceProvider.GetRequiredService<IAuthService>();
+                    await service.EfetuarLogoutAsync();
+                    SessaoHelper.LimparSessao();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erro ao fazer logout: {ex.Message}");
+                }
+                finally
+                {
+                    Application.Exit();
+                }
+            }
+        }
+
+        private void IniciarVerificacaoDeSessao()
+        {
+            sessaoTimer?.Stop();
+            sessaoTimer = new System.Windows.Forms.Timer { Interval = 60000 };
+            sessaoTimer.Tick += async (s, e) => await VerificarExpiracaoAsync();
+            sessaoTimer.Start();
+        }
+
+        private async Task VerificarExpiracaoAsync()
+        {
+            try
+            {
+                var session = _supabase.Auth.CurrentSession;
+                if (session == null || session.User == null)
+                {
+                    await ForcarLogoutPorExpiracao();
+                    return;
+                }
+
+                var expiresAt = session.ExpiresAt(); // ← DateTime (não nullable)
+
+                // Verifica se expirou
+                if (expiresAt <= DateTime.UtcNow)
+                {
+                    var refreshed = await _supabase.Auth.RefreshSession();
+                    if (refreshed?.User == null)
+                    {
+                        await ForcarLogoutPorExpiracao();
+                    }
+                    else
+                    {
+                        SessaoHelper.SalvarSessao(refreshed);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao verificar sessão: {ex.Message}");
+                await ForcarLogoutPorExpiracao();
+            }
+        }
+
+        private async Task ForcarLogoutPorExpiracao()
+        {
+            sessaoTimer?.Stop();
+            SessaoHelper.LimparSessao();
+
+            MessageBox.Show(
+              "Sua sessão expirou. Por favor, faça login novamente.",
+              "Sessão expirada",
+              MessageBoxButtons.OK,
+              MessageBoxIcon.Information);
+
+            MostrarTelaDeLogin();
+            await Task.CompletedTask;
+        }
+
+
         private void ConfigurarBotoes()
         {
             // Remove eventos duplicados (Boa Prática)
@@ -1336,171 +1364,98 @@ namespace Regravacao
             frmConfig.OnConfigSaved = async () => await CarregarConfiguracoesCustoAsync();
             frmConfig.ShowDialog();
         }
-
-        private async void BtnLogout_Click(object? sender, EventArgs e)
-        {
-            if (MessageBox.Show("Deseja realmente sair do sistema?",
-              "Logout", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-            {
-                try
-                {
-                    sessaoTimer?.Stop();
-                    if (Program.ServiceProvider is null)
-                    {
-                        MessageBox.Show("Serviço de dependências não está disponível.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-                    var service = Program.ServiceProvider.GetRequiredService<IAuthService>();
-                    await service.EfetuarLogoutAsync();
-                    SessaoHelper.LimparSessao();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Erro ao fazer logout: {ex.Message}");
-                }
-                finally
-                {
-                    Application.Exit();
-                }
-            }
-        }
-
-        private void IniciarVerificacaoDeSessao()
-        {
-            sessaoTimer?.Stop();
-            sessaoTimer = new System.Windows.Forms.Timer { Interval = 60000 };
-            sessaoTimer.Tick += async (s, e) => await VerificarExpiracaoAsync();
-            sessaoTimer.Start();
-        }
-
-        private async Task VerificarExpiracaoAsync()
-        {
-            try
-            {
-                var session = _supabase.Auth.CurrentSession;
-                if (session == null || session.User == null)
-                {
-                    await ForcarLogoutPorExpiracao();
-                    return;
-                }
-
-                var expiresAt = session.ExpiresAt(); // ← DateTime (não nullable)
-
-                // Verifica se expirou
-                if (expiresAt <= DateTime.UtcNow)
-                {
-                    var refreshed = await _supabase.Auth.RefreshSession();
-                    if (refreshed?.User == null)
-                    {
-                        await ForcarLogoutPorExpiracao();
-                    }
-                    else
-                    {
-                        SessaoHelper.SalvarSessao(refreshed);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao verificar sessão: {ex.Message}");
-                await ForcarLogoutPorExpiracao();
-            }
-        }
-
-        private async Task ForcarLogoutPorExpiracao()
-        {
-            sessaoTimer?.Stop();
-            SessaoHelper.LimparSessao();
-
-            MessageBox.Show(
-              "Sua sessão expirou. Por favor, faça login novamente.",
-              "Sessão expirada",
-              MessageBoxButtons.OK,
-              MessageBoxIcon.Information);
-
-            MostrarTelaDeLogin();
-            await Task.CompletedTask;
-        }
-
+        
         private async void BtnSalvarCadastro_Click_1(object sender, EventArgs e)
         {
-            string? thumbnailUrl = null;
-            List<CoresInserirDto> coresParaRegravacao;
-
             try
             {
-                // 1. Validação de campos obrigatórios (apenas ComboBoxes/TextBoxes principais)
-                if (!IsFormValid())
+                var dto = new RegravacaoInserirDto
                 {
-                    MessageBox.Show("Preencha todos os campos obrigatórios (exceto os dados de cor).", "Validação", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
+                    RequerimentoAtual = TxbRequerimentoAtual.Text.Trim(),
+                    RequerimentoNovo = TxbReqNovo.Text.Trim(),
+                    DescricaoArte = TxbDescricao.Text.Trim(),
 
-                // 2. Coleta e validação das cores (Este método lança ArgumentException se vazio/inválido)
-                coresParaRegravacao = ColetarDadosDasCoresDoFormulario(); // <-- USAMOS O MÉTODO ROBUSTO AQUI
+                    Versao = short.Parse(TxbVersao.Text),
 
-                // 3. Upload da Thumbnail (Só ocorre se a validação das cores foi bem-sucedida)
-                if (_thumbnailBytes != null && _thumbnailBytes.Length > 0)
-                {
-                    thumbnailUrl = await UploadThumbnailAsync();
-                    if (thumbnailUrl == null) return;
-                }
-
-                // 4. Criação do DTO
-                var motivosErros = _errosSelecionados.Select(e => e.IdDetalhesErros).ToList();
-
-                var dadosRegravacao = new InserirRegravacaoDto
-                {
-                    RequerimentoAtual = TxbRequerimentoAtual.Text,
-                    RequerimentoNovo = TxbReqNovo.Text,
-                    DescricaoArte = TxbDescricao.Text,
-                    Versao = (short)1, // Exemplo
                     IdQuemFinalizou = (int)CBxFinalizadoPor.SelectedValue,
                     IdConferente = (int)CBxConferidoPor.SelectedValue,
                     IdSolicitante = (int)CBxSolicitante.SelectedValue,
                     IdEnviarPara = (int)CBxEnviarPara.SelectedValue,
-                    IdCobrarDeQuem = CBxCustoDeQuem.SelectedValue as int?, // Assumindo cast para int?
+
+                    IdCustoDeQuem = (int?)CBxCustoDeQuem.SelectedValue,
                     IdMotivoPrincipal = (int)CBxMotivoPrincipal.SelectedValue,
+
                     QtdePlacas = (short)NumUpDQtdePlacas.Value,
                     IdPrioridade = (int)CBxPrioridade.SelectedValue,
                     IdStatus = (int)CBxStatus.SelectedValue,
+
                     DataCadastro = DateTimeBoxCadastro.Value,
-                    Thumbnail = thumbnailUrl, // URL do Storage
-                    Observacoes = TxbObservacao.Text,
-                    IdMaterial = (short)CBxMaterial.SelectedValue,
+                    ThumbnailUrl = await UploadThumbnailAsync(),
+                    Observacoes = TxbObservacao.Text.Trim(),
 
-                    // Tratamento da lista de motivos: NULL se vazia
-                    MotivosErrosIds = (motivosErros.Count > 0) ? motivosErros : null,
+                    IdMaterial = (short?)CBxMaterial.SelectedValue,
 
-                    // Dados das Cores (já no DTO simplificado)
-                    Cores = coresParaRegravacao
+                    IdsErrosSelecionados = _errosSelecionados.Select(x => x.IdDetalhesErros).ToList(),
+
+                    Cores = ColetarDadosDasCoresDoFormulario()
                 };
 
-                // 4. Inserção (RPC) via Service/Repository
-                int newId = await _regravacaoService.CriarRegravacao(dadosRegravacao);
+                int novoId = await _regravacaoService.InserirAsync(dto);
 
-                // 5. Sucesso
-                MessageBox.Show($"Regravação #{newId} salva com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                // ResetarControlesPersonalizado(); // Chame sua função de limpeza
+                MessageBox.Show($"Regravação salva com sucesso! ID: {novoId}");
             }
-            catch (ArgumentException argEx)
-            {
-                MessageBox.Show($"Erro de preenchimento ou falta de cor: {argEx.Message}", "Erro de Validação de Dados", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            // 7. Captura de outros erros e Rollback
             catch (Exception ex)
             {
-                if (thumbnailUrl != null)
-                {
-                    await DeleteThumbnailAsync(thumbnailUrl);
-                    MessageBox.Show($"Falha grave na inserção do DB. O arquivo de thumbnail foi removido do Storage. Erro: {ex.Message}", "Erro de Transação", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else
-                {
-                    MessageBox.Show($"Falha ao salvar a Regravação: {ex.Message}", "Erro de Salvamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                MessageBox.Show($"Erro ao salvar regravação:\n{ex.Message}");
             }
         }
+
+        private List<CoresInserirDto> ColetarDadosDasCoresDoFormulario()
+        {
+            var cores = new List<CoresInserirDto>();
+
+            for (int i = 1; i <= MaxCores; i++)
+            {
+                // Agora está certo
+                var cbxCor = this.Controls.Find($"CBxNomeCor{i}", true).FirstOrDefault() as ComboBox;
+                var txbLargura = this.Controls.Find($"TxbLarguraCor{i}", true).FirstOrDefault() as TextBox;
+                var txbComprimento = this.Controls.Find($"TxbComprimentoCor{i}", true).FirstOrDefault() as TextBox;
+
+                // Campo correto baseado no seu mapa de cores
+                var txbCustoEstimado = this.Controls.Find($"TxbCustoParcialPlacaCor{i}", true).FirstOrDefault() as TextBox;
+
+                // Se não achou o ComboBox OU não há seleção, pula
+                if (cbxCor == null || cbxCor.SelectedValue == null)
+                    continue;
+
+                // ID da cor
+                if (!int.TryParse(cbxCor.SelectedValue.ToString(), out int idCor) || idCor <= 0)
+                    continue; // apenas ignora, sem lançar exceção
+
+                // Conversões
+                if (!decimal.TryParse(txbLargura?.Text, out decimal largura)) continue;
+                if (!decimal.TryParse(txbComprimento?.Text, out decimal comprimento)) continue;
+                if (!decimal.TryParse(txbCustoEstimado?.Text, out decimal custoEstimado)) continue;
+
+                // Adiciona a cor válida
+                cores.Add(new CoresInserirDto
+                {
+                    IdCor = idCor,
+                    Largura = largura,
+                    Comprimento = comprimento,
+                    CustoEstimado = custoEstimado
+                });
+            }
+
+            // Garante que pelo menos uma cor foi preenchida
+            if (cores.Count == 0)
+                throw new ArgumentException("Pelo menos uma cor deve ser preenchida para o cadastro.");
+
+            return cores;
+        }
+
+
+
 
         private async void FrmMain_Load(object sender, EventArgs e)
         {

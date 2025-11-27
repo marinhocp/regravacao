@@ -1,47 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace Regravacao.DTOs
 {
-    public class CorParaInsercaoDto
+    public class RegravacaoInserirDto
     {
-        [JsonPropertyName("id_cor")]
-        public int IdCor { get; set; }
-
-        [JsonPropertyName("largura")]
-        public decimal Largura { get; set; }
-
-        [JsonPropertyName("comprimento")]
-        public decimal Comprimento { get; set; }
-
-        [JsonPropertyName("custo_estimado")]
-        public decimal CustoEstimado { get; set; }
-    }
-
-    public class InserirRegravacaoDto
-    {
-        // Campos primários
         public string RequerimentoAtual { get; set; } = string.Empty;
         public string RequerimentoNovo { get; set; } = string.Empty;
         public string DescricaoArte { get; set; } = string.Empty;
         public short Versao { get; set; }
+
         public int IdQuemFinalizou { get; set; }
         public int IdConferente { get; set; }
         public int IdSolicitante { get; set; }
         public int IdEnviarPara { get; set; }
-        public int? IdCobrarDeQuem { get; set; }
+
+        public int? IdCustoDeQuem { get; set; }
         public int IdMotivoPrincipal { get; set; }
+
         public short QtdePlacas { get; set; }
         public int IdPrioridade { get; set; }
         public int IdStatus { get; set; }
+
         public DateTime DataCadastro { get; set; }
-        public string? ThumbnailUrl { get; set; }
-        public string? Observacoes { get; set; }
+        public string ThumbnailUrl { get; set; } = string.Empty;
+        public string Observacoes { get; set; } = string.Empty;
+
         public short? IdMaterial { get; set; }
 
-        // Arrays / coleções
-        public int[]? MotivosIds { get; set; }
-        public List<CorParaInsercaoDto>? Cores { get; set; }
+        public List<int>? IdsErrosSelecionados { get; set; }
+        public List<CoresInserirDto> Cores { get; set; } = new();
     }
 }
