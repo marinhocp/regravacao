@@ -268,12 +268,13 @@
             // 
             // groupBox2
             // 
+            groupBox2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             groupBox2.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             groupBox2.Controls.Add(TxbObservacao);
             groupBox2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox2.Location = new Point(950, 421);
+            groupBox2.Location = new Point(945, 421);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(283, 470);
+            groupBox2.Size = new Size(288, 470);
             groupBox2.TabIndex = 5;
             groupBox2.TabStop = false;
             groupBox2.Text = "OBSERVAÇÃO";
@@ -287,7 +288,7 @@
             TxbObservacao.Location = new Point(9, 23);
             TxbObservacao.Multiline = true;
             TxbObservacao.Name = "TxbObservacao";
-            TxbObservacao.Size = new Size(266, 432);
+            TxbObservacao.Size = new Size(271, 432);
             TxbObservacao.TabIndex = 48;
             // 
             // BtnLimparCamposCadastro
@@ -298,9 +299,9 @@
             BtnLimparCamposCadastro.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             BtnLimparCamposCadastro.ForeColor = SystemColors.ButtonFace;
             BtnLimparCamposCadastro.ImageAlign = ContentAlignment.MiddleLeft;
-            BtnLimparCamposCadastro.Location = new Point(1493, 816);
+            BtnLimparCamposCadastro.Location = new Point(1493, 828);
             BtnLimparCamposCadastro.Name = "BtnLimparCamposCadastro";
-            BtnLimparCamposCadastro.Size = new Size(93, 65);
+            BtnLimparCamposCadastro.Size = new Size(93, 61);
             BtnLimparCamposCadastro.TabIndex = 54;
             BtnLimparCamposCadastro.Text = "NOVO";
             BtnLimparCamposCadastro.UseVisualStyleBackColor = false;
@@ -324,6 +325,7 @@
             // CBxConferidoPor
             // 
             CBxConferidoPor.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            CBxConferidoPor.FlatStyle = FlatStyle.Flat;
             CBxConferidoPor.Font = new Font("Segoe UI", 12F);
             CBxConferidoPor.FormattingEnabled = true;
             CBxConferidoPor.Location = new Point(243, 54);
@@ -334,6 +336,7 @@
             // CBxFinalizadoPor
             // 
             CBxFinalizadoPor.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            CBxFinalizadoPor.FlatStyle = FlatStyle.Flat;
             CBxFinalizadoPor.Font = new Font("Segoe UI", 12F);
             CBxFinalizadoPor.FormattingEnabled = true;
             CBxFinalizadoPor.Location = new Point(18, 54);
@@ -372,9 +375,9 @@
             BtnSalvarCadastro.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             BtnSalvarCadastro.ForeColor = SystemColors.ButtonFace;
             BtnSalvarCadastro.ImageAlign = ContentAlignment.MiddleLeft;
-            BtnSalvarCadastro.Location = new Point(1251, 818);
+            BtnSalvarCadastro.Location = new Point(1251, 830);
             BtnSalvarCadastro.Name = "BtnSalvarCadastro";
-            BtnSalvarCadastro.Size = new Size(235, 63);
+            BtnSalvarCadastro.Size = new Size(225, 59);
             BtnSalvarCadastro.TabIndex = 53;
             BtnSalvarCadastro.Text = "SALVAR O CADASTRO";
             BtnSalvarCadastro.UseVisualStyleBackColor = false;
@@ -382,6 +385,7 @@
             // 
             // groupBox4
             // 
+            groupBox4.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             groupBox4.Controls.Add(TxbMaoObra);
             groupBox4.Controls.Add(label8);
             groupBox4.Controls.Add(PanelCor8);
@@ -573,6 +577,7 @@
             // CBxNomeCor8
             // 
             CBxNomeCor8.AutoCompleteMode = AutoCompleteMode.Append;
+            CBxNomeCor8.FlatStyle = FlatStyle.Flat;
             CBxNomeCor8.Font = new Font("Segoe UI", 12F);
             CBxNomeCor8.FormattingEnabled = true;
             CBxNomeCor8.Location = new Point(116, 352);
@@ -584,6 +589,7 @@
             // CBxNomeCor7
             // 
             CBxNomeCor7.AutoCompleteMode = AutoCompleteMode.Append;
+            CBxNomeCor7.FlatStyle = FlatStyle.Flat;
             CBxNomeCor7.Font = new Font("Segoe UI", 12F);
             CBxNomeCor7.FormattingEnabled = true;
             CBxNomeCor7.Location = new Point(116, 313);
@@ -595,6 +601,7 @@
             // CBxNomeCor6
             // 
             CBxNomeCor6.AutoCompleteMode = AutoCompleteMode.Append;
+            CBxNomeCor6.FlatStyle = FlatStyle.Flat;
             CBxNomeCor6.Font = new Font("Segoe UI", 12F);
             CBxNomeCor6.FormattingEnabled = true;
             CBxNomeCor6.Location = new Point(116, 273);
@@ -606,6 +613,7 @@
             // CBxNomeCor5
             // 
             CBxNomeCor5.AutoCompleteMode = AutoCompleteMode.Append;
+            CBxNomeCor5.FlatStyle = FlatStyle.Flat;
             CBxNomeCor5.Font = new Font("Segoe UI", 12F);
             CBxNomeCor5.FormattingEnabled = true;
             CBxNomeCor5.Location = new Point(116, 233);
@@ -617,6 +625,7 @@
             // CBxNomeCor4
             // 
             CBxNomeCor4.AutoCompleteMode = AutoCompleteMode.Append;
+            CBxNomeCor4.FlatStyle = FlatStyle.Flat;
             CBxNomeCor4.Font = new Font("Segoe UI", 12F);
             CBxNomeCor4.FormattingEnabled = true;
             CBxNomeCor4.Location = new Point(116, 193);
@@ -629,6 +638,7 @@
             // CBxNomeCor3
             // 
             CBxNomeCor3.AutoCompleteMode = AutoCompleteMode.Append;
+            CBxNomeCor3.FlatStyle = FlatStyle.Flat;
             CBxNomeCor3.Font = new Font("Segoe UI", 12F);
             CBxNomeCor3.FormattingEnabled = true;
             CBxNomeCor3.Location = new Point(116, 153);
@@ -640,6 +650,7 @@
             // CBxNomeCor2
             // 
             CBxNomeCor2.AutoCompleteMode = AutoCompleteMode.Append;
+            CBxNomeCor2.FlatStyle = FlatStyle.Flat;
             CBxNomeCor2.Font = new Font("Segoe UI", 12F);
             CBxNomeCor2.FormattingEnabled = true;
             CBxNomeCor2.Location = new Point(116, 113);
@@ -651,6 +662,7 @@
             // CBxNomeCor1
             // 
             CBxNomeCor1.AutoCompleteMode = AutoCompleteMode.Append;
+            CBxNomeCor1.FlatStyle = FlatStyle.Flat;
             CBxNomeCor1.Font = new Font("Segoe UI", 12F);
             CBxNomeCor1.FormattingEnabled = true;
             CBxNomeCor1.Location = new Point(116, 74);
@@ -1580,9 +1592,9 @@
             GPPrint.Controls.Add(BtnAddThumbnail);
             GPPrint.Controls.Add(PictureBoxThumbnail);
             GPPrint.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            GPPrint.Location = new Point(1251, 249);
+            GPPrint.Location = new Point(1251, 241);
             GPPrint.Name = "GPPrint";
-            GPPrint.Size = new Size(335, 549);
+            GPPrint.Size = new Size(335, 573);
             GPPrint.TabIndex = 6;
             GPPrint.TabStop = false;
             GPPrint.Text = "PRINT DA ARTE";
@@ -1644,7 +1656,7 @@
             PictureBoxThumbnail.Image = Properties.Resources.no_imagem;
             PictureBoxThumbnail.Location = new Point(10, 65);
             PictureBoxThumbnail.Name = "PictureBoxThumbnail";
-            PictureBoxThumbnail.Size = new Size(313, 472);
+            PictureBoxThumbnail.Size = new Size(313, 496);
             PictureBoxThumbnail.TabIndex = 0;
             PictureBoxThumbnail.TabStop = false;
             PictureBoxThumbnail.DragDrop += PictureBoxThumbnail_DragDrop;
@@ -1761,6 +1773,7 @@
             // CBxMaterial
             // 
             CBxMaterial.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            CBxMaterial.FlatStyle = FlatStyle.Flat;
             CBxMaterial.Font = new Font("Segoe UI", 12F);
             CBxMaterial.FormattingEnabled = true;
             CBxMaterial.Location = new Point(866, 57);
@@ -1782,6 +1795,7 @@
             // 
             // TxbRequerimentoAtual
             // 
+            TxbRequerimentoAtual.BackColor = SystemColors.Window;
             TxbRequerimentoAtual.CharacterCasing = CharacterCasing.Upper;
             TxbRequerimentoAtual.Font = new Font("Segoe UI", 12F);
             TxbRequerimentoAtual.HideSelection = false;
@@ -1818,6 +1832,7 @@
             // TxbDescricao
             // 
             TxbDescricao.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            TxbDescricao.BackColor = SystemColors.Window;
             TxbDescricao.CharacterCasing = CharacterCasing.Upper;
             TxbDescricao.Font = new Font("Segoe UI", 12F);
             TxbDescricao.HideSelection = false;
@@ -1829,6 +1844,7 @@
             // TxbVersao
             // 
             TxbVersao.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            TxbVersao.BackColor = SystemColors.Window;
             TxbVersao.CharacterCasing = CharacterCasing.Upper;
             TxbVersao.Font = new Font("Segoe UI", 12F);
             TxbVersao.HideSelection = false;
@@ -1902,6 +1918,7 @@
             // CBxStatus
             // 
             CBxStatus.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            CBxStatus.FlatStyle = FlatStyle.Flat;
             CBxStatus.Font = new Font("Segoe UI", 12F);
             CBxStatus.FormattingEnabled = true;
             CBxStatus.Location = new Point(1277, 51);
@@ -1911,6 +1928,7 @@
             // 
             // TxbReqNovo
             // 
+            TxbReqNovo.BackColor = SystemColors.Window;
             TxbReqNovo.CharacterCasing = CharacterCasing.Upper;
             TxbReqNovo.Font = new Font("Segoe UI", 12F);
             TxbReqNovo.HideSelection = false;
@@ -1923,6 +1941,7 @@
             // CBxPrioridade
             // 
             CBxPrioridade.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            CBxPrioridade.FlatStyle = FlatStyle.Flat;
             CBxPrioridade.Font = new Font("Segoe UI", 12F);
             CBxPrioridade.FormattingEnabled = true;
             CBxPrioridade.Items.AddRange(new object[] { "BAIXA", "MÉDIA", "ALTA" });
@@ -1934,6 +1953,7 @@
             // CBxMotivoPrincipal
             // 
             CBxMotivoPrincipal.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            CBxMotivoPrincipal.FlatStyle = FlatStyle.Flat;
             CBxMotivoPrincipal.Font = new Font("Segoe UI", 12F);
             CBxMotivoPrincipal.FormattingEnabled = true;
             CBxMotivoPrincipal.Location = new Point(518, 51);
@@ -1944,6 +1964,7 @@
             // CBxCustoDeQuem
             // 
             CBxCustoDeQuem.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            CBxCustoDeQuem.FlatStyle = FlatStyle.Flat;
             CBxCustoDeQuem.Font = new Font("Segoe UI", 12F);
             CBxCustoDeQuem.FormattingEnabled = true;
             CBxCustoDeQuem.Location = new Point(971, 51);
@@ -1953,6 +1974,7 @@
             // 
             // CBxEnviarPara
             // 
+            CBxEnviarPara.FlatStyle = FlatStyle.Flat;
             CBxEnviarPara.Font = new Font("Segoe UI", 12F);
             CBxEnviarPara.FormattingEnabled = true;
             CBxEnviarPara.Location = new Point(354, 51);
@@ -1985,6 +2007,7 @@
             // 
             // CBxSolicitante
             // 
+            CBxSolicitante.FlatStyle = FlatStyle.Flat;
             CBxSolicitante.Font = new Font("Segoe UI", 12F);
             CBxSolicitante.FormattingEnabled = true;
             CBxSolicitante.Location = new Point(142, 51);

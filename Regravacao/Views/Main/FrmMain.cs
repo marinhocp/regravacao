@@ -273,16 +273,16 @@ namespace Regravacao
             DGWDetalhesErros.GridColor = Color.LightGray; // Cor das linhas de grade
 
             // 2. Comportamento e Seleção
-            DGWDetalhesErros.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal; // Linhas horizontais mais limpas
+            DGWDetalhesErros.CellBorderStyle = DataGridViewCellBorderStyle.None; // Linhas horizontais mais limpas
             DGWDetalhesErros.SelectionMode = DataGridViewSelectionMode.FullRowSelect; // Seleção na linha inteira
-            DGWDetalhesErros.MultiSelect = false; // Permite selecionar apenas uma linha por vez
+            DGWDetalhesErros.MultiSelect = true; // Permite selecionar apenas uma linha por vez
             DGWDetalhesErros.RowHeadersVisible = false; // Oculta a coluna de seleção esquerda (seta)
             DGWDetalhesErros.EnableHeadersVisualStyles = false; // Permite aplicar estilo customizado ao cabeçalho
             DGWDetalhesErros.ColumnHeadersVisible = false;
             DGWDetalhesErros.EnableHeadersVisualStyles = false;
 
             // 3. Estilo do Cabeçalho (Header)
-            DGWDetalhesErros.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            DGWDetalhesErros.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
 
             // Configura o estilo padrão do cabeçalho
             DGWDetalhesErros.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(64, 64, 64); // Fundo cinza escuro (quase preto)
@@ -1403,12 +1403,12 @@ namespace Regravacao
                 int novoId = await _regravacaoService.InserirAsync(dto);
 
                 MessageBox.Show($"Regravação concluída com sucesso!");
+                ResetarControlesPersonalizado();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Erro ao salvar regravação:\n{ex.Message}");
-            }
-            finally { ResetarControlesPersonalizado(); }
+            }            
         }
 
         private List<CoresInserirDto> ColetarDadosDasCoresDoFormulario()

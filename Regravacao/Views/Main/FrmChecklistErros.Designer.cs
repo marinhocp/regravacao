@@ -34,6 +34,7 @@
             label7 = new Label();
             BtnRestaurarJanela = new PictureBox();
             panel3 = new Panel();
+            BtnLimparCheckbox = new Button();
             BtnCancelarErro = new Button();
             BtnOkErro = new Button();
             groupBox1 = new GroupBox();
@@ -42,7 +43,6 @@
             groupBox3 = new GroupBox();
             CxbListErros = new CheckedListBox();
             panel2 = new Panel();
-            BtnLimparCheckbox = new Button();
             PanelTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             ((System.ComponentModel.ISupportInitialize)BtnRestaurarJanela).BeginInit();
@@ -91,6 +91,16 @@
             panel3.Controls.Add(groupBox3);
             resources.ApplyResources(panel3, "panel3");
             panel3.Name = "panel3";
+            // 
+            // BtnLimparCheckbox
+            // 
+            resources.ApplyResources(BtnLimparCheckbox, "BtnLimparCheckbox");
+            BtnLimparCheckbox.BackColor = Color.Gainsboro;
+            BtnLimparCheckbox.FlatAppearance.BorderSize = 0;
+            BtnLimparCheckbox.Image = Properties.Resources.borracha1_32x32;
+            BtnLimparCheckbox.Name = "BtnLimparCheckbox";
+            BtnLimparCheckbox.UseVisualStyleBackColor = false;
+            BtnLimparCheckbox.Click += BtnLimparCheckbox_Click;
             // 
             // BtnCancelarErro
             // 
@@ -156,16 +166,6 @@
             panel2.BackColor = Color.FromArgb(48, 48, 48);
             resources.ApplyResources(panel2, "panel2");
             panel2.Name = "panel2";
-            // 
-            // BtnLimparCheckbox
-            // 
-            resources.ApplyResources(BtnLimparCheckbox, "BtnLimparCheckbox");
-            BtnLimparCheckbox.BackColor = Color.Gainsboro;
-            BtnLimparCheckbox.FlatAppearance.BorderSize = 0;
-            BtnLimparCheckbox.Image = Properties.Resources.borracha1_32x32;
-            BtnLimparCheckbox.Name = "BtnLimparCheckbox";
-            BtnLimparCheckbox.UseVisualStyleBackColor = false;
-            BtnLimparCheckbox.Click += BtnLimparCheckbox_Click;
             // 
             // FrmChecklistErros
             // 

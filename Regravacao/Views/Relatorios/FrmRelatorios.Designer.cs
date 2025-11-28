@@ -33,11 +33,14 @@
             pictureBox4 = new PictureBox();
             label7 = new Label();
             panel3 = new Panel();
-            BtnExportarRelatorioExcel = new Button();
-            BtnExportarRelatorioPDF = new Button();
+            tabControl1 = new TabControl();
+            TabPageRelatorios = new TabPage();
+            TabPageDGWRelatorios = new TabPage();
             BtnCancelarRelatorio = new Button();
-            BtnGerarRelatorio = new Button();
             BtnImprimirRelatorio = new Button();
+            PanelDGWRelatorios = new Panel();
+            DGWRelatorios = new DataGridView();
+            BtnGerarRelatorio = new Button();
             groupBox1 = new GroupBox();
             DTPDataFinalRelatorio = new DateTimePicker();
             label12 = new Label();
@@ -70,18 +73,18 @@
             TxbBuscarRelatorio = new TextBox();
             groupBox2 = new GroupBox();
             PbcPrintRelatorio = new PictureBox();
-            groupBox3 = new GroupBox();
-            DGVInfoGeraisGravacoes = new DataGridView();
             PanelTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             panel3.SuspendLayout();
+            tabControl1.SuspendLayout();
+            TabPageDGWRelatorios.SuspendLayout();
+            PanelDGWRelatorios.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)DGWRelatorios).BeginInit();
             groupBox1.SuspendLayout();
             groupBox4.SuspendLayout();
             GroupBuscarReqRelatorio.SuspendLayout();
             groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)PbcPrintRelatorio).BeginInit();
-            groupBox3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)DGVInfoGeraisGravacoes).BeginInit();
             SuspendLayout();
             // 
             // PanelTop
@@ -92,7 +95,7 @@
             PanelTop.Dock = DockStyle.Top;
             PanelTop.Location = new Point(0, 0);
             PanelTop.Name = "PanelTop";
-            PanelTop.Size = new Size(1451, 70);
+            PanelTop.Size = new Size(1444, 70);
             PanelTop.TabIndex = 89;
             // 
             // pictureBox4
@@ -122,47 +125,54 @@
             // panel3
             // 
             panel3.BackColor = Color.LightGray;
-            panel3.Controls.Add(BtnExportarRelatorioExcel);
-            panel3.Controls.Add(BtnExportarRelatorioPDF);
-            panel3.Controls.Add(BtnCancelarRelatorio);
+            panel3.Controls.Add(tabControl1);
             panel3.Controls.Add(BtnGerarRelatorio);
-            panel3.Controls.Add(BtnImprimirRelatorio);
             panel3.Controls.Add(groupBox1);
             panel3.Controls.Add(groupBox4);
             panel3.Controls.Add(GroupBuscarReqRelatorio);
             panel3.Controls.Add(groupBox2);
-            panel3.Controls.Add(groupBox3);
             panel3.Dock = DockStyle.Fill;
             panel3.Location = new Point(0, 0);
             panel3.Name = "panel3";
-            panel3.Size = new Size(1451, 1061);
+            panel3.Size = new Size(1444, 1020);
             panel3.TabIndex = 88;
+            panel3.Paint += panel3_Paint;
             // 
-            // BtnExportarRelatorioExcel
+            // tabControl1
             // 
-            BtnExportarRelatorioExcel.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            BtnExportarRelatorioExcel.BackColor = Color.SeaGreen;
-            BtnExportarRelatorioExcel.ForeColor = SystemColors.ButtonHighlight;
-            BtnExportarRelatorioExcel.Image = Properties.Resources.microsoft_excel_24px;
-            BtnExportarRelatorioExcel.ImeMode = ImeMode.NoControl;
-            BtnExportarRelatorioExcel.Location = new Point(364, 1008);
-            BtnExportarRelatorioExcel.Name = "BtnExportarRelatorioExcel";
-            BtnExportarRelatorioExcel.Size = new Size(44, 41);
-            BtnExportarRelatorioExcel.TabIndex = 3;
-            BtnExportarRelatorioExcel.UseVisualStyleBackColor = false;
+            tabControl1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            tabControl1.Controls.Add(TabPageRelatorios);
+            tabControl1.Controls.Add(TabPageDGWRelatorios);
+            tabControl1.Location = new Point(313, 80);
+            tabControl1.Multiline = true;
+            tabControl1.Name = "tabControl1";
+            tabControl1.Padding = new Point(60, 5);
+            tabControl1.SelectedIndex = 0;
+            tabControl1.Size = new Size(1119, 919);
+            tabControl1.TabIndex = 106;
             // 
-            // BtnExportarRelatorioPDF
+            // TabPageRelatorios
             // 
-            BtnExportarRelatorioPDF.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            BtnExportarRelatorioPDF.BackColor = Color.Firebrick;
-            BtnExportarRelatorioPDF.ForeColor = SystemColors.ButtonHighlight;
-            BtnExportarRelatorioPDF.Image = Properties.Resources.pdf_30pxe;
-            BtnExportarRelatorioPDF.ImeMode = ImeMode.NoControl;
-            BtnExportarRelatorioPDF.Location = new Point(314, 1008);
-            BtnExportarRelatorioPDF.Name = "BtnExportarRelatorioPDF";
-            BtnExportarRelatorioPDF.Size = new Size(44, 41);
-            BtnExportarRelatorioPDF.TabIndex = 3;
-            BtnExportarRelatorioPDF.UseVisualStyleBackColor = false;
+            TabPageRelatorios.Location = new Point(4, 28);
+            TabPageRelatorios.Name = "TabPageRelatorios";
+            TabPageRelatorios.Padding = new Padding(3);
+            TabPageRelatorios.Size = new Size(1111, 887);
+            TabPageRelatorios.TabIndex = 0;
+            TabPageRelatorios.Text = "RELATÓRIOS";
+            TabPageRelatorios.UseVisualStyleBackColor = true;
+            // 
+            // TabPageDGWRelatorios
+            // 
+            TabPageDGWRelatorios.Controls.Add(BtnCancelarRelatorio);
+            TabPageDGWRelatorios.Controls.Add(BtnImprimirRelatorio);
+            TabPageDGWRelatorios.Controls.Add(PanelDGWRelatorios);
+            TabPageDGWRelatorios.Location = new Point(4, 28);
+            TabPageDGWRelatorios.Name = "TabPageDGWRelatorios";
+            TabPageDGWRelatorios.Padding = new Padding(3);
+            TabPageDGWRelatorios.Size = new Size(1111, 887);
+            TabPageDGWRelatorios.TabIndex = 1;
+            TabPageDGWRelatorios.Text = "LISTA";
+            TabPageDGWRelatorios.UseVisualStyleBackColor = true;
             // 
             // BtnCancelarRelatorio
             // 
@@ -171,26 +181,12 @@
             BtnCancelarRelatorio.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             BtnCancelarRelatorio.ForeColor = SystemColors.ActiveCaptionText;
             BtnCancelarRelatorio.ImeMode = ImeMode.NoControl;
-            BtnCancelarRelatorio.Location = new Point(1354, 1008);
+            BtnCancelarRelatorio.Location = new Point(1023, 840);
             BtnCancelarRelatorio.Name = "BtnCancelarRelatorio";
             BtnCancelarRelatorio.Size = new Size(82, 41);
-            BtnCancelarRelatorio.TabIndex = 5;
+            BtnCancelarRelatorio.TabIndex = 7;
             BtnCancelarRelatorio.Text = "CANCELAR";
             BtnCancelarRelatorio.UseVisualStyleBackColor = false;
-            BtnCancelarRelatorio.Click += BtnCancelarRelatorio_Click;
-            // 
-            // BtnGerarRelatorio
-            // 
-            BtnGerarRelatorio.BackColor = Color.RosyBrown;
-            BtnGerarRelatorio.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            BtnGerarRelatorio.ForeColor = SystemColors.ButtonHighlight;
-            BtnGerarRelatorio.ImeMode = ImeMode.NoControl;
-            BtnGerarRelatorio.Location = new Point(17, 764);
-            BtnGerarRelatorio.Name = "BtnGerarRelatorio";
-            BtnGerarRelatorio.Size = new Size(277, 41);
-            BtnGerarRelatorio.TabIndex = 4;
-            BtnGerarRelatorio.Text = "GERAR RELATORIO";
-            BtnGerarRelatorio.UseVisualStyleBackColor = false;
             // 
             // BtnImprimirRelatorio
             // 
@@ -199,12 +195,44 @@
             BtnImprimirRelatorio.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             BtnImprimirRelatorio.ForeColor = SystemColors.ButtonHighlight;
             BtnImprimirRelatorio.ImeMode = ImeMode.NoControl;
-            BtnImprimirRelatorio.Location = new Point(1168, 1008);
+            BtnImprimirRelatorio.Location = new Point(837, 840);
             BtnImprimirRelatorio.Name = "BtnImprimirRelatorio";
             BtnImprimirRelatorio.Size = new Size(180, 41);
-            BtnImprimirRelatorio.TabIndex = 4;
+            BtnImprimirRelatorio.TabIndex = 6;
             BtnImprimirRelatorio.Text = "IMPRIMIR";
             BtnImprimirRelatorio.UseVisualStyleBackColor = false;
+            // 
+            // PanelDGWRelatorios
+            // 
+            PanelDGWRelatorios.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            PanelDGWRelatorios.Controls.Add(DGWRelatorios);
+            PanelDGWRelatorios.Location = new Point(3, 6);
+            PanelDGWRelatorios.Name = "PanelDGWRelatorios";
+            PanelDGWRelatorios.Size = new Size(1104, 832);
+            PanelDGWRelatorios.TabIndex = 0;
+            // 
+            // DGWRelatorios
+            // 
+            DGWRelatorios.BackgroundColor = SystemColors.ButtonHighlight;
+            DGWRelatorios.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            DGWRelatorios.Dock = DockStyle.Fill;
+            DGWRelatorios.Location = new Point(0, 0);
+            DGWRelatorios.Name = "DGWRelatorios";
+            DGWRelatorios.Size = new Size(1104, 832);
+            DGWRelatorios.TabIndex = 0;
+            // 
+            // BtnGerarRelatorio
+            // 
+            BtnGerarRelatorio.BackColor = Color.RosyBrown;
+            BtnGerarRelatorio.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            BtnGerarRelatorio.ForeColor = SystemColors.ButtonHighlight;
+            BtnGerarRelatorio.ImeMode = ImeMode.NoControl;
+            BtnGerarRelatorio.Location = new Point(17, 742);
+            BtnGerarRelatorio.Name = "BtnGerarRelatorio";
+            BtnGerarRelatorio.Size = new Size(277, 41);
+            BtnGerarRelatorio.TabIndex = 4;
+            BtnGerarRelatorio.Text = "GERAR RELATORIO";
+            BtnGerarRelatorio.UseVisualStyleBackColor = false;
             // 
             // groupBox1
             // 
@@ -228,7 +256,7 @@
             groupBox1.Controls.Add(label6);
             groupBox1.Controls.Add(label26);
             groupBox1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox1.Location = new Point(12, 189);
+            groupBox1.Location = new Point(12, 179);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(295, 457);
             groupBox1.TabIndex = 1;
@@ -437,7 +465,7 @@
             groupBox4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox4.Location = new Point(17, 658);
             groupBox4.Name = "groupBox4";
-            groupBox4.Size = new Size(276, 83);
+            groupBox4.Size = new Size(276, 74);
             groupBox4.TabIndex = 2;
             groupBox4.TabStop = false;
             groupBox4.Text = "ORGANIZAR POR:";
@@ -445,7 +473,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(133, 48);
+            label5.Location = new Point(133, 46);
             label5.Name = "label5";
             label5.Size = new Size(11, 15);
             label5.TabIndex = 3;
@@ -454,7 +482,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(133, 24);
+            label4.Location = new Point(133, 22);
             label4.Name = "label4";
             label4.Size = new Size(11, 15);
             label4.TabIndex = 2;
@@ -463,7 +491,7 @@
             // RbMaisCaro
             // 
             RbMaisCaro.AutoSize = true;
-            RbMaisCaro.Location = new Point(171, 48);
+            RbMaisCaro.Location = new Point(171, 46);
             RbMaisCaro.Name = "RbMaisCaro";
             RbMaisCaro.Size = new Size(78, 19);
             RbMaisCaro.TabIndex = 9;
@@ -473,7 +501,7 @@
             // RbMaisAntigo
             // 
             RbMaisAntigo.AutoSize = true;
-            RbMaisAntigo.Location = new Point(9, 50);
+            RbMaisAntigo.Location = new Point(9, 48);
             RbMaisAntigo.Name = "RbMaisAntigo";
             RbMaisAntigo.Size = new Size(90, 19);
             RbMaisAntigo.TabIndex = 1;
@@ -483,7 +511,7 @@
             // RbMaisBarato
             // 
             RbMaisBarato.AutoSize = true;
-            RbMaisBarato.Location = new Point(171, 23);
+            RbMaisBarato.Location = new Point(171, 21);
             RbMaisBarato.Name = "RbMaisBarato";
             RbMaisBarato.Size = new Size(90, 19);
             RbMaisBarato.TabIndex = 8;
@@ -494,7 +522,7 @@
             // 
             RbMaisRecente.AutoSize = true;
             RbMaisRecente.Checked = true;
-            RbMaisRecente.Location = new Point(9, 25);
+            RbMaisRecente.Location = new Point(9, 23);
             RbMaisRecente.Name = "RbMaisRecente";
             RbMaisRecente.Size = new Size(100, 19);
             RbMaisRecente.TabIndex = 0;
@@ -559,9 +587,9 @@
             groupBox2.BackColor = Color.Transparent;
             groupBox2.Controls.Add(PbcPrintRelatorio);
             groupBox2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox2.Location = new Point(14, 830);
+            groupBox2.Location = new Point(14, 797);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(293, 218);
+            groupBox2.Size = new Size(293, 205);
             groupBox2.TabIndex = 105;
             groupBox2.TabStop = false;
             groupBox2.Text = "PRINT DA ARTE";
@@ -574,46 +602,16 @@
             PbcPrintRelatorio.InitialImage = Properties.Resources.no_imagem;
             PbcPrintRelatorio.Location = new Point(3, 19);
             PbcPrintRelatorio.Name = "PbcPrintRelatorio";
-            PbcPrintRelatorio.Size = new Size(287, 196);
+            PbcPrintRelatorio.Size = new Size(287, 183);
             PbcPrintRelatorio.SizeMode = PictureBoxSizeMode.StretchImage;
             PbcPrintRelatorio.TabIndex = 0;
             PbcPrintRelatorio.TabStop = false;
-            // 
-            // groupBox3
-            // 
-            groupBox3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            groupBox3.BackColor = Color.Transparent;
-            groupBox3.Controls.Add(DGVInfoGeraisGravacoes);
-            groupBox3.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox3.Location = new Point(313, 86);
-            groupBox3.Name = "groupBox3";
-            groupBox3.Size = new Size(1126, 916);
-            groupBox3.TabIndex = 105;
-            groupBox3.TabStop = false;
-            groupBox3.Text = "INFORMAÇÕES GERAIS DAS REGRAVAÇÕES";
-            // 
-            // DGVInfoGeraisGravacoes
-            // 
-            DGVInfoGeraisGravacoes.AllowUserToAddRows = false;
-            DGVInfoGeraisGravacoes.AllowUserToDeleteRows = false;
-            DGVInfoGeraisGravacoes.AllowUserToOrderColumns = true;
-            DGVInfoGeraisGravacoes.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-            DGVInfoGeraisGravacoes.BackgroundColor = SystemColors.ButtonFace;
-            DGVInfoGeraisGravacoes.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            DGVInfoGeraisGravacoes.Dock = DockStyle.Fill;
-            DGVInfoGeraisGravacoes.Location = new Point(3, 19);
-            DGVInfoGeraisGravacoes.MultiSelect = false;
-            DGVInfoGeraisGravacoes.Name = "DGVInfoGeraisGravacoes";
-            DGVInfoGeraisGravacoes.ReadOnly = true;
-            DGVInfoGeraisGravacoes.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            DGVInfoGeraisGravacoes.Size = new Size(1120, 894);
-            DGVInfoGeraisGravacoes.TabIndex = 0;
             // 
             // FrmRelatorios
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1451, 1061);
+            ClientSize = new Size(1444, 1020);
             Controls.Add(PanelTop);
             Controls.Add(panel3);
             FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -626,6 +624,10 @@
             PanelTop.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
             panel3.ResumeLayout(false);
+            tabControl1.ResumeLayout(false);
+            TabPageDGWRelatorios.ResumeLayout(false);
+            PanelDGWRelatorios.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)DGWRelatorios).EndInit();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             groupBox4.ResumeLayout(false);
@@ -634,8 +636,6 @@
             GroupBuscarReqRelatorio.PerformLayout();
             groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)PbcPrintRelatorio).EndInit();
-            groupBox3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)DGVInfoGeraisGravacoes).EndInit();
             ResumeLayout(false);
         }
 
@@ -645,24 +645,19 @@
         private PictureBox pictureBox4;
         private Label label7;
         private Panel panel3;
-        private Button BtnImprimirRelatorio;
         private GroupBox GroupBuscarReqRelatorio;
         private Button BtnAcionarCampoBuscar;
         private TextBox TxbBuscarRelatorio;
-        private GroupBox groupBox3;
         private GroupBox groupBox1;
         private DateTimePicker DTPDataInicialRelatorio;
         private ComboBox CbxSolicitanteRelatorio;
         private GroupBox groupBox2;
-        private Button BtnExportarRelatorioPDF;
         private ComboBox CbxPorDataRelatorio;
         private ComboBox CbxFinalizadorRelatorio;
         private Label label2;
         private Label label1;
         private Label label26;
         private Label label3;
-        private DataGridView DGVInfoGeraisGravacoes;
-        private Button BtnCancelarRelatorio;
         private GroupBox groupBox4;
         private RadioButton RbMaisAntigo;
         private RadioButton RbMaisRecente;
@@ -673,7 +668,6 @@
         private PictureBox PbcPrintRelatorio;
         private DateTimePicker DTPDataFinalRelatorio;
         private Label label6;
-        private Button BtnExportarRelatorioExcel;
         private ComboBox CbxConferenteRelatorio;
         private Label label8;
         private ComboBox CbxMotivoPrincipalRelatorio;
@@ -684,5 +678,12 @@
         private Label label12;
         private ComboBox CbxMaterialRelatorio;
         private Button BtnGerarRelatorio;
+        private TabControl tabControl1;
+        private TabPage TabPageRelatorios;
+        private TabPage TabPageDGWRelatorios;
+        private Button BtnCancelarRelatorio;
+        private Button BtnImprimirRelatorio;
+        private Panel PanelDGWRelatorios;
+        private DataGridView DGWRelatorios;
     }
 }
