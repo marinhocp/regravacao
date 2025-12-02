@@ -1804,6 +1804,7 @@
             TxbRequerimentoAtual.Size = new Size(118, 29);
             TxbRequerimentoAtual.TabIndex = 0;
             TxbRequerimentoAtual.TextAlign = HorizontalAlignment.Center;
+            TxbRequerimentoAtual.KeyPress += TxbRequerimentoAtual_KeyPress;
             // 
             // label13
             // 
@@ -1853,6 +1854,7 @@
             TxbVersao.Size = new Size(69, 29);
             TxbVersao.TabIndex = 2;
             TxbVersao.TextAlign = HorizontalAlignment.Center;
+            TxbVersao.KeyPress += TxbVersao_KeyPress;
             // 
             // groupBox6
             // 
@@ -1937,6 +1939,7 @@
             TxbReqNovo.Size = new Size(121, 29);
             TxbReqNovo.TabIndex = 6;
             TxbReqNovo.TextAlign = HorizontalAlignment.Center;
+            TxbReqNovo.KeyPress += TxbReqNovo_KeyPress;
             // 
             // CBxPrioridade
             // 

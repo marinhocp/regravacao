@@ -7,6 +7,7 @@ using Regravacao.Services.Auth;
 using Regravacao.Services.Calculo;
 using Regravacao.Services.Conferente;
 using Regravacao.Services.Configuracoes;
+using Regravacao.Services.Cores;
 using Regravacao.Services.CustoDeQuem;
 using Regravacao.Services.DetalhesDeErros;
 using Regravacao.Services.Empresa;
@@ -16,14 +17,13 @@ using Regravacao.Services.Prioridade;
 using Regravacao.Services.Regravacao;
 using Regravacao.Services.Solicitante;
 using Regravacao.Services.Status;
-
-using Supabase;
+using Regravacao.Services.Utils;
+using Regravacao.Utils;
 using Regravacao.Views;
+using Supabase;
 using System.Globalization;
 using System.IO;
-using Regravacao.Services.Utils;
 using System.Text.Json;
-using Regravacao.Services.Cores;
 
 namespace Regravacao
 {
@@ -983,7 +983,7 @@ namespace Regravacao
 
         #endregion
 
-        
+
 
         private bool IsFormValid()
         {
@@ -1364,27 +1364,54 @@ namespace Regravacao
             frmConfig.OnConfigSaved = async () => await CarregarConfiguracoesCustoAsync();
             frmConfig.ShowDialog();
         }
-        
+
         private async void BtnSalvarCadastro_Click_1(object sender, EventArgs e)
         {
             try
             {
+                bool geraisOk = Utils.Helpers.VerificaSeEstaVazio(
+        TxbRequerimentoAtual,
+        TxbDescricao,
+        TxbVersao,
+        CBxMaterial,
+        CBxFinalizadoPor,
+        CBxConferidoPor,
+        CBxSolicitante,
+        CBxEnviarPara,
+        CBxMotivoPrincipal,
+        CBxCustoDeQuem,
+        CBxPrioridade,
+        CBxStatus
+    );
+
+                if (!geraisOk)
+                {
+                    MessageBox.Show("Existe um ou mais Campos Obrigatórios em branco.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // 2) valida as linhas de cor (1..8) usando 'this' para procurar pelos controles no formulário
+                bool linhasOk = Utils.Helpers.VerificarLinhasCores(this, linhas: 8, destacar: true);
+
+                if (!linhasOk)
+                {
+                    MessageBox.Show("Existem linhas de cor marcadas com campos obrigatórios vazios. Verifique as linhas destacadas.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+
                 var dto = new RegravacaoInserirDto
                 {
-                    RequerimentoAtual = TxbRequerimentoAtual.Text.Trim(),
-                    RequerimentoNovo = TxbReqNovo.Text.Trim(),
+                    RequerimentoAtual = TxbRequerimentoAtual.Text.Trim(),                    
                     DescricaoArte = TxbDescricao.Text.Trim(),
-
                     Versao = short.Parse(TxbVersao.Text),
-
                     IdQuemFinalizou = (int)CBxFinalizadoPor.SelectedValue,
                     IdConferente = (int)CBxConferidoPor.SelectedValue,
+                    RequerimentoNovo = TxbReqNovo.Text.Trim(),
                     IdSolicitante = (int)CBxSolicitante.SelectedValue,
                     IdEnviarPara = (int)CBxEnviarPara.SelectedValue,
-
                     IdCustoDeQuem = (int?)CBxCustoDeQuem.SelectedValue,
                     IdMotivoPrincipal = (int)CBxMotivoPrincipal.SelectedValue,
-
                     QtdePlacas = (short)NumUpDQtdePlacas.Value,
                     IdPrioridade = (int)CBxPrioridade.SelectedValue,
                     IdStatus = (int)CBxStatus.SelectedValue,
@@ -1394,9 +1421,7 @@ namespace Regravacao
                     Observacoes = TxbObservacao.Text.Trim(),
 
                     IdMaterial = (short?)CBxMaterial.SelectedValue,
-
                     IdsErrosSelecionados = _errosSelecionados.Select(x => x.IdDetalhesErros).ToList(),
-
                     Cores = ColetarDadosDasCoresDoFormulario()
                 };
 
@@ -1408,7 +1433,7 @@ namespace Regravacao
             catch (Exception ex)
             {
                 MessageBox.Show($"Erro ao salvar regravação:\n{ex.Message}");
-            }            
+            }
         }
 
         private List<CoresInserirDto> ColetarDadosDasCoresDoFormulario()
@@ -1455,9 +1480,6 @@ namespace Regravacao
             return cores;
         }
 
-
-
-
         private async void FrmMain_Load(object sender, EventArgs e)
         {
             EstilizarDGWDetalhesErros();
@@ -1481,7 +1503,6 @@ namespace Regravacao
     };
 
             await Task.WhenAll(tarefas);
-
             await tarefaCores;
 
         }
@@ -1627,6 +1648,7 @@ namespace Regravacao
             _imageOffset = new Point(0, 0);
             TxbRequerimentoAtual.Text = string.Empty;
             TxbDescricao.Text = string.Empty;
+            TxbVersao.Text = string.Empty;
             TxbReqNovo.Text = string.Empty;
             TxbObservacao.Text = string.Empty;
 
@@ -1668,20 +1690,22 @@ namespace Regravacao
             DGWDetalhesErros.DataSource = _errosSelecionados;
 
             // Limpeza dos Controles Dinâmicos (Cores)
+            // Limpeza dos Controles das Cores
             for (int i = 1; i <= MaxCores; i++)
             {
-                var cbxCor = this.Controls.Find($"CBxCor{i}", true).FirstOrDefault() as ComboBox;
-                var txbNomeCor = this.Controls.Find($"TxbNomeCor{i}", true).FirstOrDefault() as TextBox;
+                var ckCor = this.Controls.Find($"CkBCor{i}", true).FirstOrDefault() as CheckBox;
+                var cbxNomeCor = this.Controls.Find($"CBxNomeCor{i}", true).FirstOrDefault() as ComboBox;
                 var txbLargura = this.Controls.Find($"TxbLarguraCor{i}", true).FirstOrDefault() as TextBox;
                 var txbComprimento = this.Controls.Find($"TxbComprimentoCor{i}", true).FirstOrDefault() as TextBox;
-                var txbCustoEstimado = this.Controls.Find($"TxbCustoCor{i}", true).FirstOrDefault() as TextBox;
+                var txbCusto = this.Controls.Find($"TxbCustoCor{i}", true).FirstOrDefault() as TextBox;
 
-                if (cbxCor != null) cbxCor.SelectedIndex = 0;
-                if (txbNomeCor != null) txbNomeCor.Text = string.Empty;
+                if (ckCor != null) ckCor.Checked = false;
+                if (cbxNomeCor != null) cbxNomeCor.SelectedIndex = -1;  // ou 0 se quiser um default
                 if (txbLargura != null) txbLargura.Text = string.Empty;
                 if (txbComprimento != null) txbComprimento.Text = string.Empty;
-                if (txbCustoEstimado != null) txbCustoEstimado.Text = string.Empty;
+                if (txbCusto != null) txbCusto.Text = string.Empty;
             }
+
         }
 
         private void BtnAddThumbnail_Click(object sender, EventArgs e)
@@ -2108,6 +2132,21 @@ namespace Regravacao
             {
                 AplicarCorAoPanel(cmb);
             }
+        }
+
+        private void TxbRequerimentoAtual_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            Utils.Helpers.ApenasNumeros(e, permitirDecimal: false);
+        }
+
+        private void TxbVersao_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            Utils.Helpers.ApenasNumeros(e, permitirDecimal: false);
+        }
+
+        private void TxbReqNovo_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            Utils.Helpers.ApenasNumeros(e, permitirDecimal: false);
         }
     }
 }
