@@ -13,6 +13,7 @@
     <Title>Controle de Regravações</Title>
     <SignAssembly>True</SignAssembly>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PackageIcon>Cont_cliche-AZUL2.ico</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,6 +30,13 @@
   <ItemGroup>
     <Folder Include="Resources\" />
     <Folder Include="Services\NovaPasta\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\imagens\logos e icones\Cont_cliche-AZUL2.ico">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

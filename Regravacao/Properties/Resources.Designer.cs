@@ -363,16 +363,6 @@ namespace Regravacao.Properties {
         /// <summary>
         ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap no_image_200_200 {
-            get {
-                object obj = ResourceManager.GetObject("no_image_200_200", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap no_imagem {
             get {
                 object obj = ResourceManager.GetObject("no_imagem", resourceCulture);
@@ -426,16 +416,6 @@ namespace Regravacao.Properties {
         internal static System.Drawing.Bitmap plus_24_azul {
             get {
                 object obj = ResourceManager.GetObject("plus_24 azul", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap ProductDefault {
-            get {
-                object obj = ResourceManager.GetObject("ProductDefault", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

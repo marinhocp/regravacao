@@ -1,0 +1,53 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Mario.Pires\\source\\repos\\RenomeadorArquivos\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{F250FEBA-CFC6-4580-BF53-C851D2463BCC}|RenomeadorArquivos\\RenomeadorArquivos.csproj|C:\\Users\\Mario.Pires\\source\\repos\\RenomeadorArquivos\\renomeadorarquivos\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{F250FEBA-CFC6-4580-BF53-C851D2463BCC}|RenomeadorArquivos\\RenomeadorArquivos.csproj|solutionrelative:renomeadorarquivos\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F250FEBA-CFC6-4580-BF53-C851D2463BCC}|RenomeadorArquivos\\RenomeadorArquivos.csproj|c:\\users\\mario.pires\\source\\repos\\renomeadorarquivos\\renomeadorarquivos\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F250FEBA-CFC6-4580-BF53-C851D2463BCC}|RenomeadorArquivos\\RenomeadorArquivos.csproj|solutionrelative:renomeadorarquivos\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Form1.cs",
+              "DocumentMoniker": "C:\\Users\\Mario.Pires\\source\\repos\\RenomeadorArquivos\\RenomeadorArquivos\\Form1.cs",
+              "RelativeDocumentMoniker": "RenomeadorArquivos\\Form1.cs",
+              "ToolTip": "C:\\Users\\Mario.Pires\\source\\repos\\RenomeadorArquivos\\RenomeadorArquivos\\Form1.cs",
+              "RelativeToolTip": "RenomeadorArquivos\\Form1.cs",
+              "ViewState": "AgIAAEgAAAAAAAAAAAAnwGUAAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-03T14:02:25.937Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Form1.cs [Projeto]",
+              "DocumentMoniker": "C:\\Users\\Mario.Pires\\source\\repos\\RenomeadorArquivos\\RenomeadorArquivos\\Form1.cs",
+              "RelativeDocumentMoniker": "RenomeadorArquivos\\Form1.cs",
+              "ToolTip": "C:\\Users\\Mario.Pires\\source\\repos\\RenomeadorArquivos\\RenomeadorArquivos\\Form1.cs [Projeto]",
+              "RelativeToolTip": "RenomeadorArquivos\\Form1.cs [Projeto]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-03T14:02:05.178Z",
+              "EditorCaption": " [Projeto]"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

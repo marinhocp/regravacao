@@ -1638,8 +1638,7 @@ namespace Regravacao
         }
 
         private void ResetarControlesPersonalizado()
-        {
-            // ... (Seu código existente para os outros controles) ...
+        {            
             _thumbnailBytes = null;
             _originalFileName = null;
             PictureBoxThumbnail.Image = null;
@@ -1651,7 +1650,6 @@ namespace Regravacao
             TxbVersao.Text = string.Empty;
             TxbReqNovo.Text = string.Empty;
             TxbObservacao.Text = string.Empty;
-
             _thumbnailBytes = null;
             _originalFileName = null;
             _currentZoom = 1.0f;
@@ -1659,7 +1657,7 @@ namespace Regravacao
             // 🎯 Limpar o Tooltip
             UpdateImageInfoTooltip();
 
-            PictureBoxThumbnail.Image = null;
+            PictureBoxThumbnail.Image = Properties.Resources.no_imagem;
             // 🎯 Limpar a referência da imagem (bytes) para o upload
             // Isso garante que nenhum dado de imagem antigo seja salvo.
             _thumbnailBytes = null;
@@ -1699,13 +1697,18 @@ namespace Regravacao
                 var txbComprimento = this.Controls.Find($"TxbComprimentoCor{i}", true).FirstOrDefault() as TextBox;
                 var txbCusto = this.Controls.Find($"TxbCustoCor{i}", true).FirstOrDefault() as TextBox;
 
-                if (ckCor != null) ckCor.Checked = false;
-                if (cbxNomeCor != null) cbxNomeCor.SelectedIndex = -1;  // ou 0 se quiser um default
+                // 🔥 Regra nova: CkBCor1 SEMPRE marcado
+                if (ckCor != null)
+                {
+                    ckCor.Checked = (i == 1);
+                    ckCor.BackColor = Color.Silver;
+                }
+
+                if (cbxNomeCor != null) cbxNomeCor.SelectedIndex = -1;
                 if (txbLargura != null) txbLargura.Text = string.Empty;
                 if (txbComprimento != null) txbComprimento.Text = string.Empty;
                 if (txbCusto != null) txbCusto.Text = string.Empty;
             }
-
         }
 
         private void BtnAddThumbnail_Click(object sender, EventArgs e)
