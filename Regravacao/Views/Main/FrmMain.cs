@@ -168,34 +168,39 @@ namespace Regravacao
 
 
 
-        /// Envia os bytes da imagem para o Supabase Storage.
         private async Task<string?> UploadThumbnailAsync()
         {
-            // Verifica se há dados para upload
-            if (_thumbnailBytes == null || _thumbnailBytes.Length == 0) return null;
+            if (_thumbnailBytes == null || _thumbnailBytes.Length == 0)
+                return null;
 
-            // Gera um nome de arquivo único para evitar colisões
-            string fileName = $"VERSAO_{Guid.NewGuid()}.jpg";
+            string requerimento = TxbRequerimentoAtual.Text?.Trim().Replace(" ", "") ?? "SEM_NOME";
+
+
+            if (string.IsNullOrEmpty(requerimento))
+            {
+                requerimento = "REQUERIMENTO_VAZIO";
+            }
+
+            string fileName = $"{requerimento}_{Guid.NewGuid()}.jpg";
 
             try
             {
-                // 1. Executa o Upload no BUCKET_NAME ("thumbnails")
                 await _supabaseClient.Storage
                     .From(BUCKET_NAME)
                     .Upload(_thumbnailBytes, fileName, new Supabase.Storage.FileOptions
                     {
                         ContentType = "image/jpeg",
-                        Upsert = false // Não deve sobrescrever se já existir (usamos Guid para evitar)
+                        Upsert = false
                     });
 
-                // 2. Obtém a URL pública (usada para salvar no campo 'thumbnail' da TblRegravacao)
                 return _supabaseClient.Storage
                     .From(BUCKET_NAME)
                     .GetPublicUrl(fileName);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao realizar o upload da thumbnail para o bucket '{BUCKET_NAME}'. {ex.Message}", "Erro de Upload", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Erro ao realizar o upload da thumbnail para o bucket '{BUCKET_NAME}'. {ex.Message}",
+                                "Erro de Upload", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
             }
         }
