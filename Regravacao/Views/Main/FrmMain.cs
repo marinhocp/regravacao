@@ -54,6 +54,9 @@ namespace Regravacao
         private decimal? _maoObra = 0m;
         private byte[]? _thumbnailBytes;
         private readonly Client _supabaseClient;
+        private System.Threading.CancellationTokenSource? _debounceCts;
+        private readonly int DEBOUNCE_DELAY_MS = 300;
+        private bool _isUpdatingComboBox = false;
 
         // Variáveis para as informações do Tooltip
         private string? _originalFileName;
@@ -863,6 +866,7 @@ namespace Regravacao
             }
         }
 
+        /*
         private async Task CarregarCoresParaComboBoxAsync()
         {
             List<ComboBox> comboBoxes = new List<ComboBox>
@@ -913,6 +917,7 @@ namespace Regravacao
                 MessageBox.Show($"Erro ao carregar lista de cores: {ex.Message}", "Erro de Carregamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        */
 
 
         private void AssociarManipuladorCores()
@@ -1402,7 +1407,7 @@ namespace Regravacao
 
                 var dto = new RegravacaoInserirDto
                 {
-                    RequerimentoAtual = TxbRequerimentoAtual.Text.Trim(),                    
+                    RequerimentoAtual = TxbRequerimentoAtual.Text.Trim(),
                     DescricaoArte = TxbDescricao.Text.Trim(),
                     Versao = short.Parse(TxbVersao.Text),
                     IdQuemFinalizou = (int)CBxFinalizadoPor.SelectedValue,
@@ -1484,26 +1489,36 @@ namespace Regravacao
         {
             EstilizarDGWDetalhesErros();
 
-            // carrega cores primeiro
-            var tarefaCores = CarregarCoresParaComboBoxAsync();
+            // ❌ REMOVER/COMENTAR: Não carregamos mais todas as cores no início
+            // var tarefaCores = CarregarCoresParaComboBoxAsync(); 
 
             // carrega o resto paralelamente
             var tarefas = new[]
             {
-        CarregarMateriais(),
-        CarregarFinalizadores(),
-        CarregarConferentes(),
-        CarregarSolicitante(),
-        CarregarEnviarParaAsync(),
-        CarregarMotivosAsync(),
-        CarregarPrioridadesAsync(),
-        CarregarCustoDeQuemAsync(),
-        CarregarStatusAsync(),
-        CarregarConfiguracoesCustoAsync()
-    };
+            CarregarMateriais(),
+            CarregarFinalizadores(),
+            CarregarConferentes(),
+            CarregarSolicitante(),
+            CarregarEnviarParaAsync(),
+            CarregarMotivosAsync(),
+            CarregarPrioridadesAsync(),
+            CarregarCustoDeQuemAsync(),
+            CarregarStatusAsync(),
+            CarregarConfiguracoesCustoAsync()
+        };
 
             await Task.WhenAll(tarefas);
-            await tarefaCores;
+            // await tarefaCores; // ❌ REMOVER/COMENTAR
+
+            // ✅ NOVO: Conecta o mesmo evento TextChanged a todos os ComboBoxes de cor
+            var comboBoxes = new List<ComboBox> { CBxNomeCor1, CBxNomeCor2, CBxNomeCor3, CBxNomeCor4,
+                                              CBxNomeCor5, CBxNomeCor6, CBxNomeCor7, CBxNomeCor8 };
+            foreach (var cmb in comboBoxes)
+            {
+                // Adicionamos o manipulador de eventos. 
+                // O SelectedIndexChanged será usado para capturar a seleção final.
+                cmb.TextChanged += CBxNomeCor_TextChanged;
+            }
 
         }
 
@@ -1638,7 +1653,7 @@ namespace Regravacao
         }
 
         private void ResetarControlesPersonalizado()
-        {            
+        {
             _thumbnailBytes = null;
             _originalFileName = null;
             PictureBoxThumbnail.Image = null;
@@ -2150,6 +2165,91 @@ namespace Regravacao
         private void TxbReqNovo_KeyPress(object sender, KeyPressEventArgs e)
         {
             Utils.Helpers.ApenasNumeros(e, permitirDecimal: false);
+        }       
+
+
+    private async void CBxNomeCor_TextChanged(object sender, EventArgs e)
+        {
+            var cmb = (ComboBox)sender;
+            var termo = cmb.Text.Trim();
+
+            // ❌ IGNORAR: Se a mudança foi causada pelo próprio código (atualização do DataSource).
+            if (_isUpdatingComboBox)
+            {
+                return;
+            }
+
+            // Se a busca é muito curta, limpa o dropdown e sai.
+            if (termo.Length < 2)
+            {
+                if (cmb.DataSource != null)
+                {
+                    _isUpdatingComboBox = true;
+                    cmb.DataSource = null;
+                    _isUpdatingComboBox = false;
+
+                    // Restaura o texto digitado
+                    cmb.Text = termo;
+                    cmb.SelectionStart = cmb.Text.Length;
+                }
+                return;
+            }
+
+            // --- Lógica de Debounce (Atraso) ---
+            _debounceCts?.Cancel(); // Cancela busca anterior
+            _debounceCts = new System.Threading.CancellationTokenSource();
+            var token = _debounceCts.Token;
+
+            try
+            {
+                await Task.Delay(DEBOUNCE_DELAY_MS, token);
+            }
+            catch (TaskCanceledException)
+            {
+                return; // Usuário digitou novamente
+            }
+            // --- Fim da Lógica de Debounce ---
+
+
+            // O usuário parou de digitar. Dispara a busca no Supabase.
+            try
+            {
+                // 1. BUSCA ASSÍNCRONA DOS DADOS
+                var coresFiltradas = await _coresService.BuscarCoresPorNomeAsync(termo);
+
+                // 2. ATUALIZAÇÃO DO COMBOBOX (Protegido por Flag)
+
+                string textoDigitado = cmb.Text;
+
+                // 🔒 Ativa a flag de atualização
+                _isUpdatingComboBox = true;
+
+                // Limpa e reatribui
+                cmb.DataSource = null;
+                cmb.DisplayMember = "NomeCor";
+                cmb.ValueMember = "IdCor";
+                cmb.DataSource = coresFiltradas;
+
+                // Restaura o texto
+                cmb.Text = textoDigitado;
+
+                // Força o dropdown e posiciona o cursor
+                if (coresFiltradas.Any())
+                {
+                    cmb.DroppedDown = true;
+                }
+                cmb.SelectionStart = cmb.Text.Length;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao buscar cores: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                // 🔓 Desativa a flag de atualização
+                _isUpdatingComboBox = false;
+            }
         }
-    }
+    }   
+
 }

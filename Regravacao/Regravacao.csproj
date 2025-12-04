@@ -18,9 +18,13 @@
 
   <ItemGroup>
     <Compile Remove="Auxiliares\**" />
+    <Compile Remove="Services\NovaPasta\**" />
     <EmbeddedResource Remove="Auxiliares\**" />
+    <EmbeddedResource Remove="Services\NovaPasta\**" />
     <None Remove="Auxiliares\**" />
+    <None Remove="Services\NovaPasta\**" />
     <Page Remove="Auxiliares\**" />
+    <Page Remove="Services\NovaPasta\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,7 +33,6 @@
 
   <ItemGroup>
     <Folder Include="Resources\" />
-    <Folder Include="Services\NovaPasta\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -34,5 +34,26 @@ namespace Regravacao.Repositories
 
             return resposta.Models.ToList();
         }
+        
+        // NOVO: Busca as cores que começam com o termo digitado.
+        public async Task<List<CoresDto>> BuscarCoresPorNomeAsync(string termo)
+        {
+            string colunas = "id_cor, paleta, nome_cor, codigo_hexadecimal, codigo_rgb, codigo_cmyk";
+            
+            // Usamos ILIKE (case-insensitive) e '%' no final para busca "começando com"
+            var resposta = await _supabase
+                .From<CoresDto>()
+                .Select(colunas)
+                .Filter("nome_cor", Supabase.Postgrest.Constants.Operator.ILike, $"{termo}%")
+                .Limit(50) // Limita os resultados para não sobrecarregar
+                .Get();
+
+            if (!resposta.ResponseMessage.IsSuccessStatusCode)
+            {
+                throw new Exception($"Erro na API Supabase (cores - busca): {resposta.ResponseMessage.ReasonPhrase}");
+            }
+
+            return resposta.Models.ToList();
+        }
     }
 }
