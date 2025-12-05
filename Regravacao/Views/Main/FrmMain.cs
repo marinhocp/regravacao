@@ -21,11 +21,17 @@ using Regravacao.Services.Utils;
 using Regravacao.Utils;
 using Regravacao.Views;
 using Supabase;
+using System.Data;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Text.Json;
+using MethodInvoker = System.Windows.Forms.MethodInvoker;
+
 
 namespace Regravacao
+
 {
     public partial class FrmMain : Form
     {
@@ -69,11 +75,14 @@ namespace Regravacao
         private Point _lastMousePosition;
         private Point _imageOffset = new Point(0, 0);
 
-        // Injeção de Dependência no construtor (Exemplo)       
+        // Injeção de Dependência no construtor (Exemplo)      
+
         private readonly IRegravacaoService _regravacaoService;
+        private readonly IRegravacaoQueryService _regravacaoQueryService;
         private const string BUCKET_NAME = "thumbnails";
 
-        // private readonly Supabase.Client _supabaseClient; // Cliente Supabase injetado
+        private readonly BindingSource regravacaoBindingSource = [];
+
 
 
         private static readonly (string Chk, string CBxNomeCor, string Largura, string Comprimento, string MedidaParcial, string CustoParcial, string Panel)[] _mapaCores =
@@ -91,6 +100,7 @@ namespace Regravacao
         public FrmMain(
 
           IRegravacaoService regravacaoService,
+          IRegravacaoQueryService regravacaoQueryService,
           IDetalhesDeErrosService detalhesDeErrosService,
           IMaterialService materialService,
           IFinalizadorService finalizadorService,
@@ -143,8 +153,8 @@ namespace Regravacao
             _configuracoesCustoService = configuracoesCustoService;
             _calculadora = calculadora;
             _regravacaoService = regravacaoService;
+            _regravacaoQueryService = regravacaoQueryService;
             _coresService = coresService;
-
             _supabaseClient = supabaseClient;
             _supabase = supabase;
 
@@ -156,7 +166,7 @@ namespace Regravacao
             NumUpDQtdePlacas.Maximum = 8;
             NumUpDQtdePlacas.Minimum = 1;
             NumUpDQtdePlacas.ValueChanged += NumUpDQtdePlacas_ValueChanged;
-            this.Load += FrmMain_Load;
+            
             ConectarEventosCalculo();
 
             ConfigurarBotoes();
@@ -164,9 +174,9 @@ namespace Regravacao
 
             // 🎯 Habilita o Drag and Drop no controle PictureBoxThumbnail
             PictureBoxThumbnail.AllowDrop = true;
+
+            // this.Load += FrmMain_Load;
         }
-
-
 
         private async Task<string?> UploadThumbnailAsync()
         {
@@ -202,6 +212,139 @@ namespace Regravacao
                 MessageBox.Show($"Erro ao realizar o upload da thumbnail para o bucket '{BUCKET_NAME}'. {ex.Message}",
                                 "Erro de Upload", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
+            }
+        }
+
+        public static DataTable ToDataTable<T>(List<T> items)
+        {
+            DataTable dataTable = new DataTable(typeof(T).Name);
+
+            // Obtém todas as propriedades públicas da classe T
+            PropertyInfo[] Props = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            // Cria as colunas no DataTable
+            foreach (PropertyInfo prop in Props)
+            {
+                // Usa o tipo da propriedade, mas permite nullables
+                Type colType = prop.PropertyType;
+                if (colType.IsGenericType && colType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                {
+                    colType = Nullable.GetUnderlyingType(colType);
+                }
+                dataTable.Columns.Add(prop.Name, colType);
+            }
+
+            // Preenche as linhas do DataTable
+            foreach (T item in items)
+            {
+                var values = new object[Props.Length];
+                for (int i = 0; i < Props.Length; i++)
+                {
+                    // Obtém o valor da propriedade do objeto
+                    values[i] = Props[i].GetValue(item, null);
+                }
+                dataTable.Rows.Add(values);
+            }
+
+            return dataTable;
+        }
+
+        private async Task CarregarDGWUltimasRegravacoesAsync()
+        {
+            try
+            {
+                // 1. Otimização: AWAIT com ConfigureAwait(false) para não bloquear o thread de UI.
+                var ultimosRegistrosSimples = await _regravacaoQueryService.GetUltimosRegistrosAsync(20).ConfigureAwait(false);
+
+                // O restante do código DEVE ser executado no thread da UI, então usamos Invoke.
+                // Se este formulário for a thread de UI principal, this.Invoke é a maneira mais segura.
+                // Se a chamada for feita no Load, o Invoke pode ser opcional, mas é mais seguro.
+                this.Invoke((MethodInvoker)delegate
+                {
+                    // Atribuir a lista ao BindingSource
+                    regravacaoBindingSource.DataSource = ultimosRegistrosSimples;
+
+                    // Limpar colunas e atribuir a nova fonte de dados: O BindingSource
+                    DGWUltimasRegravacoes.Columns.Clear();
+                    DGWUltimasRegravacoes.DataSource = regravacaoBindingSource;
+
+                    // Configuração de cor do cabeçalho
+                    DGWUltimasRegravacoes.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(255, 255, 100, 100);
+                    DGWUltimasRegravacoes.EnableHeadersVisualStyles = false;
+
+                    // 2. Função auxiliar para configurar a coluna (com maiúsculas)
+                    Action<string, string, int?, DataGridViewAutoSizeColumnMode?> SetColumn =
+                         (name, header, width, autoSize) =>
+                         {
+                             if (DGWUltimasRegravacoes.Columns.Contains(name))
+                             {
+                                 var col = DGWUltimasRegravacoes.Columns[name];
+                                 col.Visible = true;
+                                 col.HeaderText = header.ToUpper();
+                                 if (width.HasValue) col.Width = width.Value;
+                                 if (autoSize.HasValue) col.AutoSizeMode = autoSize.Value;
+                             }
+                         };
+
+                    // Função auxiliar para ocultar
+                    Action<string> HideColumn = (name) =>
+                    {
+                        if (DGWUltimasRegravacoes.Columns.Contains(name))
+                        {
+                            DGWUltimasRegravacoes.Columns[name].Visible = false;
+                        }
+                    };
+
+                    // --- 3. TRATAMENTO DE OCULTAMENTO (Sem Congelamento) ---
+
+                    // Mover ID para o final antes de ocultar
+                    if (DGWUltimasRegravacoes.Columns.Contains("IdRegravacao"))
+                    {
+                        DGWUltimasRegravacoes.Columns["IdRegravacao"].DisplayIndex = DGWUltimasRegravacoes.Columns.Count - 1;
+                        HideColumn("IdRegravacao");
+                    }
+
+                    // --- 4. Configuração das Colunas ---
+                    SetColumn("RequerimentoAtual", "Req. Atual", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+
+                    // Demais Colunas
+                    SetColumn("DataCadastro", "Cadastro", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+                    if (DGWUltimasRegravacoes.Columns.Contains("DataCadastro"))
+                    {
+                        DGWUltimasRegravacoes.Columns["DataCadastro"].DefaultCellStyle.Format = "dd/MM/yyyy";
+                    }
+                    SetColumn("RequerimentoNovo", "Req. Novo", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+                    SetColumn("DescricaoArte", "Descrição da Arte", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+                    SetColumn("Status", "Status", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+                    SetColumn("Prioridade", "Prioridade", null, DataGridViewAutoSizeColumnMode.ColumnHeader);
+                    SetColumn("MotivoPrincipal", "Motivo Principal", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+                    SetColumn("Solicitante", "Solicitante", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+                    SetColumn("Conferente", "Conferente", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+                    SetColumn("FinalizadoPor", "Finalizado Por", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+                    SetColumn("Material", "Material", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+
+                    // Campos Simplificados
+                    SetColumn("NomesDasCores", "Cores", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+                    SetColumn("DescricaoErros", "Detalhes de Erro", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+
+                    // Ocultar Metadados
+                    HideColumn("Versao");
+                    HideColumn("QtdePlacas");
+                    HideColumn("EnviarPara");
+                    HideColumn("Thumbnail");
+                    HideColumn("Observacoes");
+
+                    DGWUltimasRegravacoes.ScrollBars = ScrollBars.Both;
+                    DGWUltimasRegravacoes.Refresh();
+
+                    // Conecte o evento de clique no cabeçalho para a filtragem estilo Excel
+                    DGWUltimasRegravacoes.CellMouseClick -= DGWUltimasRegravacoes_CellMouseClick;
+                    DGWUltimasRegravacoes.CellMouseClick += DGWUltimasRegravacoes_CellMouseClick;
+                }); // Fim do this.Invoke
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao carregar e formatar regravações:\n{ex.Message}", "Erro de Formatação", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -1509,7 +1652,8 @@ namespace Regravacao
             CarregarPrioridadesAsync(),
             CarregarCustoDeQuemAsync(),
             CarregarStatusAsync(),
-            CarregarConfiguracoesCustoAsync()
+            CarregarConfiguracoesCustoAsync(),
+            CarregarDGWUltimasRegravacoesAsync()
         };
 
             await Task.WhenAll(tarefas);
@@ -2170,10 +2314,10 @@ namespace Regravacao
         private void TxbReqNovo_KeyPress(object sender, KeyPressEventArgs e)
         {
             Utils.Helpers.ApenasNumeros(e, permitirDecimal: false);
-        }       
+        }
 
 
-    private async void CBxNomeCor_TextChanged(object sender, EventArgs e)
+        private async void CBxNomeCor_TextChanged(object sender, EventArgs e)
         {
             var cmb = (ComboBox)sender;
             var termo = cmb.Text.Trim();
@@ -2255,6 +2399,241 @@ namespace Regravacao
                 _isUpdatingComboBox = false;
             }
         }
-    }   
 
+        private void DGWUltimasRegravacoes_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            // 1. Verificação de segurança: Deve ser no cabeçalho da coluna (e não na linha do cabeçalho)
+            if (e.RowIndex == -1 && e.Button == MouseButtons.Right && e.ColumnIndex >= 0)
+            {
+                string columnName = DGWUltimasRegravacoes.Columns[e.ColumnIndex].Name;
+                ContextMenuStrip filterMenu = new ContextMenuStrip();
+
+                // Colunas que terão filtro
+                var filterableColumns = new HashSet<string> {
+            "RequerimentoAtual", "Status", "Prioridade", "MotivoPrincipal",
+            "Solicitante", "Conferente", "Material", "NomesDasCores",
+            "RequerimentoNovo", "FinalizadoPor", "Descricao",
+            "DataCadastro"
+        };
+
+                if (filterableColumns.Contains(columnName))
+                {
+                    // --- TRATAMENTO ESPECIAL PARA DATA (Filtro por Intervalo) ---
+                    if (columnName == "DataCadastro")
+                    {
+                        // Configuração dos controles de data
+                        DateTimePicker dtpStart = new DateTimePicker { Format = DateTimePickerFormat.Short, Value = DateTime.Today.AddMonths(-1), Width = 100 };
+                        DateTimePicker dtpEnd = new DateTimePicker { Format = DateTimePickerFormat.Short, Value = DateTime.Today, Width = 100 };
+
+                        // Adiciona os DTPs ao menu
+                        filterMenu.Items.Add(new ToolStripLabel("De:"));
+                        filterMenu.Items.Add(new ToolStripControlHost(dtpStart));
+                        filterMenu.Items.Add(new ToolStripLabel("Até:"));
+                        filterMenu.Items.Add(new ToolStripControlHost(dtpEnd));
+
+                        // Botão para aplicar o filtro de intervalo
+                        ToolStripMenuItem itemApply = new ToolStripMenuItem("Aplicar Filtro de Data");
+                        itemApply.Click += (s, ev) =>
+                        {
+                            filterMenu.Close();
+                            // Chama o método dedicado ao filtro de intervalo
+                            ApplyDateRangeFilter(columnName, dtpStart.Value, dtpEnd.Value);
+                        };
+                        filterMenu.Items.Add(itemApply);
+
+                        filterMenu.Items.Add(new ToolStripSeparator());
+
+                        // Item para limpar o filtro de data
+                        ToolStripMenuItem itemClear = new ToolStripMenuItem("(Limpar Filtro)");
+                        itemClear.Click += (s, ev) =>
+                        {
+                            filterMenu.Close();
+                            regravacaoBindingSource.Filter = null;
+                        };
+                        filterMenu.Items.Add(itemClear);
+
+                        filterMenu.Show(DGWUltimasRegravacoes, DGWUltimasRegravacoes.PointToClient(Cursor.Position));
+                    }
+                    // --- TRATAMENTO ESPECIAL PARA TEXTBOX (Busca Parcial) ---
+                    else if (columnName == "RequerimentoAtual" || columnName == "RequerimentoNovo" || columnName == "Descricao")
+                    {
+                        // Define o placeholder correto
+                        string placeholder = "";
+                        if (columnName == "RequerimentoAtual") placeholder = "Req. Atual (busca parcial)";
+                        else if (columnName == "RequerimentoNovo") placeholder = "Req. Novo (busca parcial)";
+                        else if (columnName == "Descricao") placeholder = "Descrição (busca parcial)";
+
+                        // Cria o TextBox e o host
+                        TextBox searchBox = new TextBox();
+                        searchBox.Width = 180;
+                        searchBox.PlaceholderText = "Digite " + placeholder;
+
+                        ToolStripControlHost host = new ToolStripControlHost(searchBox);
+                        filterMenu.Items.Add(host);
+
+                        // Adiciona evento para filtrar ao pressionar ENTER
+                        searchBox.KeyPress += (s, ev) =>
+                        {
+                            if (ev.KeyChar == (char)Keys.Enter)
+                            {
+                                ev.Handled = true;
+                                filterMenu.Close();
+                                ApplyFilter(columnName, searchBox.Text);
+                            }
+                        };
+
+                        // Item para limpar o filtro
+                        ToolStripMenuItem itemClear = new ToolStripMenuItem("(Limpar Filtro)");
+                        itemClear.Click += (s, ev) => ApplyFilter(columnName, null);
+                        filterMenu.Items.Add(itemClear);
+
+                        filterMenu.Show(DGWUltimasRegravacoes, DGWUltimasRegravacoes.PointToClient(Cursor.Position));
+                        searchBox.Focus();
+                    }
+                    // --- TRATAMENTO PADRÃO (Lista de Valores Únicos) ---
+                    else
+                    {
+                        // Coleta valores únicos da fonte de dados
+                        var uniqueValues = (regravacaoBindingSource.DataSource as List<Regravacao.DTOs.RegravacaoConsultaSimplesDto>)
+                            ?.Select(r => r.GetType().GetProperty(columnName)?.GetValue(r)?.ToString() ?? string.Empty)
+                            .Distinct()
+                            .OrderBy(v => v)
+                            .ToList();
+
+                        if (uniqueValues == null || !uniqueValues.Any()) return;
+
+                        // Item 1: (Todos) - Remove o filtro
+                        ToolStripMenuItem itemAll = new ToolStripMenuItem("(Todos)");
+                        itemAll.Click += (s, ev) => ApplyFilter(columnName, null);
+                        filterMenu.Items.Add(itemAll);
+
+                        filterMenu.Items.Add(new ToolStripSeparator());
+
+                        // Adiciona os valores únicos, tratando o valor vazio/nulo
+                        foreach (var value in uniqueValues)
+                        {
+                            string displayValue = string.IsNullOrWhiteSpace(value) ? "(Vazio)" : value;
+
+                            ToolStripMenuItem item = new ToolStripMenuItem(displayValue);
+                            item.Tag = value;
+                            item.Click += (s, ev) => ApplyFilter(columnName, item.Tag.ToString());
+                            filterMenu.Items.Add(item);
+                        }
+
+                        filterMenu.Show(DGWUltimasRegravacoes, DGWUltimasRegravacoes.PointToClient(Cursor.Position));
+                    }
+                }
+            }
+        }
+
+        private void ApplyDateRangeFilter(string columnName, DateTime startDate, DateTime endDate)
+        {
+            if (regravacaoBindingSource.DataSource == null) return;
+
+            // 1. Normaliza as datas
+            // A data inicial deve ser à 00:00:00 (início do dia)
+            DateTime start = startDate.Date;
+            // A data final deve ser à 23:59:59 (final do dia)
+            DateTime end = endDate.Date.AddDays(1).AddMilliseconds(-1);
+
+            // 2. Formata as datas para a sintaxe aceita pelo BindingSource.Filter
+            // Datas devem ser formatadas como #MM/dd/yyyy HH:mm:ss#
+            string startFilter = start.ToString("#MM/dd/yyyy HH:mm:ss#");
+            string endFilter = end.ToString("#MM/dd/yyyy HH:mm:ss#");
+
+            // 3. Constrói a expressão de filtro
+            // O filtro deve ser [Coluna] >= [Data Inicial] AND [Coluna] <= [Data Final]
+            string filterExpression = $"{columnName} >= {startFilter} AND {columnName} <= {endFilter}";
+
+            try
+            {
+                regravacaoBindingSource.Filter = filterExpression;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao aplicar filtro de data: {ex.Message}\nExpressão: {filterExpression}", "Erro de Filtro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                regravacaoBindingSource.Filter = null;
+            }
+        }
+        /// <summary>
+        /// Aplica a expressão de filtro ao BindingSource.
+        /// </summary>
+        /// <param name="columnName">Nome da propriedade/coluna.</param>
+        /// <param name="filterValue">Valor para filtrar. Null remove o filtro.</param>
+        /// <summary>
+        /// Aplica a expressão de filtro ao BindingSource.
+        /// </summary>
+        private void ApplyFilter(string columnName, string? filterValue)
+        {
+            if (regravacaoBindingSource.DataSource == null) return;
+
+            Type? propertyType = null;
+            var listSource = regravacaoBindingSource.DataSource as List<Regravacao.DTOs.RegravacaoConsultaSimplesDto>;
+
+            if (listSource != null && listSource.Any())
+            {
+                propertyType = listSource.First().GetType().GetProperty(columnName)?.PropertyType;
+            }
+
+            // 1. Tratamento para limpar o filtro
+            if (filterValue == null || filterValue == "(Todos)" || filterValue == string.Empty)
+            {
+                regravacaoBindingSource.Filter = null;
+                return;
+            }
+
+            string safeFilterValue = filterValue.Replace("'", "''");
+            string filterExpression;
+
+            // --- 2. Busca Parcial (Requerimentos e Descrição) ---
+            if (columnName == "RequerimentoAtual" || columnName == "RequerimentoNovo" || columnName == "Descricao")
+            {
+                filterExpression = $"{columnName} LIKE '*{safeFilterValue}*'";
+            }
+            // --- 3. Tratamento de Valores Nulos/Vazios (Outras Colunas de Lista) ---
+            else if (string.IsNullOrWhiteSpace(filterValue))
+            {
+                filterExpression = $"({columnName} IS NULL OR {columnName} = '')";
+            }
+            // --- 4. Tratamento por Tipo de Dado (Filtro Exato) ---
+            else if (propertyType == typeof(string) || propertyType == typeof(String) || propertyType == null)
+            {
+                filterExpression = $"{columnName} = '{safeFilterValue}'";
+            }
+            else if (propertyType == typeof(int) || propertyType == typeof(int?) ||
+                     propertyType == typeof(short) || propertyType == typeof(short?) ||
+                     propertyType == typeof(decimal) || propertyType == typeof(decimal?))
+            {
+                if (double.TryParse(safeFilterValue, out _))
+                {
+                    filterExpression = $"{columnName} = {safeFilterValue}";
+                }
+                else
+                {
+                    regravacaoBindingSource.Filter = null;
+                    return;
+                }
+            }
+            else if (propertyType == typeof(DateTime) || propertyType == typeof(DateTime?))
+            {
+                // Este bloco é para filtros de igualdade de data (se estivesse no menu de contexto)
+                filterExpression = $"Convert([{columnName}], 'System.String') LIKE '{safeFilterValue}*'";
+            }
+            else
+            {
+                filterExpression = $"{columnName} = '{safeFilterValue}'";
+            }
+
+            // 🛑 APLICAÇÃO DO FILTRO COM TRATAMENTO DE ERRO
+            try
+            {
+                regravacaoBindingSource.Filter = filterExpression;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao aplicar filtro '{columnName}': {ex.Message}\nExpressão Gerada: {filterExpression}", "Erro de Filtro de Dados", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                regravacaoBindingSource.Filter = null;
+            }
+        }
+    }
 }

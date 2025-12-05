@@ -1,5 +1,5 @@
 ﻿using Regravacao.DTOs;
-using Regravacao.Repositories;
+using Regravacao.Repositories.Cores;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

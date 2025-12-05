@@ -1,5 +1,5 @@
 ﻿using Regravacao.DTOs;
-using Regravacao.Repositories;
+using Regravacao.Repositories.Cores;
 using Regravacao.Services.Utils;
 using Regravacao.Utils;
 using System;

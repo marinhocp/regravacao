@@ -1,9 +1,6 @@
 ﻿using Regravacao.DTOs;
+using Regravacao.Repositories.Cores;
 using Supabase;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Regravacao.Repositories
 {

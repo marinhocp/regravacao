@@ -1,8 +1,6 @@
 ﻿using Regravacao.DTOs;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace Regravacao.Repositories
+namespace Regravacao.Repositories.Cores
 {
     public interface ICoresRepository
     {

@@ -1,5 +1,4 @@
 ﻿using Regravacao.DTOs;
-using System.Threading.Tasks;
 
 namespace Regravacao.Repositories.Configuracoes
 {

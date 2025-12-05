@@ -1,7 +1,4 @@
-﻿using System.Linq; // Necessário para .FirstOrDefault()
-using Regravacao.DTOs;
-using Supabase;
-using System.Threading.Tasks;
+﻿using Regravacao.DTOs;
 
 namespace Regravacao.Repositories.Configuracoes
 {

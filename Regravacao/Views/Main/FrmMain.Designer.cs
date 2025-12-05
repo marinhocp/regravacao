@@ -130,6 +130,8 @@
             label33 = new Label();
             label47 = new Label();
             label35 = new Label();
+            groupBox3 = new GroupBox();
+            DGWUltimasRegravacoes = new DataGridView();
             groupBox8 = new GroupBox();
             DGWDetalhesErros = new DataGridView();
             GPPrint = new GroupBox();
@@ -206,11 +208,14 @@
             Lbl_versao = new Label();
             LblUserName = new Label();
             label30 = new Label();
+            contextMenuStrip1 = new ContextMenuStrip(components);
             panel1.SuspendLayout();
             panel6.SuspendLayout();
             groupBox2.SuspendLayout();
             groupBox7.SuspendLayout();
             groupBox4.SuspendLayout();
+            groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)DGWUltimasRegravacoes).BeginInit();
             groupBox8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)DGWDetalhesErros).BeginInit();
             GPPrint.SuspendLayout();
@@ -255,6 +260,7 @@
             panel6.Controls.Add(groupBox7);
             panel6.Controls.Add(BtnSalvarCadastro);
             panel6.Controls.Add(groupBox4);
+            panel6.Controls.Add(groupBox3);
             panel6.Controls.Add(groupBox8);
             panel6.Controls.Add(GPPrint);
             panel6.Controls.Add(groupBox1);
@@ -268,40 +274,40 @@
             // 
             // groupBox2
             // 
-            groupBox2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            groupBox2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             groupBox2.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             groupBox2.Controls.Add(TxbObservacao);
             groupBox2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox2.Location = new Point(945, 421);
+            groupBox2.Location = new Point(1302, 249);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(288, 470);
+            groupBox2.Size = new Size(284, 286);
             groupBox2.TabIndex = 5;
             groupBox2.TabStop = false;
             groupBox2.Text = "OBSERVAÇÃO";
             // 
             // TxbObservacao
             // 
-            TxbObservacao.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            TxbObservacao.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             TxbObservacao.BackColor = Color.WhiteSmoke;
             TxbObservacao.BorderStyle = BorderStyle.FixedSingle;
             TxbObservacao.Font = new Font("Segoe UI", 9F);
-            TxbObservacao.Location = new Point(9, 23);
+            TxbObservacao.Location = new Point(9, 22);
             TxbObservacao.Multiline = true;
             TxbObservacao.Name = "TxbObservacao";
-            TxbObservacao.Size = new Size(271, 432);
+            TxbObservacao.Size = new Size(267, 254);
             TxbObservacao.TabIndex = 48;
             // 
             // BtnLimparCamposCadastro
             // 
-            BtnLimparCamposCadastro.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            BtnLimparCamposCadastro.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             BtnLimparCamposCadastro.BackColor = Color.Gray;
             BtnLimparCamposCadastro.FlatStyle = FlatStyle.Flat;
             BtnLimparCamposCadastro.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             BtnLimparCamposCadastro.ForeColor = SystemColors.ButtonFace;
             BtnLimparCamposCadastro.ImageAlign = ContentAlignment.MiddleLeft;
-            BtnLimparCamposCadastro.Location = new Point(1493, 828);
+            BtnLimparCamposCadastro.Location = new Point(1518, 543);
             BtnLimparCamposCadastro.Name = "BtnLimparCamposCadastro";
-            BtnLimparCamposCadastro.Size = new Size(93, 61);
+            BtnLimparCamposCadastro.Size = new Size(60, 39);
             BtnLimparCamposCadastro.TabIndex = 54;
             BtnLimparCamposCadastro.Text = "NOVO";
             BtnLimparCamposCadastro.UseVisualStyleBackColor = false;
@@ -315,9 +321,9 @@
             groupBox7.Controls.Add(label26);
             groupBox7.Controls.Add(label16);
             groupBox7.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox7.Location = new Point(1126, 29);
+            groupBox7.Location = new Point(1126, 26);
             groupBox7.Name = "groupBox7";
-            groupBox7.Size = new Size(460, 100);
+            groupBox7.Size = new Size(460, 103);
             groupBox7.TabIndex = 1;
             groupBox7.TabStop = false;
             groupBox7.Text = "RESPONSÁVEIS PELA FINALIZAÇÃO E CONFERENCIA DO CLICHÊ GRAVADO";
@@ -328,7 +334,7 @@
             CBxConferidoPor.FlatStyle = FlatStyle.Flat;
             CBxConferidoPor.Font = new Font("Segoe UI", 12F);
             CBxConferidoPor.FormattingEnabled = true;
-            CBxConferidoPor.Location = new Point(243, 54);
+            CBxConferidoPor.Location = new Point(243, 57);
             CBxConferidoPor.Name = "CBxConferidoPor";
             CBxConferidoPor.Size = new Size(205, 29);
             CBxConferidoPor.TabIndex = 5;
@@ -339,7 +345,7 @@
             CBxFinalizadoPor.FlatStyle = FlatStyle.Flat;
             CBxFinalizadoPor.Font = new Font("Segoe UI", 12F);
             CBxFinalizadoPor.FormattingEnabled = true;
-            CBxFinalizadoPor.Location = new Point(18, 54);
+            CBxFinalizadoPor.Location = new Point(18, 57);
             CBxFinalizadoPor.MaxDropDownItems = 15;
             CBxFinalizadoPor.Name = "CBxFinalizadoPor";
             CBxFinalizadoPor.Size = new Size(205, 29);
@@ -369,15 +375,15 @@
             // 
             // BtnSalvarCadastro
             // 
-            BtnSalvarCadastro.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            BtnSalvarCadastro.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             BtnSalvarCadastro.BackColor = Color.DarkSlateGray;
             BtnSalvarCadastro.FlatStyle = FlatStyle.Flat;
             BtnSalvarCadastro.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             BtnSalvarCadastro.ForeColor = SystemColors.ButtonFace;
             BtnSalvarCadastro.ImageAlign = ContentAlignment.MiddleLeft;
-            BtnSalvarCadastro.Location = new Point(1251, 830);
+            BtnSalvarCadastro.Location = new Point(1311, 543);
             BtnSalvarCadastro.Name = "BtnSalvarCadastro";
-            BtnSalvarCadastro.Size = new Size(225, 59);
+            BtnSalvarCadastro.Size = new Size(196, 37);
             BtnSalvarCadastro.TabIndex = 53;
             BtnSalvarCadastro.Text = "SALVAR O CADASTRO";
             BtnSalvarCadastro.UseVisualStyleBackColor = false;
@@ -1532,7 +1538,7 @@
             label47.AutoSize = true;
             label47.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold);
             label47.ForeColor = Color.FromArgb(64, 64, 64);
-            label47.Location = new Point(98, 52);
+            label47.Location = new Point(122, 52);
             label47.Name = "label47";
             label47.Size = new Size(104, 13);
             label47.TabIndex = 42;
@@ -1550,13 +1556,41 @@
             label35.TabIndex = 38;
             label35.Text = "Largura";
             // 
+            // groupBox3
+            // 
+            groupBox3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox3.Controls.Add(DGWUltimasRegravacoes);
+            groupBox3.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            groupBox3.Location = new Point(942, 589);
+            groupBox3.Name = "groupBox3";
+            groupBox3.Size = new Size(648, 302);
+            groupBox3.TabIndex = 3;
+            groupBox3.TabStop = false;
+            groupBox3.Text = "ÚLTIMAS REGRAVAÇÕES";
+            // 
+            // DGWUltimasRegravacoes
+            // 
+            DGWUltimasRegravacoes.AllowUserToAddRows = false;
+            DGWUltimasRegravacoes.AllowUserToDeleteRows = false;
+            DGWUltimasRegravacoes.AllowUserToOrderColumns = true;
+            DGWUltimasRegravacoes.BackgroundColor = Color.WhiteSmoke;
+            DGWUltimasRegravacoes.BorderStyle = BorderStyle.Fixed3D;
+            DGWUltimasRegravacoes.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            DGWUltimasRegravacoes.Dock = DockStyle.Fill;
+            DGWUltimasRegravacoes.Location = new Point(3, 19);
+            DGWUltimasRegravacoes.Name = "DGWUltimasRegravacoes";
+            DGWUltimasRegravacoes.ReadOnly = true;
+            DGWUltimasRegravacoes.Size = new Size(642, 280);
+            DGWUltimasRegravacoes.TabIndex = 0;
+            DGWUltimasRegravacoes.CellMouseClick += DGWUltimasRegravacoes_CellMouseClick;
+            // 
             // groupBox8
             // 
             groupBox8.Controls.Add(DGWDetalhesErros);
             groupBox8.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox8.Location = new Point(16, 249);
             groupBox8.Name = "groupBox8";
-            groupBox8.Size = new Size(1217, 159);
+            groupBox8.Size = new Size(912, 159);
             groupBox8.TabIndex = 3;
             groupBox8.TabStop = false;
             groupBox8.Text = "ERROS DETALHADOS";
@@ -1578,23 +1612,23 @@
             DGWDetalhesErros.Name = "DGWDetalhesErros";
             DGWDetalhesErros.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
             DGWDetalhesErros.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
-            DGWDetalhesErros.Size = new Size(1192, 122);
+            DGWDetalhesErros.Size = new Size(887, 122);
             DGWDetalhesErros.TabIndex = 0;
             DGWDetalhesErros.TabStop = false;
             DGWDetalhesErros.DoubleClick += DGWDetalhesErros_DoubleClick;
             // 
             // GPPrint
             // 
-            GPPrint.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            GPPrint.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             GPPrint.Controls.Add(BtnRotacionarHorario);
             GPPrint.Controls.Add(BtnRotacionarAntihorario);
             GPPrint.Controls.Add(BtnDelThumbnail);
             GPPrint.Controls.Add(BtnAddThumbnail);
             GPPrint.Controls.Add(PictureBoxThumbnail);
             GPPrint.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            GPPrint.Location = new Point(1251, 241);
+            GPPrint.Location = new Point(944, 249);
             GPPrint.Name = "GPPrint";
-            GPPrint.Size = new Size(335, 573);
+            GPPrint.Size = new Size(342, 329);
             GPPrint.TabIndex = 6;
             GPPrint.TabStop = false;
             GPPrint.Text = "PRINT DA ARTE";
@@ -1604,7 +1638,7 @@
             BtnRotacionarHorario.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             BtnRotacionarHorario.BackColor = Color.Transparent;
             BtnRotacionarHorario.Image = Properties.Resources.rotacionar_horario;
-            BtnRotacionarHorario.Location = new Point(234, 22);
+            BtnRotacionarHorario.Location = new Point(242, 283);
             BtnRotacionarHorario.Name = "BtnRotacionarHorario";
             BtnRotacionarHorario.Size = new Size(36, 34);
             BtnRotacionarHorario.TabIndex = 51;
@@ -1616,7 +1650,7 @@
             BtnRotacionarAntihorario.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             BtnRotacionarAntihorario.BackColor = Color.Transparent;
             BtnRotacionarAntihorario.Image = Properties.Resources.rotacionar_antihorario;
-            BtnRotacionarAntihorario.Location = new Point(194, 22);
+            BtnRotacionarAntihorario.Location = new Point(202, 283);
             BtnRotacionarAntihorario.Name = "BtnRotacionarAntihorario";
             BtnRotacionarAntihorario.Size = new Size(36, 34);
             BtnRotacionarAntihorario.TabIndex = 50;
@@ -1627,7 +1661,7 @@
             // 
             BtnDelThumbnail.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             BtnDelThumbnail.Image = Properties.Resources.borracha1_32x32;
-            BtnDelThumbnail.Location = new Point(274, 22);
+            BtnDelThumbnail.Location = new Point(282, 283);
             BtnDelThumbnail.Name = "BtnDelThumbnail";
             BtnDelThumbnail.Size = new Size(49, 34);
             BtnDelThumbnail.TabIndex = 52;
@@ -1638,9 +1672,9 @@
             // 
             BtnAddThumbnail.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             BtnAddThumbnail.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            BtnAddThumbnail.Location = new Point(10, 22);
+            BtnAddThumbnail.Location = new Point(11, 283);
             BtnAddThumbnail.Name = "BtnAddThumbnail";
-            BtnAddThumbnail.Size = new Size(178, 34);
+            BtnAddThumbnail.Size = new Size(185, 34);
             BtnAddThumbnail.TabIndex = 49;
             BtnAddThumbnail.Text = "ADICIONAR PRINT";
             BtnAddThumbnail.UseVisualStyleBackColor = true;
@@ -1648,15 +1682,16 @@
             // 
             // PictureBoxThumbnail
             // 
-            PictureBoxThumbnail.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            PictureBoxThumbnail.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             PictureBoxThumbnail.BackColor = Color.WhiteSmoke;
             PictureBoxThumbnail.BorderStyle = BorderStyle.FixedSingle;
             PictureBoxThumbnail.ContextMenuStrip = CmsThumbnail;
             PictureBoxThumbnail.Cursor = Cursors.Hand;
             PictureBoxThumbnail.Image = Properties.Resources.no_imagem;
-            PictureBoxThumbnail.Location = new Point(10, 65);
+            PictureBoxThumbnail.Location = new Point(11, 23);
             PictureBoxThumbnail.Name = "PictureBoxThumbnail";
-            PictureBoxThumbnail.Size = new Size(313, 496);
+            PictureBoxThumbnail.Size = new Size(320, 252);
+            PictureBoxThumbnail.SizeMode = PictureBoxSizeMode.Zoom;
             PictureBoxThumbnail.TabIndex = 0;
             PictureBoxThumbnail.TabStop = false;
             PictureBoxThumbnail.DragDrop += PictureBoxThumbnail_DragDrop;
@@ -1882,7 +1917,7 @@
             groupBox6.Size = new Size(1407, 100);
             groupBox6.TabIndex = 2;
             groupBox6.TabStop = false;
-            groupBox6.Text = "INFORMARÇÕES GERAIS DA REGRAVAÇÃO";
+            groupBox6.Text = "INFORMARÇÕES GERAIS DA NOVA REGRAVAÇÃO";
             // 
             // label39
             // 
@@ -2511,6 +2546,11 @@
             label30.TabIndex = 8;
             label30.Text = "USUÁRIO:";
             // 
+            // contextMenuStrip1
+            // 
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.Size = new Size(61, 4);
+            // 
             // FrmMain
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -2532,6 +2572,8 @@
             groupBox7.PerformLayout();
             groupBox4.ResumeLayout(false);
             groupBox4.PerformLayout();
+            groupBox3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)DGWUltimasRegravacoes).EndInit();
             groupBox8.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)DGWDetalhesErros).EndInit();
             GPPrint.ResumeLayout(false);
@@ -2740,5 +2782,8 @@
         private ComboBox CBxNomeCor3;
         private ComboBox CBxNomeCor2;
         private ComboBox CBxNomeCor1;
+        private GroupBox groupBox3;
+        private DataGridView DGWUltimasRegravacoes;
+        private ContextMenuStrip contextMenuStrip1;
     }
 }

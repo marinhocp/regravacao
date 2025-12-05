@@ -1,11 +1,7 @@
 ﻿using Regravacao.DTOs;
 using Supabase;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System;
-using Regravacao.Repositories.Conferente;
 
-namespace Regravacao.Repositories.Conferente.Impl
+namespace Regravacao.Repositories.Conferente
 {
     public class ConferenteRepository : IConferenteRepository
     {

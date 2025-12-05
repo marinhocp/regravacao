@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Hosting;
 using Regravacao.Repositories;
 using Regravacao.Repositories.Conferente;
-using Regravacao.Repositories.Conferente.Impl;
 using Regravacao.Repositories.Configuracoes;
+using Regravacao.Repositories.Cores;
 using Regravacao.Repositories.CustoDeQuem;
 using Regravacao.Repositories.DetalhesDeErros;
 using Regravacao.Repositories.Empresa;
@@ -85,9 +85,9 @@ namespace Regravacao
                     services.AddScoped<ICustoDeQuemRepository, CustoDeQuemRepository>();
                     services.AddScoped<IPrioridadeRepository, PrioridadeRepository>();
                     services.AddScoped<IStatusRepository, StatusRepository>();
-                    services.AddScoped<ICoresRepository, CoresRepository>();       
-                    
-                   
+                    services.AddScoped<ICoresRepository, CoresRepository>();
+                    services.AddScoped<IRegravacaoQueryRepository, RegravacaoQueryRepository>();
+
 
 
                     // --- SERVIÇOS ---
@@ -106,8 +106,8 @@ namespace Regravacao
                     services.AddScoped<IPrioridadeService, PrioridadeService>();
                     services.AddScoped<IStatusService, StatusService>();
                     services.AddScoped<ICoresCacheService, CoresCacheService>();
-                    services.AddScoped<ICoresService, CoresService>();
-
+                    services.AddScoped<ICoresService, CoresService>();                    
+                    services.AddScoped<IRegravacaoQueryService, RegravacaoQueryService>();
 
 
 
