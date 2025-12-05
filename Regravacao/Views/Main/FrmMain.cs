@@ -251,101 +251,133 @@ namespace Regravacao
 
         private async Task CarregarDGWUltimasRegravacoesAsync()
         {
+            regravacaoBindingSource.Filter = null;
+            List<RegravacaoConsultaSimplesDto> ultimosRegistrosSimples = null;
+
             try
             {
-                // 1. Otimização: AWAIT com ConfigureAwait(false) para não bloquear o thread de UI.
-                var ultimosRegistrosSimples = await _regravacaoQueryService.GetUltimosRegistrosAsync(20).ConfigureAwait(false);
-
-                // O restante do código DEVE ser executado no thread da UI, então usamos Invoke.
-                // Se este formulário for a thread de UI principal, this.Invoke é a maneira mais segura.
-                // Se a chamada for feita no Load, o Invoke pode ser opcional, mas é mais seguro.
-                this.Invoke((MethodInvoker)delegate
-                {
-                    // Atribuir a lista ao BindingSource
-                    regravacaoBindingSource.DataSource = ultimosRegistrosSimples;
-
-                    // Limpar colunas e atribuir a nova fonte de dados: O BindingSource
-                    DGWUltimasRegravacoes.Columns.Clear();
-                    DGWUltimasRegravacoes.DataSource = regravacaoBindingSource;
-
-                    // Configuração de cor do cabeçalho
-                    DGWUltimasRegravacoes.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(255, 255, 100, 100);
-                    DGWUltimasRegravacoes.EnableHeadersVisualStyles = false;
-
-                    // 2. Função auxiliar para configurar a coluna (com maiúsculas)
-                    Action<string, string, int?, DataGridViewAutoSizeColumnMode?> SetColumn =
-                         (name, header, width, autoSize) =>
-                         {
-                             if (DGWUltimasRegravacoes.Columns.Contains(name))
-                             {
-                                 var col = DGWUltimasRegravacoes.Columns[name];
-                                 col.Visible = true;
-                                 col.HeaderText = header.ToUpper();
-                                 if (width.HasValue) col.Width = width.Value;
-                                 if (autoSize.HasValue) col.AutoSizeMode = autoSize.Value;
-                             }
-                         };
-
-                    // Função auxiliar para ocultar
-                    Action<string> HideColumn = (name) =>
-                    {
-                        if (DGWUltimasRegravacoes.Columns.Contains(name))
-                        {
-                            DGWUltimasRegravacoes.Columns[name].Visible = false;
-                        }
-                    };
-
-                    // --- 3. TRATAMENTO DE OCULTAMENTO (Sem Congelamento) ---
-
-                    // Mover ID para o final antes de ocultar
-                    if (DGWUltimasRegravacoes.Columns.Contains("IdRegravacao"))
-                    {
-                        DGWUltimasRegravacoes.Columns["IdRegravacao"].DisplayIndex = DGWUltimasRegravacoes.Columns.Count - 1;
-                        HideColumn("IdRegravacao");
-                    }
-
-                    // --- 4. Configuração das Colunas ---
-                    SetColumn("RequerimentoAtual", "Req. Atual", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
-
-                    // Demais Colunas
-                    SetColumn("DataCadastro", "Cadastro", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
-                    if (DGWUltimasRegravacoes.Columns.Contains("DataCadastro"))
-                    {
-                        DGWUltimasRegravacoes.Columns["DataCadastro"].DefaultCellStyle.Format = "dd/MM/yyyy";
-                    }
-                    SetColumn("RequerimentoNovo", "Req. Novo", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
-                    SetColumn("DescricaoArte", "Descrição da Arte", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
-                    SetColumn("Status", "Status", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
-                    SetColumn("Prioridade", "Prioridade", null, DataGridViewAutoSizeColumnMode.ColumnHeader);
-                    SetColumn("MotivoPrincipal", "Motivo Principal", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
-                    SetColumn("Solicitante", "Solicitante", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
-                    SetColumn("Conferente", "Conferente", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
-                    SetColumn("FinalizadoPor", "Finalizado Por", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
-                    SetColumn("Material", "Material", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
-
-                    // Campos Simplificados
-                    SetColumn("NomesDasCores", "Cores", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
-                    SetColumn("DescricaoErros", "Detalhes de Erro", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
-
-                    // Ocultar Metadados
-                    HideColumn("Versao");
-                    HideColumn("QtdePlacas");
-                    HideColumn("EnviarPara");
-                    HideColumn("Thumbnail");
-                    HideColumn("Observacoes");
-
-                    DGWUltimasRegravacoes.ScrollBars = ScrollBars.Both;
-                    DGWUltimasRegravacoes.Refresh();
-
-                    // Conecte o evento de clique no cabeçalho para a filtragem estilo Excel
-                    DGWUltimasRegravacoes.CellMouseClick -= DGWUltimasRegravacoes_CellMouseClick;
-                    DGWUltimasRegravacoes.CellMouseClick += DGWUltimasRegravacoes_CellMouseClick;
-                }); // Fim do this.Invoke
+                ultimosRegistrosSimples = await _regravacaoQueryService
+                    .GetUltimosRegistrosAsync(100)
+                    .ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao carregar e formatar regravações:\n{ex.Message}", "Erro de Formatação", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Erro ao buscar os dados:\n{ex.Message}", "Erro de Carregamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ultimosRegistrosSimples = new List<RegravacaoConsultaSimplesDto>();
             }
+
+            this.Invoke((MethodInvoker)delegate
+            {
+                // 1. Definição das Funções Auxiliares (SetColumn, HideColumn)
+                // (Devem ser definidas antes de serem usadas)
+                Action<string, string, int?, DataGridViewAutoSizeColumnMode?> SetColumn =
+                    (name, header, width, autoSize) =>
+                    {
+                        if (DGWUltimasRegravacoes.Columns.Contains(name))
+                        {
+                            var col = DGWUltimasRegravacoes.Columns[name];
+                            col.Visible = true;
+                            col.HeaderText = header.ToUpper();
+                            if (width.HasValue) col.Width = width.Value;
+                            if (autoSize.HasValue) col.AutoSizeMode = autoSize.Value;
+                        }
+                    };
+
+                Action<string> HideColumn = (name) =>
+                {
+                    if (DGWUltimasRegravacoes.Columns.Contains(name))
+                    {
+                        DGWUltimasRegravacoes.Columns[name].Visible = false;
+                    }
+                };
+
+
+                // 2. Atribuição do DataSource (Onde o reset do layout acontece)
+                if (ultimosRegistrosSimples != null && ultimosRegistrosSimples.Any())
+                {
+                    DataTable dtRegravacoes = DataTableConverter.ToDataTable(ultimosRegistrosSimples);
+                    DGWUltimasRegravacoes.AutoGenerateColumns = true;
+                    regravacaoBindingSource.DataSource = dtRegravacoes;
+                }
+                else
+                {
+                    regravacaoBindingSource.DataSource = null;
+                }
+
+                DGWUltimasRegravacoes.DataSource = regravacaoBindingSource;
+
+                // --- 1. PERSONALIZAÇÕES DE ESTILO E LARGURA ---
+
+                // 📏 AJUSTE DA LARGURA DA COLUNA DE CABEÇALHO DA LINHA (FAIXA CINZA ESQUERDA)
+                DGWUltimasRegravacoes.RowHeadersWidth = 20;
+
+                // 🟢 COR DO CABEÇALHO (Verde Oliva Claro: RGB 173, 185, 125)
+                DGWUltimasRegravacoes.ColumnHeadersDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(173, 185, 125);
+                DGWUltimasRegravacoes.EnableHeadersVisualStyles = false;
+
+                // ✍️ TEXTO DO CABEÇALHO EM NEGRITO e CENTRALIZAÇÃO
+                DGWUltimasRegravacoes.ColumnHeadersDefaultCellStyle.Font =
+                    new System.Drawing.Font(DGWUltimasRegravacoes.Font, System.Drawing.FontStyle.Bold);
+                DGWUltimasRegravacoes.ColumnHeadersDefaultCellStyle.Alignment =
+                    DataGridViewContentAlignment.MiddleCenter;
+
+                // 🦓 Fundo CINZA CLARO LINHA SIM/LINHA NÃO
+                DGWUltimasRegravacoes.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.LightGray;
+
+
+                // 📏 AJUSTE DA COLUNA DE ÍNDICE 0 (A coluna de dados 'REQ. ATUAL' se for a primeira coluna de dados)
+                if (DGWUltimasRegravacoes.Columns.Count > 0)
+                {
+                    DGWUltimasRegravacoes.Columns[0].Width = 10;
+                }
+
+                // 3. Reconfiguração do Layout (Sobrescreve a auto-geração)
+
+                // Configuração de cor do cabeçalho
+                // DGWUltimasRegravacoes.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(255, 255, 100, 100);
+                // DGWUltimasRegravacoes.EnableHeadersVisualStyles = false;
+
+                // Mover ID para o final antes de ocultar
+                if (DGWUltimasRegravacoes.Columns.Contains("IdRegravacao"))
+                {
+                    DGWUltimasRegravacoes.Columns["IdRegravacao"].DisplayIndex = DGWUltimasRegravacoes.Columns.Count - 1;
+                    HideColumn("IdRegravacao");
+                }
+
+                // --- Configuração das Colunas em Detalhe (Mantendo a ordem) ---
+                SetColumn("RequerimentoAtual", "Req. Atual", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+                SetColumn("DataCadastro", "Cadastro", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+                if (DGWUltimasRegravacoes.Columns.Contains("DataCadastro"))
+                {
+                    DGWUltimasRegravacoes.Columns["DataCadastro"].DefaultCellStyle.Format = "dd/MM/yyyy";
+                }
+                SetColumn("RequerimentoNovo", "Req. Novo", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+                // O nome da coluna do DTO é 'DescricaoArte', mas no filtro é 'Descricao'. Use o nome da coluna do DTO/DataTable aqui.
+                SetColumn("DescricaoArte", "Descrição da Arte", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+                SetColumn("Status", "Status", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+                SetColumn("Prioridade", "Prioridade", null, DataGridViewAutoSizeColumnMode.ColumnHeader);
+                SetColumn("MotivoPrincipal", "Motivo Principal", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+                SetColumn("Solicitante", "Solicitante", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+                SetColumn("Conferente", "Conferente", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+                SetColumn("FinalizadoPor", "Finalizado Por", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+                SetColumn("Material", "Material", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+                SetColumn("NomesDasCores", "Cores", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+                SetColumn("DescricaoErros", "Detalhes de Erro", null, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+
+                // Ocultar Metadados
+                HideColumn("Versao");
+                HideColumn("QtdePlacas");
+                HideColumn("EnviarPara");
+                HideColumn("Thumbnail");
+                HideColumn("Observacoes");
+
+                DGWUltimasRegravacoes.ScrollBars = ScrollBars.Both;
+                DGWUltimasRegravacoes.Refresh();
+
+                // Reconexão do evento de clique no cabeçalho
+                DGWUltimasRegravacoes.CellMouseClick -= DGWUltimasRegravacoes_CellMouseClick;
+                DGWUltimasRegravacoes.CellMouseClick += DGWUltimasRegravacoes_CellMouseClick;
+            });
         }
 
         /// Deleta o arquivo do Storage se a inserção no banco de dados falhar (rollback).
@@ -1522,20 +1554,21 @@ namespace Regravacao
         {
             try
             {
+                // 1) validação dos campos obrigatórios gerais
                 bool geraisOk = Utils.Helpers.VerificaSeEstaVazio(
-        TxbRequerimentoAtual,
-        TxbDescricao,
-        TxbVersao,
-        CBxMaterial,
-        CBxFinalizadoPor,
-        CBxConferidoPor,
-        CBxSolicitante,
-        CBxEnviarPara,
-        CBxMotivoPrincipal,
-        CBxCustoDeQuem,
-        CBxPrioridade,
-        CBxStatus
-    );
+                    TxbRequerimentoAtual,
+                    TxbDescricao,
+                    TxbVersao,
+                    CBxMaterial,
+                    CBxFinalizadoPor,
+                    CBxConferidoPor,
+                    CBxSolicitante,
+                    CBxEnviarPara,
+                    CBxMotivoPrincipal,
+                    CBxCustoDeQuem,
+                    CBxPrioridade,
+                    CBxStatus
+                );
 
                 if (!geraisOk)
                 {
@@ -1553,6 +1586,7 @@ namespace Regravacao
                 }
 
 
+                // 3) Coleta de dados e criação do DTO
                 var dto = new RegravacaoInserirDto
                 {
                     RequerimentoAtual = TxbRequerimentoAtual.Text.Trim(),
@@ -1568,24 +1602,29 @@ namespace Regravacao
                     QtdePlacas = (short)NumUpDQtdePlacas.Value,
                     IdPrioridade = (int)CBxPrioridade.SelectedValue,
                     IdStatus = (int)CBxStatus.SelectedValue,
-
                     DataCadastro = DateTimeBoxCadastro.Value,
                     ThumbnailUrl = await UploadThumbnailAsync(),
                     Observacoes = TxbObservacao.Text.Trim(),
-
                     IdMaterial = (short?)CBxMaterial.SelectedValue,
                     IdsErrosSelecionados = _errosSelecionados.Select(x => x.IdDetalhesErros).ToList(),
                     Cores = ColetarDadosDasCoresDoFormulario()
                 };
 
+                // 4) Inserção no banco
                 int novoId = await _regravacaoService.InserirAsync(dto);
 
-                MessageBox.Show($"Regravação concluída com sucesso!");
+                MessageBox.Show("Regravação concluída com sucesso!", "Informação", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 ResetarControlesPersonalizado();
+
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao salvar regravação:\n{ex.Message}");
+                MessageBox.Show($"Erro ao salvar regravação:\n{ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                // ✅ Ação de atualização: Garante que o grid seja atualizado após o save (sucesso ou falha)
+                await CarregarDGWUltimasRegravacoesAsync();
             }
         }
 
@@ -1595,28 +1634,21 @@ namespace Regravacao
 
             for (int i = 1; i <= MaxCores; i++)
             {
-                // Agora está certo
                 var cbxCor = this.Controls.Find($"CBxNomeCor{i}", true).FirstOrDefault() as ComboBox;
                 var txbLargura = this.Controls.Find($"TxbLarguraCor{i}", true).FirstOrDefault() as TextBox;
                 var txbComprimento = this.Controls.Find($"TxbComprimentoCor{i}", true).FirstOrDefault() as TextBox;
-
-                // Campo correto baseado no seu mapa de cores
                 var txbCustoEstimado = this.Controls.Find($"TxbCustoParcialPlacaCor{i}", true).FirstOrDefault() as TextBox;
 
-                // Se não achou o ComboBox OU não há seleção, pula
                 if (cbxCor == null || cbxCor.SelectedValue == null)
                     continue;
 
-                // ID da cor
                 if (!int.TryParse(cbxCor.SelectedValue.ToString(), out int idCor) || idCor <= 0)
                     continue; // apenas ignora, sem lançar exceção
 
-                // Conversões
                 if (!decimal.TryParse(txbLargura?.Text, out decimal largura)) continue;
                 if (!decimal.TryParse(txbComprimento?.Text, out decimal comprimento)) continue;
                 if (!decimal.TryParse(txbCustoEstimado?.Text, out decimal custoEstimado)) continue;
 
-                // Adiciona a cor válida
                 cores.Add(new CoresInserirDto
                 {
                     IdCor = idCor,
@@ -1626,7 +1658,6 @@ namespace Regravacao
                 });
             }
 
-            // Garante que pelo menos uma cor foi preenchida
             if (cores.Count == 0)
                 throw new ArgumentException("Pelo menos uma cor deve ser preenchida para o cadastro.");
 
@@ -1637,10 +1668,6 @@ namespace Regravacao
         {
             EstilizarDGWDetalhesErros();
 
-            // ❌ REMOVER/COMENTAR: Não carregamos mais todas as cores no início
-            // var tarefaCores = CarregarCoresParaComboBoxAsync(); 
-
-            // carrega o resto paralelamente
             var tarefas = new[]
             {
             CarregarMateriais(),
@@ -1657,15 +1684,11 @@ namespace Regravacao
         };
 
             await Task.WhenAll(tarefas);
-            // await tarefaCores; // ❌ REMOVER/COMENTAR
 
-            // ✅ NOVO: Conecta o mesmo evento TextChanged a todos os ComboBoxes de cor
             var comboBoxes = new List<ComboBox> { CBxNomeCor1, CBxNomeCor2, CBxNomeCor3, CBxNomeCor4,
                                               CBxNomeCor5, CBxNomeCor6, CBxNomeCor7, CBxNomeCor8 };
             foreach (var cmb in comboBoxes)
             {
-                // Adicionamos o manipulador de eventos. 
-                // O SelectedIndexChanged será usado para capturar a seleção final.
                 cmb.TextChanged += CBxNomeCor_TextChanged;
             }
 

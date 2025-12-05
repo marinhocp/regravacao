@@ -1,10 +1,8 @@
 ﻿using Regravacao.DTOs;
 using Supabase;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System;
+using Regravacao.Repositories.Funcionario;
 
-namespace Regravacao.Repositories.Funcionario.Impl
+namespace Regravacao.Repositories.Finalizador
 {
     public class FinalizadorRepository : IFinalizadorRepository
     {
@@ -15,15 +13,14 @@ namespace Regravacao.Repositories.Funcionario.Impl
             _supabase = supabase;
         }
 
-        public async Task<List<FuncionariosDto>> ListarPorCargoAsync(int idCargo)
+        public async Task<List<FuncionariosDto>> ListarPorCargoAsync(List<int> idsCargos)
         {
             var resposta = await _supabase
                 .From<FuncionariosDto>()
                 .Select("id_funcionario, nome, id_cargo")
-                // ✅ Filtro correto
-                .Filter("id_cargo", Supabase.Postgrest.Constants.Operator.Equals, idCargo)
+               
+                .Filter("id_cargo", Supabase.Postgrest.Constants.Operator.In, idsCargos)
 
-                // ✅ Ordenação correta, com a sintaxe completa
                 .Order("nome", Supabase.Postgrest.Constants.Ordering.Ascending)
                 .Get();
 

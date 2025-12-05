@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
             panel1 = new Panel();
             panel6 = new Panel();
@@ -1580,6 +1581,16 @@
             DGWUltimasRegravacoes.Location = new Point(3, 19);
             DGWUltimasRegravacoes.Name = "DGWUltimasRegravacoes";
             DGWUltimasRegravacoes.ReadOnly = true;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = SystemColors.Control;
+            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = Color.LightSeaGreen;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            DGWUltimasRegravacoes.RowHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            DGWUltimasRegravacoes.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            DGWUltimasRegravacoes.ShowEditingIcon = false;
             DGWUltimasRegravacoes.Size = new Size(642, 280);
             DGWUltimasRegravacoes.TabIndex = 0;
             DGWUltimasRegravacoes.CellMouseClick += DGWUltimasRegravacoes_CellMouseClick;
@@ -1792,7 +1803,7 @@
             GPDadosClicheAtual.Size = new Size(1104, 103);
             GPDadosClicheAtual.TabIndex = 0;
             GPDadosClicheAtual.TabStop = false;
-            GPDadosClicheAtual.Text = "DADOS DO CLICHÊ GRAVADO";
+            GPDadosClicheAtual.Text = "DADOS DO CLICHÊ ATUAL";
             // 
             // label42
             // 
